@@ -1,12 +1,29 @@
-# Fase 3: Workshop Structure & Storyboard
+# Phase 3: Workshop Structure & Storyboard
 
-## 🎯 Obiettivo
-Storyboard minuto-per-minuto delle 2 ore con deliverables incrementali.
-I partecipanti **scoprono** i 3 assi uno alla volta, non tutti insieme.
+> **FINAL — reconciled with slide deck.** Final slide count: **35 / Total duration: 120 min**
+> **Companion files:** `07-slides-outline.md` (slide spec), `presentation/slides.html` (deck), `presenter-notes.md` (printable backup).
+
+## Goal
+Minute-by-minute storyboard of the 2-hour workshop with incremental deliverables.
+Participants **discover** the 3 axes one at a time, not all together.
+
+## Slide ↔ Minute Mapping (FINAL)
+
+| Time (mm:ss) | Phase | Slides | Duration |
+|--------------|-------|--------|----------|
+| 00:00–00:10 | Phase 0: Setup & Icebreaker | 1–5 | 10 min |
+| 00:10–00:15 | Phase 1a: The Problem | 6–9 | 5 min |
+| 00:15–00:20 | Phase 1b: The Model | 10–15 | 5 min |
+| 00:20–00:25 | Phase 1c: Demo + Magic Moment #1 | 16–17 | 5 min |
+| 00:25–00:50 | Phase 2: INSTRUCT hands-on | 18–21 | 25 min |
+| 00:50–01:10 | Phase 3: NAVIGATE hands-on | 22–24 | 20 min |
+| 01:10–01:40 | Phase 4: VALIDATE + Hybrid Moment | 25–30 | 30 min |
+| 01:40–02:00 | Phase 5: Fix Sprint & Wrap | 31–35 | 20 min |
+| **Total** | — | **35** | **120 min** |
 
 ---
 
-## 📋 Convenzioni
+## Conventions
 
 ```
 🎤  = Teacher speaks / demo
@@ -15,13 +32,14 @@ I partecipanti **scoprono** i 3 assi uno alla volta, non tutti insieme.
 📊  = Visualization reveal
 ⚡  = "Magic moment" (wow factor)
 🎁  = Deliverable takeaway
+[Sn] = Slide reference in presentation/slides.html
 ```
 
 ---
 
-## TIMELINE COMPLETO (120 min)
+## FULL TIMELINE (120 min)
 
-### 🔴 PHASE 0: Setup & Icebreaker [00:00–00:10] (10 min)
+### PHASE 0: Setup & Icebreaker [00:00–00:10] (10 min) — Slides 1–5
 
 ```
 00:00  🎤  Welcome + "raise hand if..." poll (2 min)
@@ -43,11 +61,11 @@ I partecipanti **scoprono** i 3 assi uno alla volta, non tutti insieme.
        - Fallback: chi non ha repo pronto usa il DEMO REPO
 ```
 
-**Deliverable**: `scripts/check_setup.py` — verifica ambiente + stampa ok/fail
+**Deliverable**: `scripts/check_setup.py` — environment check, prints ok/fail
 
 ---
 
-### 🟡 PHASE 1: The Mental Model [00:10–00:25] (15 min)
+### PHASE 1: The Mental Model [00:10–00:25] (15 min) — Slides 6–17
 
 ```
 00:10  🎤  The Problem — "Why agents fail" (5 min)
@@ -57,7 +75,7 @@ I partecipanti **scoprono** i 3 assi uno alla volta, non tutti insieme.
         It followed our linting rules... from 2 years ago.
         It couldn't find where we keep request schemas."
        
-       → Agenti NON sono stupidi. Sono **non informati**.
+       → Agents are NOT stupid. They are **uninformed**.
        
        Write on board (or slide):
        ┌─────────────────────────────────────────────┐
@@ -95,11 +113,11 @@ I partecipanti **scoprono** i 3 assi uno alla volta, non tutti insieme.
         The difference isn't the agent — it's the CODEBASE.
 ```
 
-**Deliverable**: `repos/demo-bad/` e `repos/demo-good/` — due repo di esempio pronti
+**Deliverable**: `repos/demo-bad/` and `repos/demo-good/` — two example repos ready to scan
 
 ---
 
-### 🔵 PHASE 2: AXIS 1 — INSTRUCT [00:25–00:50] (25 min)
+### PHASE 2: AXIS 1 — INSTRUCT [00:25–00:50] (25 min) — Slides 18–21
 
 ```
 00:25  🎤  Introduce Axis 1: INSTRUCT (3 min)
@@ -201,14 +219,14 @@ I partecipanti **scoprono** i 3 assi uno alla volta, non tutti insieme.
         That's Axis 2."
 ```
 
-**Deliverables**: 
-- `scripts/scan_static.py` con `--axis instruct` mode
-- `templates/claude-md-template.md` — template per participants
-- Score before/after per ogni partecipante
+**Deliverables**:
+- `scripts/scan_static.py` with `--axis instruct` mode
+- `templates/claude-md-template.md` — fill-in template for participants
+- Before/after score for every participant
 
 ---
 
-### 🟢 PHASE 3: AXIS 2 — NAVIGATE [00:50–01:10] (20 min)
+### PHASE 3: AXIS 2 — NAVIGATE [00:50–01:10] (20 min) — Slides 22–24
 
 ```
 00:50  🎤  Introduce Axis 2: NAVIGATE (3 min)
@@ -279,13 +297,13 @@ I partecipanti **scoprono** i 3 assi uno alla volta, non tutti insieme.
        → Axis 3: VALIDATE
 ```
 
-**Deliverabili**: 
-- `scan_static.py` con `--axis navigate` mode
-- Template `.env.example`, `.editorconfig`, `pyrightconfig.json`
+**Deliverables**:
+- `scan_static.py` with `--axis navigate` mode
+- Templates: `.env.example`, `.editorconfig`, `pyrightconfig.json`
 
 ---
 
-### 🔴 PHASE 4: AXIS 3 — VALIDATE + HYBRID MOMENT [01:10–01:40] (30 min)
+### PHASE 4: AXIS 3 — VALIDATE + HYBRID MOMENT [01:10–01:40] (30 min) — Slides 25–30
 
 ```
 01:10  🎤  Introduce Axis 3: VALIDATE (3 min)
@@ -434,15 +452,15 @@ I partecipanti **scoprono** i 3 assi uno alla volta, non tutti insieme.
        │ ✅VALIDATE │   28%  │   41%  │  +13%  │
 ```
 
-**Deliverabili**:
-- `scan_static.py` con `--all`, `--hybrid`, `--visualize`, `--compare`
+**Deliverables**:
+- `scan_static.py` with `--all`, `--hybrid`, `--visualize`, `--compare` flags
 - `templates/radar.html` — Chart.js radar chart
 - `.github/workflows/agent-ready-ci.yml` template
-- Snapshot system per comparison
+- Snapshot system for comparison
 
 ---
 
-### 🟣 PHASE 5: Fix Sprint & Wrap [01:40–02:00] (20 min)
+### PHASE 5: Fix Sprint & Wrap [01:40–02:00] (20 min) — Slides 31–35
 
 ```
 01:40  🎤  The Fix Concept — Auto-Fix Skills (3 min)
@@ -536,43 +554,43 @@ I partecipanti **scoprono** i 3 assi uno alla volta, non tutti insieme.
 02:00  🎉  END
 ```
 
-**Deliverabili**:
-- `scripts/apply_fix.py` — versione workshop dell'auto-fix
-- Report generator multi-format
+**Deliverables**:
+- `scripts/apply_fix.py` — workshop version of the auto-fix
+- Multi-format report generator
 - Badge SVG generator
 - `templates/badge.svg` template
 
 ---
 
-## 📦 Deliverables Completi Workshop
+## Complete Workshop Deliverables
 
-### Da Buildare (Codice)
+### To Build (Code)
 
-| File | Righe | Priorità | Dipendenze |
+| File | Lines | Priority | Dependencies |
 |------|-------|----------|------------|
 | `scripts/scan_static.py` | ~250 | **Must** | `rich`, `pyyaml`, stdlib |
 | `scripts/apply_fix.py` | ~120 | High | Jinja2 (template rendering) |
 | `scripts/report_gen.py` | ~80 | Medium | stdlib |
-| `scripts/badge_gen.py` | ~40 | Low | svgwrite o string template |
+| `scripts/badge_gen.py` | ~40 | Low | svgwrite or string template |
 | `templates/radar.html` | ~180 | **Must** | Chart.js CDN |
 | `templates/radar-dark.html` | ~180 | Nice | Chart.js CDN |
-| `templates/claude-md-template.md` | ~40 | **Must** | nessuna |
-| `templates/ci-template.yml` | ~30 | **Must** | nessuna |
-| `templates/security-md-template.md` | ~25 | Medium | nessuna |
-| `templates/contributing-md-template.md` | ~30 | Medium | nessuna |
-| `repos/demo-bad/` | ~15 files | **Must** | nessuna |
-| `repos/demo-good/` | ~15 files | **Must** | nessuna |
+| `templates/claude-md-template.md` | ~40 | **Must** | none |
+| `templates/ci-template.yml` | ~30 | **Must** | none |
+| `templates/security-md-template.md` | ~25 | Medium | none |
+| `templates/contributing-md-template.md` | ~30 | Medium | none |
+| `repos/demo-bad/` | ~15 files | **Must** | none |
+| `repos/demo-good/` | ~15 files | **Must** | none |
 
-### Totali Stimati
-- **~990 righe di codice/template**
-- **~12-16 ore di lavoro** effettivo
-- **4 dipendenze**: `rich`, `pyyaml`, `jinja2`, `tomllib`(stdlib da 3.11)
+### Estimated Totals
+- **~990 lines of code/templates**
+- **~12-16 hours** of effective work
+- **4 dependencies**: `rich`, `pyyaml`, `jinja2`, `tomllib` (stdlib from 3.11)
 
 ---
 
-## 🔄 Flusso Incrementale (Branch Strategy)
+## Incremental Flow (Branch Strategy)
 
-Per il repo `RisorseArtificiali/agent-ready-skill`:
+For the `RisorseArtificiali/agent-ready-skill` repo:
 
 ```
 main                          (stato attuale — skills complete)
@@ -596,35 +614,35 @@ main                          (stato attuale — skills complete)
                                + WORKSHOP.md (istruzioni complete)
 ```
 
-I partecipano clonano e fanno checkout di ogni branch man mano,
-oppure lavorano su main con tutto disponibile e sbloccano fase per fase
-con i flag `--axis`.
+Participants either clone and checkout each branch step by step,
+or work on `main` with everything available and unlock phase by phase
+via the `--axis` flag.
 
-**Raccomandazione**: Secondo approccio (main unico + flag) —
-meno errori git durante un workshop dal vivo.
-
----
-
-## 🎯 Risk Register
-
-| Rischio | Probabilità | Impatto | Mitigazione |
-|---------|-------------|---------|-------------|
-| Partecipante senza repo | Alta | Medio | Demo repo come fallback |
-| `pip install` lento | Media | Basso | Pre-event instructions |
-| LLM API key non funziona | Media | Alto | Hybrid mode: static-only fallback (mostra solo static score) |
-| Tempo finito, Phase 5 tagliata | Media | Medio | Phase 5 è compressibile a 10 min |
-| Qualcuno ha score 95% già | Bassa | Basso | Challenge: "reach Level 5 Autonomous" |
-| Too many questions | Media | Basso | "Parking lot" — rispondi dopo |
-| Radar chart non si apre nel browser | Media | Medio | Fallback: ASCII art radar nel terminal |
+**Recommendation**: Second approach (single `main` + flags) —
+fewer git mistakes during a live workshop.
 
 ---
 
-## 📊 Success Metrics (per noi, post-workshop)
+## Risk Register
 
-| Metrica | Target |
-|---------|--------|
-| % partecipanti che migliorano score ≥15pt | >80% |
-| % partecipanti che clonano il repo | >60% |
-| Stars GitHub nelle 24h post-workshop | >50 |
-| Issues/PRs ricevute settimana seguente | >10 |
-| Rating feedback PyCon (1-5) | >4.2 |
+| Risk | Probability | Impact | Mitigation |
+|------|-------------|--------|------------|
+| Participant has no repo | High | Medium | Demo repo as fallback |
+| Slow `pip install` | Medium | Low | Pre-event instructions |
+| LLM API key fails | Medium | High | Hybrid mode: static-only fallback (show static score only) |
+| Time runs out, Phase 5 cut short | Medium | Medium | Phase 5 compressible to 10 min |
+| Someone already at 95% | Low | Low | Challenge: "reach Level 5 Autonomous" |
+| Too many questions | Medium | Low | "Parking lot" — answer at end |
+| Radar chart fails to render in browser | Medium | Medium | Fallback: ASCII radar in terminal |
+
+---
+
+## Success Metrics (post-workshop)
+
+| Metric | Target |
+|--------|--------|
+| % participants improving score by ≥15pt | >80% |
+| % participants cloning the repo | >60% |
+| GitHub stars within 24h post-workshop | >50 |
+| Issues/PRs received in following week | >10 |
+| PyCon feedback rating (1–5) | >4.2 |

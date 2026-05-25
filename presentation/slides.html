@@ -419,14 +419,61 @@ p  { font-size: clamp(0.95rem, 1.4vw, 1.15rem); line-height: 1.65; color: var(--
 /* Print mode */
 @media print {
     body { background: #fff; color: #000; }
-    .slide { 
+    .slide {
         position: relative; page-break-after: always;
         opacity: 1; transform: none; pointer-events: all;
         break-inside: avoid;
     }
     .nav-left, .nav-right, .slide-counter, .kbd-hint,
     .bg-glow, .grid-overlay { display: none; }
+    .speaker-notes { display: block !important; }
 }
+
+/* ─── Speaker Notes ─── */
+.speaker-notes {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 99;
+    background: rgba(10,10,20,0.96);
+    border-top: 2px solid var(--primary);
+    padding: 0.9rem 1.4rem;
+    font-family: var(--font);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: var(--text);
+    max-height: 28vh;
+    overflow-y: auto;
+    box-shadow: 0 -8px 32px rgba(0,0,0,0.45);
+}
+.speaker-notes::before {
+    content: "🎤 SPEAKER NOTES";
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--primary);
+    margin-bottom: 0.35rem;
+    font-weight: 700;
+}
+body.notes-mode .slide.active .speaker-notes { display: block; }
+body.notes-mode .slide { padding-bottom: 30vh; }
+
+/* Duration badge (visible only in notes mode) */
+.duration-tag {
+    display: none;
+    position: fixed;
+    top: 1rem; right: 1.5rem;
+    z-index: 100;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+}
+body.notes-mode .duration-tag { display: inline-block; }
 </style>
 </head>
 <body>
@@ -444,14 +491,17 @@ p  { font-size: clamp(0.95rem, 1.4vw, 1.15rem); line-height: 1.65; color: var(--
 <div class="slide-counter" id="slideCounter"></div>
 
 <!-- Keyboard Hint -->
-<div class="kbd-hint"><span class="kbd-key">←</span><span class="kbd-key">→</span><span class="kbd-key">Space</span></div>
+<div class="kbd-hint"><span class="kbd-key">←</span><span class="kbd-key">→</span><span class="kbd-key">Space</span><span class="kbd-key">N</span></div>
+
+<!-- Duration tag (shown only in ?notes mode) -->
+<div class="duration-tag" id="durationTag"></div>
 
 <div class="slide-container">
 
 <!-- ═════════════════════════════════════════
      SLIDE 01: TITLE
      ═════════════════════════════════════════ -->
-<div class="slide active" data-slide="1" id="slide1">
+<div class="slide active" data-slide="1" id="slide1" data-duration="1">
     <div class="animate-in slide-hero" style="text-align:center;">
         <div style="margin-bottom:1.5rem;">
             <span class="badge badge-blue" style="font-size:0.9rem;padding:0.5rem 1.2rem;">
@@ -471,15 +521,18 @@ p  { font-size: clamp(0.95rem, 1.4vw, 1.15rem); line-height: 1.65; color: var(--
             <button class="btn btn-primary" onclick="goToSlide(2)">Start →</button>
         </div>
     </div>
+    <aside class="speaker-notes">
+        Welcome everyone to PyCon Italia 2026. I'm Stefano, and over the next two hours we're going to measure something I bet none of you have ever measured before: how ready YOUR codebase is for AI agents. This is hands-on — laptops open, terminals ready. By 13:00 you'll have a number, a mental model, and a toolkit you can use on Monday. Let's go.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 02: ABOUT ME
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="2" id="slide2">
+<div class="slide" data-slide="2" id="slide2" data-duration="2">
     <div class="split-layout animate-in" style="max-width:950px;">
         <div>
-            <h2 style="margin-bottom:1.5rem;">Hi, I'm <span class="text-primary">Stefano Maeste</span></h2>
+            <h2 style="margin-bottom:1.5rem;">Hi, I'm <span class="text-primary">Stefano Maestri</span></h2>
             <div style="display:flex;flex-direction:column;gap:1rem;">
                 <p>🏗️ Software architect &amp; builder of things that should work</p>
                 <p>🤖 Working with AI agents since before it was cool (it was still questionable)</p>
@@ -495,12 +548,15 @@ p  { font-size: clamp(0.95rem, 1.4vw, 1.15rem); line-height: 1.65; color: var(--
             </div>
         </div>
     </div>
+    <aside class="speaker-notes">
+        Quick intro: I'm Stefano Maestri, software architect, been pushing AI agents into real codebases for a few years now — back when most folks thought it was a toy. I built the agent-ready-skill toolkit we're using today because I got tired of agents trashing my code. My core belief: agents are only as good as the codebase they land in. Today is about proving that with numbers.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 03: AGENDA
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="3" id="slide3">
+<div class="slide" data-slide="3" id="slide3" data-duration="2">
     <div class="full-width animate-in" style="text-align:center;">
         <h2 style="margin-bottom:2rem;">What We'll Do Together</h2>
         <div class="three-col" style="max-width:1000px;text-align:left;">
@@ -538,12 +594,15 @@ p  { font-size: clamp(0.95rem, 1.4vw, 1.15rem); line-height: 1.65; color: var(--
             </div>
         </div>
     </div>
+    <aside class="speaker-notes">
+        Five phases over two hours. Phase 1 is fast — we set the mental model and watch a demo. Then three hands-on phases, one per axis: INSTRUCT, NAVIGATE, VALIDATE. Each one ends with you re-scanning your own repo and seeing the number move. We close with auto-fixes and your final report. Three magic moments along the way — I'll call them out so you don't miss them.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 04: THE PROMISE
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="4" id="slide4">
+<div class="slide" data-slide="4" id="slide4" data-duration="2">
     <div class="full-width animate-in" style="text-align:center;">
         <div class="badge badge-amber" style="margin-bottom:1.5rem;font-size:0.85rem;">THE PROMISE</div>
         <h2 style="margin-bottom:1.5rem;">In 120 Minutes You'll Have:</h2>
@@ -568,12 +627,15 @@ p  { font-size: clamp(0.95rem, 1.4vw, 1.15rem); line-height: 1.65; color: var(--
             <p style="color:var(--text-dim);font-size:0.92rem;">Not theory. Not hype.<br><strong>Your repository. Your score. Your improvements.</strong></p>
         </div>
     </div>
+    <aside class="speaker-notes">
+        Three deliverables you walk out with. A number — your own repo's score across the three axes. A mental model — something simple enough to draw on a whiteboard and explain to your team. And a working toolkit you can clone, point at any Python project, and re-run on Monday morning. Not theory. Not slideware. Real measurements on your actual code.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 05: ICEBREAKER POLL
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="5" id="slide5">
+<div class="slide" data-slide="5" id="slide5" data-duration="3">
     <div class="full-width animate-in" style="text-align:center;">
         <h2 style="margin-bottom:2rem;">Raise Your Hand If… 🙋</h2>
         <div style="display:flex;flex-direction:column;gap:1.2rem;max-width:650px;margin:0 auto;text-align:left;">
@@ -595,12 +657,15 @@ p  { font-size: clamp(0.95rem, 1.4vw, 1.15rem); line-height: 1.65; color: var(--
             </div>
         </div>
     </div>
+    <aside class="speaker-notes">
+        Quick room read — raise your hand if. Python in production? Most hands up. Used an AI coding agent — Cursor, Claude Code, Copilot, anything? Almost everyone. Had an agent break your codebase at least once? Lots of laughter. That last group is who I'm talking to today. Also: now is the time to open your laptop, clone the workshop repo if you haven't, and pip install rich pyyaml. We move quickly from here.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 06: THE PROBLEM — QUOTE
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="6" id="slide6">
+<div class="slide" data-slide="6" id="slide6" data-duration="1">
     <div class="full-width animate-in" style="text-align:center;">
         <div style="max-width:750px;margin:0 auto;">
             <div class="badge badge-red" style="margin-bottom:1.5rem;">THE PROBLEM</div>
@@ -617,12 +682,15 @@ p  { font-size: clamp(0.95rem, 1.4vw, 1.15rem); line-height: 1.65; color: var(--
             </div>
         </div>
     </div>
+    <aside class="speaker-notes">
+        We solved "works on my machine" with containers and CI. Now we have a new excuse: "it worked in my prompt." Same dysfunction, new abstraction layer. We blame model temperature instead of dependency versions. We tweak system prompts instead of writing docs. The truth is — we never gave the agent what it needed in the first place. That's the problem we're going to fix today.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 07: HORROR STORY
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="7" id="slide7">
+<div class="slide" data-slide="7" id="slide7" data-duration="2">
     <div class="full-width animate-in" style="text-align:center;">
         <h2 style="margin-bottom:1.5rem;">A True Story 🫠</h2>
         <div class="split-layout" style="max-width:950px;margin:0;">
@@ -652,12 +720,15 @@ p  { font-size: clamp(0.95rem, 1.4vw, 1.15rem); line-height: 1.65; color: var(--
             </div>
         </div>
     </div>
+    <aside class="speaker-notes">
+        True story from a few weeks ago. I asked Claude Code to add validation to an API endpoint. It picked up the request, wrote the tests — but in the wrong directory. It used Flask patterns while we're on FastAPI. It couldn't find where our Pydantic schemas live. The agent wasn't being dumb. It was guessing because nothing in the repo told it the answer. That's the moment I realized: this isn't an agent problem.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 08: WHY AGENTS FAIL
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="8" id="slide8">
+<div class="slide" data-slide="8" id="slide8" data-duration="1">
     <div class="full-width animate-in" style="text-align:center;">
         <h2 style="margin-bottom:2rem;">Why Agents Fail</h2>
         <div class="three-col" style="max-width:1050px;">
@@ -684,12 +755,15 @@ p  { font-size: clamp(0.95rem, 1.4vw, 1.15rem); line-height: 1.65; color: var(--
             Three failure modes → <strong class="text-primary">Three axes to measure</strong>
         </p>
     </div>
+    <aside class="speaker-notes">
+        Every horror story I hear maps to one of three failure modes. One: the agent doesn't understand what you want — no project context, no conventions. Two: the agent can't navigate — it can't find where tests go or what your entry point is. Three: the agent can't validate — no tests, no CI, so it has no feedback loop. Three failure modes is exactly why we'll measure three axes. The math isn't arbitrary.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 09: NOT THE AGENT'S FAULT
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="9" id="slide9">
+<div class="slide" data-slide="9" id="slide9" data-duration="1">
     <div class="full-width animate-in" style="text-align:center;">
         <div style="max-width:700px;margin:0 auto;">
             <div class="badge badge-success" style="margin-bottom:1.5rem;">KEY INSIGHT</div>
@@ -713,12 +787,15 @@ p  { font-size: clamp(0.95rem, 1.4vw, 1.15rem); line-height: 1.65; color: var(--
             </div>
         </div>
     </div>
+    <aside class="speaker-notes">
+        Reframe: think of an agent as a senior dev showing up on day one. You wouldn't expect them to be productive without a README, without knowing your conventions, without tests. You'd give them a tour, point them at the wiki, pair with them for the first PR. We do all that for humans and then dump agents into the same repo with zero onboarding. Agents aren't stupid — they're uninformed.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 10: THREE QUESTIONS → THREE AXES
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="10" id="slide10">
+<div class="slide" data-slide="10" id="slide10" data-duration="1">
     <div class="full-width animate-in" style="text-align:center;">
         <h2 style="margin-bottom:2rem;">The Three Questions</h2>
         <div style="position:relative;width:360px;height:330px;margin:0 auto 2rem;">
@@ -769,12 +846,15 @@ p  { font-size: clamp(0.95rem, 1.4vw, 1.15rem); line-height: 1.65; color: var(--
             </div>
         </div>
     </div>
+    <aside class="speaker-notes">
+        Here's the model: three questions, three axes. WHAT, WHERE, RIGHT. INSTRUCT is the WHAT — what does this project do, what conventions do we follow. NAVIGATE is the WHERE — where does code live, how is it organized. VALIDATE is the RIGHT — how does the agent know it didn't break anything. Click any node on the triangle to jump to that axis. We're going to spend the rest of this workshop on each one in turn.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 11: AXIS 1 — INSTRUCT DEEP DIVE
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="11" id="slide11">
+<div class="slide" data-slide="11" id="slide11" data-duration="1">
     <div class="full-width animate-in" style="text-align:center;">
         <div style="display:flex;align-items:center;justify-content:center;gap:0.75rem;margin-bottom:1.5rem;">
             <span style="font-size:2.5rem;">📝</span>
@@ -794,24 +874,27 @@ p  { font-size: clamp(0.95rem, 1.4vw, 1.15rem); line-height: 1.65; color: var(--
             </div>
             <div class="card">
                 <div style="font-size:1.6rem;margin-bottom:0.5rem;">🏗️</div>
-                <h3 style="font-size:1rem;">Spec-Driven Dev</h3>
+                <h3 style="font-size:1rem;">Spec-Driven Workflow</h3>
                 <p style="font-size:0.84rem;color:var(--text-dim);">ARCHITECTURE.md, ADRs, design docs</p>
                 <div style="margin-top:0.75rem;"><strong class="text-primary">+10 pts</strong></div>
             </div>
             <div class="card">
-                <div style="font-size:1.6rem;margin-bottom:0.5rem;">📖</div>
-                <h3 style="font-size:1rem;">Documentation</h3>
-                <p style="font-size:0.84rem;color:var(--text-dim);">README quality, CONTRIBUTING guide</p>
+                <div style="font-size:1.6rem;margin-bottom:0.5rem;">🪝</div>
+                <h3 style="font-size:1rem;">Claude-Specific</h3>
+                <p style="font-size:0.84rem;color:var(--text-dim);">Hooks, sub-agents, slash commands, MCP wiring</p>
                 <div style="margin-top:0.75rem;"><strong class="text-primary">+8 pts</strong></div>
             </div>
         </div>
     </div>
+    <aside class="speaker-notes">
+        INSTRUCT is the heaviest axis at 38 percent. Three sub-dimensions. Agent Instructions worth 20 — that's CLAUDE.md, .cursorrules, AGENTS.md. Spec-Driven Workflow worth 10 — ARCHITECTURE.md, ADRs, design docs that explain decisions. And Claude-Specific worth 8 — hooks, sub-agents, slash commands, MCP wiring. If you have nothing else, write a CLAUDE.md. That single file is the biggest lever you have.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 12: AXIS 2 — NAVIGATE DEEP DIVE
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="12" id="slide12">
+<div class="slide" data-slide="12" id="slide12" data-duration="1">
     <div class="full-width animate-in" style="text-align:center;">
         <div style="display:flex;align-items:center;justify-content:center;gap:0.75rem;margin-bottom:1.5rem;">
             <span style="font-size:2.5rem;">🧭</span>
@@ -825,30 +908,33 @@ p  { font-size: clamp(0.95rem, 1.4vw, 1.15rem); line-height: 1.65; color: var(--
         <div class="three-col" style="max-width:1050px;text-align:left;">
             <div class="card">
                 <div style="font-size:1.6rem;margin-bottom:0.5rem;">🗺️</div>
-                <h3 style="font-size:1rem;">Navigability</h3>
+                <h3 style="font-size:1rem;">Project Navigability</h3>
                 <p style="font-size:0.84rem;color:var(--text-dim);">File structure, naming, no 2000-line files</p>
                 <div style="margin-top:0.75rem;"><strong style="color:var(--secondary);">+18 pts</strong></div>
             </div>
             <div class="card">
-                <div style="font-size:1.6rem;margin-bottom:0.5rem;">🔧</div>
-                <h3 style="font-size:1rem;">Tooling</h3>
-                <p style="font-size:0.84rem;color:var(--text-dim);">Linter, formatter, type checker configured</p>
+                <div style="font-size:1.6rem;margin-bottom:0.5rem;">📖</div>
+                <h3 style="font-size:1rem;">Documentation &amp; Comprehension</h3>
+                <p style="font-size:0.84rem;color:var(--text-dim);">README quality, CONTRIBUTING, inline docs</p>
                 <div style="margin-top:0.75rem;"><strong style="color:var(--secondary);">+8 pts</strong></div>
             </div>
             <div class="card">
-                <div style="font-size:1.6rem;margin-bottom:0.5rem;">⚙️</div>
-                <h3 style="font-size:1rem;">Environment</h3>
-                <p style="font-size:0.84rem;color:var(--text-dim);">.env.example, Dockerfile, version pinned</p>
+                <div style="font-size:1.6rem;margin-bottom:0.5rem;">🔧</div>
+                <h3 style="font-size:1rem;">Skills &amp; Tooling</h3>
+                <p style="font-size:0.84rem;color:var(--text-dim);">Linter, formatter, type checker, .env.example, Docker</p>
                 <div style="margin-top:0.75rem;"><strong style="color:var(--secondary);">+8 pts</strong></div>
             </div>
         </div>
     </div>
+    <aside class="speaker-notes">
+        NAVIGATE is 34 percent. Project Navigability worth 18 — that's the big one. Clean module boundaries, no 2000-line files, consistent naming. Documentation and Comprehension worth 8 — that's a good README, CONTRIBUTING, useful inline docs. Skills and Tooling worth 8 — ruff, pyright, .env.example, Dockerfile. The pattern here: NAVIGATE rewards habits that also help your human teammates. There is no AI versus human trade-off.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 13: AXIS 3 — VALIDATE DEEP DIVE
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="13" id="slide13">
+<div class="slide" data-slide="13" id="slide13" data-duration="1">
     <div class="full-width animate-in" style="text-align:center;">
         <div style="display:flex;align-items:center;justify-content:center;gap:0.75rem;margin-bottom:1.5rem;">
             <span style="font-size:2.5rem;">✅</span>
@@ -862,30 +948,33 @@ p  { font-size: clamp(0.95rem, 1.4vw, 1.15rem); line-height: 1.65; color: var(--
         <div class="three-col" style="max-width:1050px;text-align:left;">
             <div class="card">
                 <div style="font-size:1.6rem;margin-bottom:0.5rem;">🧪</div>
-                <h3 style="font-size:1rem;">Testing</h3>
+                <h3 style="font-size:1rem;">Testing &amp; Validation</h3>
                 <p style="font-size:0.84rem;color:var(--text-dim);">Test framework, test files, coverage config</p>
                 <div style="margin-top:0.75rem;"><strong class="text-success">+16 pts</strong></div>
             </div>
             <div class="card">
                 <div style="font-size:1.6rem;margin-bottom:0.5rem;">🔄</div>
-                <h3 style="font-size:1rem;">CI/CD Pipeline</h3>
-                <p style="font-size:0.84rem;color:var(--text-dim);">CI config, quality gates, security policy</p>
+                <h3 style="font-size:1rem;">CI/CD &amp; Automation</h3>
+                <p style="font-size:0.84rem;color:var(--text-dim);">CI config, quality gates, SECURITY.md, pre-commit</p>
                 <div style="margin-top:0.75rem;"><strong class="text-success">+12 pts</strong></div>
             </div>
-            <div class="card" style="opacity:0.5;">
-                <div style="font-size:1.6rem;margin-bottom:0.5rem;">🔒</div>
-                <h3 style="font-size:1rem;">Security</h3>
-                <p style="font-size:0.84rem;color:var(--text-dim);">SECURITY.md, Dependabot, secrets detection</p>
-                <div style="margin-top:0.75rem;"><strong class="text-success">(bonus)</strong></div>
+            <div class="card" style="border-color:rgba(34,197,94,0.2);background:rgba(34,197,94,0.04);">
+                <div style="font-size:1.6rem;margin-bottom:0.5rem;">🎯</div>
+                <h3 style="font-size:1rem;">Total Axis Weight</h3>
+                <p style="font-size:0.84rem;color:var(--text-dim);">16 + 12 = 28% of the overall agent-readiness score</p>
+                <div style="margin-top:0.75rem;"><strong class="text-success">28 pts max</strong></div>
             </div>
         </div>
     </div>
+    <aside class="speaker-notes">
+        VALIDATE is 28 percent — the smallest axis by weight, the most underestimated by impact. Testing and Validation worth 16 — pytest configured, real test files, coverage tracking. CI/CD and Automation worth 12 — actual workflow file, quality gates, SECURITY.md, pre-commit. This is where most repos bleed points. Tests aren't optional when agents touch your code — they're the only feedback loop the agent has. Skip this and you're flying blind.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 14: MATURITY LEVELS
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="14" id="slide14">
+<div class="slide" data-slide="14" id="slide14" data-duration="1">
     <div class="full-width animate-in" style="text-align:center;">
         <h2 style="margin-bottom:0.5rem;">Maturity Levels</h2>
         <p style="margin-bottom:2rem;color:var(--text-dim);">From chaos to autonomy — 5 stages</p>
@@ -930,12 +1019,15 @@ p  { font-size: clamp(0.95rem, 1.4vw, 1.15rem); line-height: 1.65; color: var(--
             </p>
         </div>
     </div>
+    <aside class="speaker-notes">
+        Five maturity levels. L1 Foundational at 40 — you have a pulse. L2 Guided at 55 — there's basic context for agents. L3 Structured at 70 — agents can mostly work without supervision. L4 Optimized at 85 — you're in the top decile. L5 Autonomous at 95 — you could honestly let agents merge PRs. Most repos in the wild are L1 or L2. Today's goal: get you to L2 or L3 by the end of the workshop.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 15: HOW SCORING WORKS
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="15" id="slide15">
+<div class="slide" data-slide="15" id="slide15" data-duration="1">
     <div class="full-width animate-in" style="text-align:center;">
         <h2 style="margin-bottom:2rem;">How Scoring Works</h2>
         <div class="split-layout" style="max-width:950px;">
@@ -999,12 +1091,15 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
             </div>
         </div>
     </div>
+    <aside class="speaker-notes">
+        Three-step scoring. Step one — static checks per axis. Does the file exist? Does the section exist? Is the tool configured? These are deterministic. Step two — sum the points earned, divide by max possible, get a 0 to 100 percentage. Step three — weighted average across the three axes, gate against the maturity ladder. Later we layer hybrid mode on top: 60 percent static plus 40 percent LLM judgment for content quality. We'll see that in Phase 4.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 16: MEET THE TEST SUBJECTS
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="16" id="slide16">
+<div class="slide" data-slide="16" id="slide16" data-duration="2">
     <div class="full-width animate-in" style="text-align:center;">
         <h2 style="margin-bottom:2rem;">Meet the Test Subjects 🐁</h2>
         <div class="split-layout" style="max-width:900px;">
@@ -1038,12 +1133,15 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
             <strong>Different readiness.</strong>
         </p>
     </div>
+    <aside class="speaker-notes">
+        I'm going to scan two repos live. Chaos Monkey on the left — intentionally bad. No CLAUDE.md, no linter, no tests, 400-line files. Agent Heaven on the right — full CLAUDE.md, ruff plus black plus pyright, 12 test files, CI pipeline. Same language. Same approximate complexity. Different readiness. Watch what the scanner spits out. Spoiler: the numbers are going to be very different.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 17: MAGIC MOMENT #1 — SAME TOOL
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="17" id="slide17">
+<div class="slide" data-slide="17" id="slide17" data-duration="3">
     <div class="full-width animate-in" style="text-align:center;">
         <div class="badge badge-amber" style="margin-bottom:1rem;font-size:0.9rem;">✨ MAGIC MOMENT #1</div>
         <h2 style="margin-bottom:1.5rem;">Same Tool. Different Scores.</h2>
@@ -1072,12 +1170,15 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
             </p>
         </div>
     </div>
+    <aside class="speaker-notes">
+        Magic Moment number one. Same scanner. Same model. Same scoring rubric. 23 percent versus 81 percent. Level 1 versus Level 4. Pause on that for a second. We didn't change the agent. We didn't tweak the prompt. We didn't even change the language. The only difference is the codebase. This is the entire thesis of the workshop in one slide: agent readiness is a property of your repo, not your AI. Now let's measure yours.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 18: PHASE DIVIDER — INSTRUCT
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="18" id="slide18">
+<div class="slide" data-slide="18" id="slide18" data-duration="1">
     <div class="section-divider animate-in">
         <div class="phase-num">Phase 2 — Hands-On</div>
         <h2>📝 <span class="text-primary">INSTRUCT</span></h2>
@@ -1086,12 +1187,15 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
             <span class="badge badge-blue">~25 minutes</span>
         </div>
     </div>
+    <aside class="speaker-notes">
+        Section divider. We're switching from teacher mode to hands-on mode. From here through the next phase you'll be in your terminal more than looking at me. Twenty-five minutes on INSTRUCT — we'll scan your repo, see the score, build a CLAUDE.md from the template, and re-scan to see the jump. Have your repo open. If you don't have one, use repos/demo-bad as your sandbox.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 19: SCAN YOUR REPO — AXIS 1
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="19" id="slide19">
+<div class="slide" data-slide="19" id="slide19" data-duration="9">
     <div class="full-width animate-in" style="text-align:center;">
         <h2 style="margin-bottom:1rem;">Your Turn 🔍</h2>
         <p style="margin-bottom:2rem;">Scan YOUR repository — Axis 1 only</p>
@@ -1120,12 +1224,15 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
             </div>
         </div>
     </div>
+    <aside class="speaker-notes">
+        Type the command. Point it at your own repo. Hit enter. Read the output. Most of you are going to see a number lower than you expected — that's normal and that's the point. A score of 35 means an agent landing in your repo has roughly a 35 percent chance of understanding your conventions before it writes a single line. Sit with that. We're going to fix it in the next seven minutes.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 20: THE QUICKEST WIN
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="20" id="slide20">
+<div class="slide" data-slide="20" id="slide20" data-duration="7">
     <div class="full-width animate-in" style="text-align:center;">
         <div class="badge badge-green" style="margin-bottom:1rem;">QUICKEST WIN</div>
         <h2 style="margin-bottom:1rem;">One File = <span class="text-success">+20 Points</span></h2>
@@ -1168,12 +1275,15 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
             Template provided → Fill in for <strong>YOUR</strong> project → Save to root
         </p>
     </div>
+    <aside class="speaker-notes">
+        Open templates/claude-md-template.md. Copy it to your repo root as CLAUDE.md. Now fill it in — one paragraph on what the project does, framework, entry point, key directories, your code style, your test runner, two or three pitfalls. Don't perfect it. Eighty percent good in seven minutes beats a hundred percent in two weeks. The point is to give the agent a real anchor, not the prettiest doc. Set a timer — five minutes typing.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 21: MAGIC MOMENT #2 — DELTA
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="21" id="slide21">
+<div class="slide" data-slide="21" id="slide21" data-duration="8">
     <div class="full-width animate-in" style="text-align:center;">
         <div class="badge badge-amber" style="margin-bottom:1rem;font-size:0.9rem;">✨ MAGIC MOMENT #2</div>
         <h2 style="margin-bottom:1.5rem;">Before → After</h2>
@@ -1210,12 +1320,15 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
             </p>
         </div>
     </div>
+    <aside class="speaker-notes">
+        Magic Moment number two. Re-run the same scan with the same flag. Watch your number jump. Twenty, twenty-five, sometimes thirty points from one Markdown file. The room reaction is always the same: "that's it?" Yes — that's it. This is the whole pitch. Agent readiness isn't a rewrite. It's not a six-month migration. It's writing down what your agent needs to know in plain English, in a file the agent actually reads. That's it.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 22: PHASE DIVIDER — NAVIGATE
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="22" id="slide22">
+<div class="slide" data-slide="22" id="slide22" data-duration="1">
     <div class="section-divider animate-in">
         <div class="phase-num">Phase 3 — Hands-On</div>
         <h2>🧭 <span style="color:var(--secondary);">NAVIGATE</span></h2>
@@ -1224,12 +1337,73 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
             <span class="badge badge-purple">~20 minutes</span>
         </div>
     </div>
+    <aside class="speaker-notes">
+        Phase 3 — twenty minutes on NAVIGATE. The agent knows WHAT to do now. Next question: can it find anything? Structure, tooling, environment. We'll scan, look at what's missing, pick one fix from a menu, and re-scan. Same loop as before, different axis.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
-     SLIDE 23: PICK YOUR FIX
+     SLIDE 23: SCAN YOUR REPO — AXIS 2 (NEW)
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="23" id="slide23">
+<div class="slide" data-slide="23" id="slide23" data-duration="8">
+    <div class="full-width animate-in" style="text-align:center;">
+        <h2 style="margin-bottom:1rem;">Scan Your Repo — Axis 2 🔍</h2>
+        <p style="margin-bottom:1.5rem;color:var(--text-dim);">Same tool. New flag. Different lens.</p>
+
+        <div class="split-layout" style="max-width:1000px;">
+            <div class="terminal" style="text-align:left;">
+                <div class="terminal-header">
+                    <div class="terminal-dot dot-red"></div>
+                    <div class="terminal-dot dot-yellow"></div>
+                    <div class="terminal-dot dot-green"></div>
+                </div>
+                <div class="terminal-body" style="font-size:0.78rem;">
+<span class="prompt">$</span> <span class="cmd">python scripts/scan_static.py ~/your-repo --axis navigate</span>
+
+<span class="output">╭──────────────────────────────────────╮
+│  🧭 AXIS 2: NAVIGATE                 │
+│  ════════════════════════════════    │
+│                                       │
+│  Score: 52/100 ██████████░░░░ 52%    │
+│                                       │
+│  <span class="ok">✅ .editorconfig       found    +2</span>  │
+│  <span class="ok">✅ pyproject.toml      found    +2</span>  │
+│  <span class="ok">✅ ruff configured     [tool]   +4</span>  │
+│  <span class="err">❌ pyrightconfig.json  missing  -4</span>  │
+│  <span class="err">❌ .env.example        missing  -2</span>  │
+│  <span class="err">❌ Dockerfile          missing  -2</span>  │
+│  ⚠️  Large files (&gt;300ln) 3 found -2  │
+╰──────────────────────────────────────╯</span>
+                </div>
+            </div>
+            <div style="text-align:left;display:flex;flex-direction:column;gap:0.75rem;">
+                <div class="card" style="border-left:3px solid var(--secondary);">
+                    <strong>Why each check matters</strong>
+                </div>
+                <div class="card">
+                    <p style="font-size:0.86rem;margin:0;"><strong>No .editorconfig</strong> → agent mixes tabs and spaces → CI fails</p>
+                </div>
+                <div class="card">
+                    <p style="font-size:0.86rem;margin:0;"><strong>No type checker</strong> → agent can't verify its changes compile</p>
+                </div>
+                <div class="card">
+                    <p style="font-size:0.86rem;margin:0;"><strong>No .env.example</strong> → agent guesses env vars → broken config</p>
+                </div>
+                <div class="card">
+                    <p style="font-size:0.86rem;margin:0;"><strong>Large files</strong> → context window saturates → hallucinations</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <aside class="speaker-notes">
+        Run the scan with --axis navigate. Look at the output and pay attention to WHY each check matters, not just whether it passed. No .editorconfig means the agent mixes tabs and spaces and your CI fails. No type checker means the agent literally can't verify whether its change compiles. No .env.example means the agent guesses environment variable names. Large files mean the context window fills up and the agent starts hallucinating. Every check is a real failure mode I've seen.
+    </aside>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 24: PICK YOUR FIX (NAVIGATE)
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="24" id="slide24" data-duration="10">
     <div class="full-width animate-in" style="text-align:center;">
         <h2 style="margin-bottom:0.5rem;">Pick ONE Fix</h2>
         <p style="margin-bottom:2rem;color:var(--text-dim);">Based on your scan results — choose what helps most</p>
@@ -1270,12 +1444,15 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
             </p>
         </div>
     </div>
+    <aside class="speaker-notes">
+        Don't try to fix everything. Pick ONE based on what's red in your scan. Option A — .env.example — is the highest ROI for most repos: thirty seconds of typing for four points. Option B is pyrightconfig if you're already using type hints. Option C is .editorconfig — copy the template and you're done in a minute. Option D is for those of you whose ruff config is genuinely broken. Five minutes to fix, two minutes to re-scan and see the delta.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
-     SLIDE 24: PHASE DIVIDER — VALIDATE
+     SLIDE 25: PHASE DIVIDER — VALIDATE
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="24" id="slide24">
+<div class="slide" data-slide="25" id="slide25" data-duration="1">
     <div class="section-divider animate-in">
         <div class="phase-num">Phase 4 — Hands-On</div>
         <h2>✅ <span class="text-success">VALIDATE</span></h2>
@@ -1284,12 +1461,63 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
             <span class="badge badge-green">~30 minutes</span>
         </div>
     </div>
+    <aside class="speaker-notes">
+        Phase 4 — thirty minutes. This is the longest phase because VALIDATE is where most repos fail, and where the magic moment of the day lives. We'll scan Axis 3, talk about the testing paradox, drop in a CI template, and then run the full hybrid scan that closes the loop. Don't tune out — this is the most consequential phase of the workshop.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
-     SLIDE 25: TESTING PARADOX
+     SLIDE 26: SCAN YOUR REPO — AXIS 3 (NEW)
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="25" id="slide25">
+<div class="slide" data-slide="26" id="slide26" data-duration="5">
+    <div class="full-width animate-in" style="text-align:center;">
+        <h2 style="margin-bottom:1rem;">Scan Your Repo — Axis 3 🔍</h2>
+        <p style="margin-bottom:1.5rem;color:var(--text-dim);">Where most repos bleed points</p>
+
+        <div class="terminal" style="max-width:680px;text-align:left;margin:0 auto 1.5rem;">
+            <div class="terminal-header">
+                <div class="terminal-dot dot-red"></div>
+                <div class="terminal-dot dot-yellow"></div>
+                <div class="terminal-dot dot-green"></div>
+            </div>
+            <div class="terminal-body" style="font-size:0.78rem;">
+<span class="prompt">$</span> <span class="cmd">python scripts/scan_static.py ~/your-repo --axis validate</span>
+
+<span class="output">╭──────────────────────────────────────╮
+│  ✅ AXIS 3: VALIDATE                  │
+│  ════════════════════════════════    │
+│                                       │
+│  Score: 28/100 ████████░░░░░░░ 28%   │
+│                                       │
+│  <span class="ok">✅ pytest configured   [tool.pytest] +6</span>│
+│  <span class="ok">✅ test files found    12 files  +5</span>  │
+│  <span class="ok">✅ poetry.lock          present   +2</span>  │
+│  <span class="err">❌ CI workflow          missing  -4</span>  │
+│  <span class="err">❌ coverage configured  no       -4</span>  │
+│  <span class="err">❌ SECURITY.md          missing  -2</span>  │
+│  <span class="err">❌ pre-commit           missing  -2</span>  │
+╰──────────────────────────────────────╯</span>
+            </div>
+        </div>
+
+        <div style="max-width:600px;margin:0 auto;">
+            <div class="card" style="border-left:3px solid var(--success);text-align:left;">
+                <p style="font-size:0.92rem;margin:0;">
+                    The pattern is everywhere: <strong>repos test the code, but the codebase doesn't test itself.</strong>
+                    No CI, no coverage, no pre-commit. The agent has nothing to lean on.
+                </p>
+            </div>
+        </div>
+    </div>
+    <aside class="speaker-notes">
+        Run the scan with --axis validate. This is where most of you are going to see your lowest number. Twenty, thirty, maybe forty. That's because most repos test the code but the codebase doesn't test itself — no CI workflow, no coverage tracking, no pre-commit. The agent has nothing to lean on. Notice the pattern: you might have tests but no automation that runs them. That gap is exactly what VALIDATE measures.
+    </aside>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 27: TESTING PARADOX
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="27" id="slide27" data-duration="3">
     <div class="full-width animate-in" style="text-align:center;">
         <div class="badge badge-amber" style="margin-bottom:1rem;">CONTROVERSIAL TAKE</div>
         <h2 style="margin-bottom:1.5rem;">The Testing Paradox</h2>
@@ -1326,12 +1554,15 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
             Tests multiply your effectiveness <strong>with agents</strong>.
         </p>
     </div>
+    <aside class="speaker-notes">
+        Controversial take. Tests aren't primarily for finding bugs — they're for giving agents a safety net. Without tests, every PR routes through you for manual review. That doesn't scale. With tests, the agent writes code, runs the test suite, you only see green PRs. That's the multiplier. The way to scale with agents isn't to write more code yourself. It's to write the tests once and let the agent self-validate forever.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
-     SLIDE 26: CI TEMPLATE
+     SLIDE 28: CI TEMPLATE
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="26" id="slide26">
+<div class="slide" data-slide="28" id="slide28" data-duration="9">
     <div class="full-width animate-in" style="text-align:center;">
         <h2 style="margin-bottom:1rem;">The CI File 🔄</h2>
         <p style="margin-bottom:1.5rem;color:var(--text-dim);">Copy. Adapt. Commit. Done.</p>
@@ -1375,12 +1606,15 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
             <span class="badge badge-blue">Adapt to your stack</span>
         </div>
     </div>
+    <aside class="speaker-notes">
+        Open templates/ci-template.yml. Copy it to .github/workflows/ci.yml in your repo. Adjust three things: Python version if you're not on 3.12, the linter line if you don't use ruff, and the test command if you don't use pytest. That's it — commit and push. You don't need anything fancier. A minimal CI that actually runs is infinitely better than a sophisticated one that doesn't exist. Seven minutes typing, two minutes to re-scan.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
-     SLIDE 27: HYBRID MOMENT — FULL REPORT
+     SLIDE 29: HYBRID MOMENT — FULL REPORT
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="27" id="slide27">
+<div class="slide" data-slide="29" id="slide29" data-duration="7">
     <div class="full-width animate-in" style="text-align:center;">
         <div class="badge badge-amber" style="margin-bottom:1rem;font-size:0.9rem;">
             ✨✨✨ MAGIC MOMENT #3 — THE PEAK ✨✨✨
@@ -1434,12 +1668,15 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
             </div>
         </div>
     </div>
+    <aside class="speaker-notes">
+        Magic Moment number three — the peak. We run --all --hybrid. The full report shows static and LLM columns side by side. Why both? Because static checks tell you whether the FILE exists. LLM checks tell you whether the CONTENT is actually good. You might have a CI file that doesn't test anything meaningful — static green, LLM red. Or beautiful docs but no CLAUDE.md — static red, LLM green. You need both columns to see the truth.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
-     SLIDE 28: RADAR CHART REVEAL
+     SLIDE 30: RADAR CHART REVEAL
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="28" id="slide28">
+<div class="slide" data-slide="30" id="slide30" data-duration="5">
     <div class="full-width animate-in" style="text-align:center;">
         <div class="badge badge-amber" style="margin-bottom:1rem;font-size:0.9rem;">VISUALIZE YOUR PROGRESS</div>
         <h2 style="margin-bottom:1.5rem;">Your Agent Readiness Radar</h2>
@@ -1488,12 +1725,15 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
             </div>
         </div>
     </div>
+    <aside class="speaker-notes">
+        Visualize your progress. The radar chart is rendered live by --visualize. Three axes — INSTRUCT, NAVIGATE, VALIDATE — your shape tells the story. A balanced triangle means well-rounded. A spike on one axis means you over-invested there. A flat shape means you're early. Take a screenshot — drop it in your engineering blog, share it in your team Slack, use it to justify the next sprint of cleanup work. This is the artifact you came here for.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
-     SLIDE 29: AUTO-FIX DEMO
+     SLIDE 31: AUTO-FIX DEMO
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="29" id="slide29">
+<div class="slide" data-slide="31" id="slide31" data-duration="4">
     <div class="full-width animate-in" style="text-align:center;">
         <h2 style="margin-bottom:1rem;">Beyond Manual Fixes 🤖</h2>
         <p style="margin-bottom:2rem;color:var(--text-dim);">The toolkit can also generate fixes automatically</p>
@@ -1525,12 +1765,15 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
             Review each generated file → accept, edit, or discard
         </p>
     </div>
+    <aside class="speaker-notes">
+        We've been fixing manually all morning. Here's the punchline: there's an auto-fix command. apply_fix.py --list shows you what gaps it can auto-generate based on the same scoring rubric. Then apply_fix.py with a target name generates a file tailored to your project. Same criteria as the scan. Scan measures, fix improves, scan again validates. The loop closes. Use this on Monday to bulk-fix the rest of your repos.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
-     SLIDE 30: FINAL REPORT
+     SLIDE 32: FINAL REPORT
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="30" id="slide30">
+<div class="slide" data-slide="32" id="slide32" data-duration="7">
     <div class="full-width animate-in" style="text-align:center;">
         <div class="badge badge-green" style="margin-bottom:1rem;">TAKEAWAY TIME</div>
         <h2 style="margin-bottom:1.5rem;">Generate Your Report Package 📦</h2>
@@ -1577,12 +1820,15 @@ report.txt  recommendations.md  badge.svg  report.json</span>
             </div>
         </div>
     </div>
+    <aside class="speaker-notes">
+        One more command: scan_static.py --all combined with report_gen.py builds a takeaway package. Four files. report.txt for sharing, recommendations.md as your prioritized backlog, badge.svg to embed in your README, and the radar HTML for posterity. Run this on every repo you own. Put the badge in your README so your future self — and the next AI agent that lands there — knows where it stands.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
-     SLIDE 31: WHAT YOU TAKE HOME
+     SLIDE 33: WHAT YOU TAKE HOME
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="31" id="slide31">
+<div class="slide" data-slide="33" id="slide33" data-duration="3">
     <div class="full-width animate-in" style="text-align:center;">
         <h2 style="margin-bottom:2rem;">What You Take Home 🎁</h2>
         
@@ -1611,12 +1857,15 @@ report.txt  recommendations.md  badge.svg  report.json</span>
             </p>
         </div>
     </div>
+    <aside class="speaker-notes">
+        Quick recap of what's in your laptop right now. The mental model — three axes, three questions, anyone can draw it. Your number — proof of where you started and where you ended this morning. And the toolkit — three Python scripts and a folder of templates that run on any Python repo. Mental model, number, toolkit. That's the workshop.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
-     SLIDE 32: ROAD AHEAD (POST-WORKSHOP)
+     SLIDE 34: ROAD AHEAD (POST-WORKSHOP)
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="32" id="slide32">
+<div class="slide" data-slide="34" id="slide34" data-duration="3">
     <div class="full-width animate-in" style="text-align:center;">
         <h2 style="margin-bottom:1.5rem;">What's Next 🚀</h2>
         <p style="margin-bottom:2rem;color:var(--text-dim);">Post-workshop roadmap</p>
@@ -1659,12 +1908,15 @@ report.txt  recommendations.md  badge.svg  report.json</span>
             </div>
         </div>
     </div>
+    <aside class="speaker-notes">
+        What's next — public roadmap. The full 39-check engine, porting Kodus checks to Python. CI gate integration so a PR fails if score drops below your team's minimum level. History and trend charts so you can show improvement over time. Team dashboards. Eventually a GitHub App that comments on PRs automatically. Star the repo, file issues, send PRs. This is v0. Your feedback shapes v1.
+    </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
-     SLIDE 33: THANK YOU + RESOURCES
+     SLIDE 35: THANK YOU + RESOURCES
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="33" id="slide33">
+<div class="slide" data-slide="35" id="slide35" data-duration="3">
     <div class="full-width animate-in" style="text-align:center;">
         <div style="font-size:4rem;margin-bottom:1rem;">🙏</div>
         <h2 style="margin-bottom:1rem;">Thank You!</h2>
@@ -1693,10 +1945,13 @@ report.txt  recommendations.md  badge.svg  report.json</span>
         
         <div style="margin-top:2rem;">
             <p style="font-size:0.85rem;color:var(--text-darker);">
-                Built with ❤️ by Stefano Maeste • PyCon Italia 2026
+                Built with ❤️ by Stefano Maestri • PyCon Italia 2026
             </p>
         </div>
     </div>
+    <aside class="speaker-notes">
+        That's a wrap. Two hours, three axes, your score moved — show of hands, who improved by at least fifteen points today? Good. That's fifteen points closer to agents that help you instead of hurting you. Star the repo, file issues, try the toolkit on another project this week. I'll be in the hallway for questions. Thank you, PyCon Italia 2026 — let's go build agent-ready codebases.
+    </aside>
 </div>
 
 </div><!-- end slide container -->
@@ -1707,31 +1962,41 @@ report.txt  recommendations.md  badge.svg  report.json</span>
 <script>
 // ─── State ───
 let currentSlide = 1;
-const totalSlides = 33;
+const totalSlides = 35;
 
 // ─── Navigation ───
 function goToSlide(n) {
     if (n < 1 || n > totalSlides) return;
-    
+
     const current = document.querySelector('.slide.active');
     const next = document.getElementById('slide' + n);
-    
+
     if (current) {
         current.classList.remove('active');
         current.classList.add('exit');
         setTimeout(() => current.classList.remove('exit'), 500);
     }
-    
+
     if (next) {
         setTimeout(() => next.classList.add('active'), 50);
     }
-    
+
     currentSlide = n;
     updateCounter();
     updateDots();
-    
-    // Trigger radar chart draw on slide 28
-    if (n === 28) setTimeout(drawSlideRadar, 400);
+    updateDurationTag();
+
+    // Trigger radar chart draw on slide 30 (Radar Reveal)
+    if (n === 30) setTimeout(drawSlideRadar, 400);
+}
+
+// ─── Duration tag (notes mode) ───
+function updateDurationTag() {
+    const tag = document.getElementById('durationTag');
+    const slide = document.getElementById('slide' + currentSlide);
+    if (!tag || !slide) return;
+    const dur = slide.getAttribute('data-duration');
+    tag.textContent = dur ? ('Slide ' + currentSlide + '/' + totalSlides + ' • ' + dur + ' min') : ('Slide ' + currentSlide + '/' + totalSlides);
 }
 
 function nextSlide() { goToSlide(currentSlide + 1); }
@@ -1765,8 +2030,29 @@ document.addEventListener('keydown', (e) => {
             e.preventDefault(); goToSlide(1); break;
         case 'End':
             e.preventDefault(); goToSlide(totalSlides); break;
+        case 'n': case 'N':
+            e.preventDefault(); toggleNotesMode(); break;
     }
 });
+
+// ─── Speaker Notes Toggle ───
+function toggleNotesMode() {
+    document.body.classList.toggle('notes-mode');
+    try {
+        const url = new URL(window.location.href);
+        if (document.body.classList.contains('notes-mode')) {
+            url.searchParams.set('notes', '1');
+        } else {
+            url.searchParams.delete('notes');
+        }
+        window.history.replaceState({}, '', url);
+    } catch (e) { /* file:// URLs may not allow URL API tweaks; ignore */ }
+}
+
+// Activate notes mode if ?notes is in the URL
+if (window.location.search.indexOf('notes') !== -1) {
+    document.body.classList.add('notes-mode');
+}
 
 // ─── Touch/Swipe ───
 let touchStartX = 0;
@@ -1778,6 +2064,7 @@ document.addEventListener('touchend', (e) => {
 
 // ─── Initialize ───
 updateCounter();
+updateDurationTag();
 
 // ─── Mini Radar Chart for Slide 28 (Canvas API, no library) ───
 function drawSlideRadar() {
