@@ -1,0 +1,1875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Measuring AI-Readiness — PyCon Italia 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ════════════════════════════════════════
+   DESIGN SYSTEM
+   ════════════════════════════════════════ */
+:root {
+    --bg: #0a0a14;
+    --surface: #12121f;
+    --surface-light: #1a1a2e;
+    --border: rgba(255,255,255,0.08);
+    --primary: #4f8cff;
+    --primary-dim: rgba(79,140,255,0.15);
+    --secondary: #a855f7;
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --error: #ef4444;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-darker: #64748b;
+    --radius: 12px;
+    --radius-lg: 20px;
+    --font: 'Inter', -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* ─── Slide Container ─── */
+.slide-container {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.slide {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem 4rem;
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.slide.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+}
+.slide.exit {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+
+/* ─── Background decorations ─── */
+.bg-glow {
+    position: fixed;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.12;
+    pointer-events: none;
+    z-index: 0;
+}
+.bg-glow.blue   { background: var(--primary); top: -200px; right: -200px; }
+.bg-glow.purple { background: var(--secondary); bottom: -200px; left: -200px; }
+.bg-glow.green  { background: var(--success); top: 50%; left: 50%; transform: translate(-50%,-50%); }
+
+/* Grid pattern overlay */
+.grid-overlay {
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(79,140,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(79,140,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ─── Typography ─── */
+h1 { font-size: clamp(2rem, 5vw, 3.8rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; }
+h2 { font-size: clamp(1.6rem, 3.5vw, 2.8rem); font-weight: 700; line-height: 1.25; letter-spacing: -0.02em; }
+h3 { font-size: clamp(1.2rem, 2vw, 1.7rem); font-weight: 600; line-height: 1.35; }
+p  { font-size: clamp(0.95rem, 1.4vw, 1.15rem); line-height: 1.65; color: var(--text-dim); max-width: 65ch; }
+
+.text-gradient {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.text-primary { color: var(--primary); }
+.text-success { color: var(--success); }
+.text-warning { color: var(--warning); }
+.text-error { color: var(--error); }
+.text-dim { color: var(--text-dim); }
+
+/* ─── Components ─── */
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem 2rem;
+    backdrop-filter: blur(10px);
+}
+.card-highlight {
+    background: linear-gradient(135deg, var(--surface-light), var(--surface));
+    border-color: rgba(79,140,255,0.2);
+    box-shadow: 0 0 40px rgba(79,140,255,0.06);
+}
+
+.badge {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    padding: 0.3rem 0.85rem; border-radius: 999px;
+    font-size: 0.8rem; font-weight: 600;
+    letter-spacing: 0.02em;
+}
+.badge-blue   { background: var(--primary-dim); color: var(--primary); }
+.badge-green  { background: rgba(34,197,94,0.12); color: var(--success); }
+.badge-amber  { background: rgba(245,158,11,0.12); color: var(--warning); }
+.badge-red    { background: rgba(239,68,68,0.12); color: var(--error); }
+.badge-purple { background: rgba(168,85,247,0.12); color: var(--secondary); }
+
+.btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.7rem 1.5rem; border-radius: 10px;
+    font-family: var(--font); font-size: 0.95rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s ease;
+    border: none; text-decoration: none;
+}
+.btn-primary {
+    background: var(--primary); color: #fff;
+    box-shadow: 0 4px 20px rgba(79,140,255,0.3);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(79,140,255,0.45); }
+.btn-outline {
+    background: transparent; color: var(--text);
+    border: 1px solid var(--border);
+}
+.btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+
+/* ─── Terminal / Code Block ─── */
+.terminal {
+    background: #0d1117;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius);
+    overflow: hidden;
+    font-family: var(--mono); font-size: 0.82rem;
+    line-height: 1.6;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    max-width: 720px; width: 100%;
+}
+.terminal-header {
+    display: flex; align-items: center; gap: 6px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.terminal-dot { width: 11px; height: 11px; border-radius: 50%; }
+.dot-red { background: #ff5f57; }
+.dot-yellow { background: #febc2e; }
+.dot-green { background: #28c840; }
+.terminal-body { padding: 1.2rem 1.4rem; }
+.terminal-body .prompt { color: var(--success); }
+.terminal-body .cmd { color: var(--text); }
+.terminal-body .output { color: var(--text-dim); white-space: pre-wrap; }
+.terminal-body .ok { color: var(--success); }
+.terminal-body .err { color: var(--error); }
+.terminal-body .axis-label { color: var(--primary); font-weight: 600; }
+.terminal-body .score-bar { color: var(--warning); }
+.terminal-body .check-ok { color: var(--success); }
+.terminal-body .check-fail { color: var(--error); }
+
+/* ─── Progress Bar ─── */
+.progress-bar {
+    width: 100%; height: 8px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 99px; overflow: hidden;
+}
+.progress-fill {
+    height: 100%; border-radius: 99px;
+    transition: width 1s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.progress-fill.green  { background: linear-gradient(90deg, var(--success), #34d399); }
+.progress-fill.yellow { background: linear-gradient(90deg, var(--warning), #fbbf24); }
+.progress-fill.red    { background: linear-gradient(90deg, var(--error), #f87171); }
+.progress-fill.blue   { background: linear-gradient(90deg, var(--primary), #60a5fa); }
+.progress-fill.purple { background: linear-gradient(90deg, var(--secondary), #c084fc); }
+
+/* ─── Three-Axis Triangle ─── */
+.triangle-container {
+    position: relative; width: 340px; height: 320px;
+}
+.triangle-svg { width: 100%; height: 100%; }
+.axis-node {
+    cursor: pointer; transition: all 0.3s ease;
+}
+.axis-node:hover { filter: brightness(1.3); }
+
+/* ─── Navigation ─── */
+.nav-left, .nav-right {
+    position: fixed; top: 50%; transform: translateY(-50%);
+    z-index: 100;
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 1.3rem;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+.nav-left  { left: 1.5rem; }
+.nav-right { right: 1.5rem; }
+.nav-left:hover, .nav-right:hover {
+    background: var(--surface-light);
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.slide-counter {
+    position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+    z-index: 100;
+    display: flex; gap: 6px; align-items: center;
+}
+.slide-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    cursor: pointer; transition: all 0.2s ease;
+}
+.slide-dot.active { background: var(--primary); width: 24px; border-radius: 4px; }
+.slide-dot:hover:not(.active) { background: rgba(255,255,255,0.35); }
+
+/* ─── Keyboard hint ─── */
+.kbd-hint {
+    position: fixed; bottom: 1.5rem; right: 1.5rem;
+    z-index: 100;
+    font-family: var(--mono); font-size: 0.72rem;
+    color: var(--text-darker);
+    display: flex; gap: 8px; align-items: center;
+}
+.kbd-key {
+    padding: 2px 7px; border-radius: 5px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    font-size: 0.68rem;
+}
+
+/* ─── Animations ─── */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+@keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to   { opacity: 1; transform: scale(1); }
+}
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.5; }
+}
+@keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-40px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(40px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes countUp {
+    from { --num: 0; }
+    to   { --num: var(--target); }
+}
+
+.animate-in > * {
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+}
+.animate-in > *:nth-child(1) { animation-delay: 0.05s; }
+.animate-in > *:nth-child(2) { animation-delay: 0.15s; }
+.animate-in > *:nth-child(3) { animation-delay: 0.25s; }
+.animate-in > *:nth-child(4) { animation-delay: 0.35s; }
+.animate-in > *:nth-child(5) { animation-delay: 0.45s; }
+.animate-in > *:nth-child(6) { animation-delay: 0.55s; }
+.animate-in > *:nth-child(7) { animation-delay: 0.65s; }
+.animate-in > *:nth-child(8) { animation-delay: 0.75s; }
+.animate-in > *:nth-child(9) { animation-delay: 0.85s; }
+.animate-in > *:nth-child(10) { animation-delay: 0.95s; }
+
+.delay-1 { animation-delay: 0.2s !important; }
+.delay-2 { animation-delay: 0.4s !important; }
+.delay-3 { animation-delay: 0.6s !important; }
+.delay-4 { animation-delay: 0.8s !important; }
+
+/* ─── Slide-specific layouts ─── */
+.slide-hero h1 { text-align: center; margin-bottom: 1rem; }
+.slide-hero .subtitle {
+    text-align: center; font-size: 1.2rem; color: var(--text-dim);
+    margin-bottom: 2rem;
+}
+.slide-hero .meta {
+    display: flex; justify-content: center; gap: 1rem;
+    flex-wrap: wrap; margin-top: 2rem;
+}
+
+.split-layout {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 3rem; align-items: center;
+    width: 100%; max-width: 1100px;
+}
+.three-col {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem; width: 100%; max-width: 1100px;
+}
+.full-width { width: 100%; max-width: 1100px; }
+
+.section-divider {
+    text-align: center;
+}
+.section-divider .phase-num {
+    font-size: 0.85rem; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--primary); margin-bottom: 0.5rem;
+}
+.section-divider h2 { margin-bottom: 0.5rem; }
+.section-divider p { margin: 0 auto; }
+
+/* Comparison cards */
+.compare-card {
+    padding: 1.5rem; border-radius: var(--radius);
+    text-align: center;
+}
+.compare-bad {
+    background: rgba(239,68,68,0.06);
+    border: 1px solid rgba(239,68,68,0.15);
+}
+.compare-good {
+    background: rgba(34,197,94,0.06);
+    border: 1px solid rgba(34,197,94,0.15);
+}
+
+/* Maturity level bar */
+.level-bar-container {
+    display: flex; flex-direction: column; gap: 0.6rem;
+    width: 100%; max-width: 600px;
+}
+.level-row {
+    display: flex; align-items: center; gap: 1rem;
+}
+.level-num {
+    font-family: var(--mono); font-size: 0.8rem;
+    font-weight: 700; min-width: 28px;
+    color: var(--text-dim);
+}
+.level-name {
+    font-size: 0.9rem; font-weight: 600; min-width: 120px;
+}
+.level-threshold {
+    font-family: var(--mono); font-size: 0.78rem;
+    color: var(--text-darker); min-width: 45px; text-align: right;
+}
+
+/* Score display */
+.big-score {
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 900;
+    font-family: var(--font);
+    line-height: 1;
+}
+.score-change {
+    font-size: 1.4rem; font-weight: 700;
+}
+.score-up { color: var(--success); }
+.score-down { color: var(--error); }
+
+/* Radar mini (inline SVG) */
+.radar-mini {
+    width: 260px; height: 240px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .split-layout { grid-template-columns: 1fr; gap: 1.5rem; }
+    .three-col { grid-template-columns: 1fr; }
+    .slide { padding: 2rem 1.5rem; }
+    .nav-left, .nav-right { display: none; }
+    h1 { font-size: 2rem; }
+}
+
+/* Print mode */
+@media print {
+    body { background: #fff; color: #000; }
+    .slide { 
+        position: relative; page-break-after: always;
+        opacity: 1; transform: none; pointer-events: all;
+        break-inside: avoid;
+    }
+    .nav-left, .nav-right, .slide-counter, .kbd-hint,
+    .bg-glow, .grid-overlay { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg-glow blue"></div>
+<div class="bg-glow purple"></div>
+<div class="grid-overlay"></div>
+
+<!-- Navigation -->
+<button class="nav-left" onclick="prevSlide()" aria-label="Previous slide">◀</button>
+<button class="nav-right" onclick="nextSlide()" aria-label="Next slide">▶</button>
+
+<!-- Slide Counter -->
+<div class="slide-counter" id="slideCounter"></div>
+
+<!-- Keyboard Hint -->
+<div class="kbd-hint"><span class="kbd-key">←</span><span class="kbd-key">→</span><span class="kbd-key">Space</span></div>
+
+<div class="slide-container">
+
+<!-- ═════════════════════════════════════════
+     SLIDE 01: TITLE
+     ═════════════════════════════════════════ -->
+<div class="slide active" data-slide="1" id="slide1">
+    <div class="animate-in slide-hero" style="text-align:center;">
+        <div style="margin-bottom:1.5rem;">
+            <span class="badge badge-blue" style="font-size:0.9rem;padding:0.5rem 1.2rem;">
+                🤖 PyCon Italia 2026 • Workshop
+            </span>
+        </div>
+        <h1>Measuring<br><span class="text-gradient">AI-Readiness</span></h1>
+        <p class="subtitle" style="margin-top:1rem;margin-bottom:0;">
+            A Three-Axis Maturity Model for Agent-Optimized Codebases
+        </p>
+        <div class="meta">
+            <span class="badge badge-purple">📅 May 29, 2026</span>
+            <span class="badge badge-green">⏰ 11:00–13:00</span>
+            <span class="badge badge-amber">🔧 Hands-on Workshop</span>
+        </div>
+        <div style="margin-top:3rem;">
+            <button class="btn btn-primary" onclick="goToSlide(2)">Start →</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 02: ABOUT ME
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="2" id="slide2">
+    <div class="split-layout animate-in" style="max-width:950px;">
+        <div>
+            <h2 style="margin-bottom:1.5rem;">Hi, I'm <span class="text-primary">Stefano Maeste</span></h2>
+            <div style="display:flex;flex-direction:column;gap:1rem;">
+                <p>🏗️ Software architect &amp; builder of things that should work</p>
+                <p>🤖 Working with AI agents since before it was cool (it was still questionable)</p>
+                <p>📦 Creator of <code style="background:var(--primary-dim);color:var(--primary);padding:2px 8px;border-radius:4px;font-family:var(--mono);">agent-ready-skill</code> — the toolkit we'll use today</p>
+                <p>🎯 Belief: AI agents are only as good as your codebase's readiness for them</p>
+            </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:center;">
+            <div class="card card-highlight" style="text-align:center;padding:2.5rem;">
+                <div style="font-size:4rem;margin-bottom:0.5rem;">🧠</div>
+                <h3 style="margin-bottom:0.5rem;">The Goal Today</h3>
+                <p style="font-size:0.95rem;">Leave with a <strong>number</strong>, a <strong>mental model</strong>, and a <strong>toolkit</strong> you can use on Monday.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 03: AGENDA
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="3" id="slide3">
+    <div class="full-width animate-in" style="text-align:center;">
+        <h2 style="margin-bottom:2rem;">What We'll Do Together</h2>
+        <div class="three-col" style="max-width:1000px;text-align:left;">
+            <div class="card">
+                <div style="font-size:2rem;margin-bottom:0.5rem;">🔴</div>
+                <h3 style="font-size:1.1rem;">Phase 1</h3>
+                <p style="font-size:0.88rem;"><strong>Mental Model</strong><br>The 3-Axis Framework + Live Demo</p>
+                <div class="badge badge-blue" style="margin-top:0.5rem;">15 min</div>
+            </div>
+            <div class="card">
+                <div style="font-size:2rem;margin-bottom:0.5rem;">🔵</div>
+                <h3 style="font-size:1.1rem;">Phase 2</h3>
+                <p style="font-size:0.88rem;"><strong>INSTRUCT</strong><br>Scan your repo + Quickest win</p>
+                <div class="badge badge-purple" style="margin-top:0.5rem;">25 min</div>
+            </div>
+            <div class="card">
+                <div style="font-size:2rem;margin-bottom:0.5rem;">🟢</div>
+                <h3 style="font-size:1.1rem;">Phase 3</h3>
+                <p style="font-size:0.88rem;"><strong>NAVIGATE + VALIDATE</strong><br>Tooling, tests, CI</p>
+                <div class="badge badge-green" style="margin-top:0.5rem;">50 min</div>
+            </div>
+        </div>
+        <div style="margin-top:2rem;display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;">
+            <div style="text-align:center;">
+                <div style="font-size:2rem;font-weight:800;color:var(--primary);">3</div>
+                <div style="font-size:0.78rem;color:var(--text-dim);">Magic Moments</div>
+            </div>
+            <div style="text-align:center;">
+                <div style="font-size:2rem;font-weight:800;color:var(--secondary);">1</div>
+                <div style="font-size:0.78rem;color:var(--text-dim);">Toolkit to reuse</div>
+            </div>
+            <div style="text-align:center;">
+                <div style="font-size:2rem;font-weight:800;color:var(--success);">∞</div>
+                <div style="font-size:0.78rem;color:var(--text-dim);">Aha moments</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 04: THE PROMISE
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="4" id="slide4">
+    <div class="full-width animate-in" style="text-align:center;">
+        <div class="badge badge-amber" style="margin-bottom:1.5rem;font-size:0.85rem;">THE PROMISE</div>
+        <h2 style="margin-bottom:1.5rem;">In 120 Minutes You'll Have:</h2>
+        <div class="three-col" style="max-width:1050px;text-align:left;">
+            <div class="card card-highlight">
+                <div style="font-size:2.5rem;margin-bottom:0.75rem;">📊</div>
+                <h3 style="font-size:1.05rem;">A Number</h3>
+                <p style="font-size:0.88rem;">Numerical assessment of YOUR codebase across 3 axes (0–100%)</p>
+            </div>
+            <div class="card card-highlight">
+                <div style="font-size:2.5rem;margin-bottom:0.75rem;">🧠</div>
+                <h3 style="font-size:1.05rem;">A Mental Model</h3>
+                <p style="font-size:0.88rem;">A framework to think about agent-readiness that you can explain to your team</p>
+            </div>
+            <div class="card card-highlight">
+                <div style="font-size:2.5rem;margin-bottom:0.75rem;">🛠️</div>
+                <h3 style="font-size:1.05rem;">A Toolkit</h3>
+                <p style="font-size:0.88rem;">Working scanner, fixer, and report generator you can run on any repo</p>
+            </div>
+        </div>
+        <div style="margin-top:2.5rem;">
+            <p style="color:var(--text-dim);font-size:0.92rem;">Not theory. Not hype.<br><strong>Your repository. Your score. Your improvements.</strong></p>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 05: ICEBREAKER POLL
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="5" id="slide5">
+    <div class="full-width animate-in" style="text-align:center;">
+        <h2 style="margin-bottom:2rem;">Raise Your Hand If… 🙋</h2>
+        <div style="display:flex;flex-direction:column;gap:1.2rem;max-width:650px;margin:0 auto;text-align:left;">
+            <div class="card" style="display:flex;align-items:center;gap:1rem;">
+                <span style="font-size:1.5rem;">1️⃣</span>
+                <p style="margin:0;font-size:1rem;">You've written <strong>Python in production</strong></p>
+            </div>
+            <div class="card" style="display:flex;align-items:center;gap:1rem;">
+                <span style="font-size:1.5rem;">2️⃣</span>
+                <p style="margin:0;font-size:1rem;">You've used an <strong>AI coding agent</strong> (Cursor, Claude Code, Copilot, etc.)</p>
+            </div>
+            <div class="card" style="display:flex;align-items:center;gap:1rem;">
+                <span style="font-size:1.5rem;">3️⃣</span>
+                <p style="margin:0;font-size:1rem;">An agent has <strong>messed up your codebase</strong> at least once</p>
+            </div>
+            <div class="card" style="display:flex;align-items:center;gap:1rem;background:rgba(245,158,11,0.06);border-color:rgba(245,158,11,0.2);">
+                <span style="font-size:1.5rem;">🎯</span>
+                <p style="margin:0;font-size:1rem;"><strong>You want to fix that last one.</strong></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 06: THE PROBLEM — QUOTE
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="6" id="slide6">
+    <div class="full-width animate-in" style="text-align:center;">
+        <div style="max-width:750px;margin:0 auto;">
+            <div class="badge badge-red" style="margin-bottom:1.5rem;">THE PROBLEM</div>
+            <h2 style="font-size:clamp(1.8rem,4vw,3rem);line-height:1.3;margin-bottom:2rem;">
+                "It Worked on My Machine"<br>
+                <span style="color:var(--error);">→</span><br>
+                "It Worked in My Prompt"
+            </h2>
+            <p>We went from blaming the environment<br>to blaming the model temperature.</p>
+            <div style="margin-top:2.5rem;padding:1.5rem;border-left:3px solid var(--error);background:rgba(239,68,68,0.04);border-radius:0 8px 8px 0;text-align:left;">
+                <p style="margin:0;font-style:italic;color:var(--text);">
+                    "Just ask it again with a better prompt" is the new<br>"Works on my machine — just reinstall Windows."
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 07: HORROR STORY
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="7" id="slide7">
+    <div class="full-width animate-in" style="text-align:center;">
+        <h2 style="margin-bottom:1.5rem;">A True Story 🫠</h2>
+        <div class="split-layout" style="max-width:950px;margin:0;">
+            <div style="text-align:left;">
+                <div style="display:flex;flex-direction:column;gap:1rem;">
+                    <div class="card" style="border-left:3px solid var(--error);">
+                        <strong style="color:var(--error);">The Ask</strong>
+                        <p style="font-size:0.9rem;margin-top:0.3rem;">"Add validation to our API endpoint"</p>
+                    </div>
+                    <div class="card" style="border-left:3px solid var(--warning);">
+                        <strong style="color:var(--warning);">What Happened</strong>
+                        <ul style="font-size:0.88rem;margin-top:0.5rem;padding-left:1.2rem;color:var(--text-dim);">
+                            <li>Added tests… in the <em>wrong directory</em></li>
+                            <li>Followed linting rules… from <em>2 years ago</em></li>
+                            <li>Couldn't find where request schemas live</li>
+                            <li>Used Flask patterns… we're on FastAPI</li>
+                        </ul>
+                    </div>
+                    <div class="card" style="border-left:3px solid var(--success);">
+                        <strong style="color:var(--success);">Root Cause</strong>
+                        <p style="font-size:0.9rem;margin-top:0.3rem;">The agent wasn't stupid.<br><strong>It was uninformed.</strong></p>
+                    </div>
+                </div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:center;">
+                <div style="font-size:8rem;line-height:1;">💥</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 08: WHY AGENTS FAIL
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="8" id="slide8">
+    <div class="full-width animate-in" style="text-align:center;">
+        <h2 style="margin-bottom:2rem;">Why Agents Fail</h2>
+        <div class="three-col" style="max-width:1050px;">
+            <div class="card compare-bad">
+                <div style="font-size:2.5rem;margin-bottom:0.75rem;">❓</div>
+                <h3 style="color:var(--error);">Doesn't Understand</h3>
+                <p style="font-size:0.88rem;">"What does this project even do? What conventions should I follow?"</p>
+                <div class="badge badge-red" style="margin-top:0.75rem;">→ INSTRUCT</div>
+            </div>
+            <div class="card compare-bad">
+                <div style="font-size:2.5rem;margin-bottom:0.75rem;">🔄</div>
+                <h3 style="color:var(--warning);">Can't Navigate</h3>
+                <p style="font-size:0.88rem;">"Where do tests go? What's the entry point? Why is this 2000 lines?"</p>
+                <div class="badge badge-amber" style="margin-top:0.75rem;">→ NAVIGATE</div>
+            </div>
+            <div class="card compare-bad">
+                <div style="font-size:2.5rem;margin-bottom:0.75rem;">❌</div>
+                <h3 style="color:var(--error);">Can't Validate</h3>
+                <p style="font-size:0.88rem;">"Did my change break anything? Is there CI? Do tests pass?"</p>
+                <div class="badge badge-red" style="margin-top:0.75rem;">→ VALIDATE</div>
+            </div>
+        </div>
+        <p style="margin-top:2rem;font-size:0.95rem;">
+            Three failure modes → <strong class="text-primary">Three axes to measure</strong>
+        </p>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 09: NOT THE AGENT'S FAULT
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="9" id="slide9">
+    <div class="full-width animate-in" style="text-align:center;">
+        <div style="max-width:700px;margin:0 auto;">
+            <div class="badge badge-success" style="margin-bottom:1.5rem;">KEY INSIGHT</div>
+            <h2 style="font-size:clamp(2rem,4.5vw,3.2rem);margin-bottom:1.5rem;">
+                It's Not the Agent's Fault
+            </h2>
+            <p style="font-size:1.15rem;margin-bottom:2rem;">
+                Agents aren't <em>stupid</em>.<br>
+                They're <strong class="text-gradient">uninformed</strong>.
+            </p>
+            <div class="card card-highlight" style="padding:2rem;text-align:left;">
+                <p style="font-size:1.05rem;margin:0;">
+                    An agent landing in your codebase is like <strong>a senior developer on day one</strong>.<br><br>
+                    Would you expect them to be productive without:<br>
+                    ✅ A README explaining what the project does<br>
+                    ✅ Clear coding conventions<br>
+                    ✅ Knowledge of where things live<br>
+                    ✅ Tests to verify their changes<br><br>
+                    <span class="text-dim">No? Then why expect it from an agent?</span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 10: THREE QUESTIONS → THREE AXES
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="10" id="slide10">
+    <div class="full-width animate-in" style="text-align:center;">
+        <h2 style="margin-bottom:2rem;">The Three Questions</h2>
+        <div style="position:relative;width:360px;height:330px;margin:0 auto 2rem;">
+            <svg viewBox="0 0 360 330" class="triangle-svg">
+                <!-- Triangle lines -->
+                <polygon points="180,30 40,280 320,280"
+                         fill="none" stroke="rgba(79,140,255,0.2)" stroke-width="2"/>
+                
+                <!-- Axis 1: Top (Instruct) -->
+                <g class="axis-node" onclick="goToSlide(11)">
+                    <circle cx="180" cy="30" r="32" fill="rgba(79,140,255,0.15)" stroke="#4f8cff" stroke-width="2"/>
+                    <text x="180" y="36" text-anchor="middle" fill="#4f8cff" font-size="22" font-weight="bold">📝</text>
+                    <text x="180" y="-5" text-anchor="middle" fill="#e2e8f0" font-size="13" font-weight="700">INSTRUCT</text>
+                </g>
+                
+                <!-- Axis 2: Bottom-left (Navigate) -->
+                <g class="axis-node" onclick="goToSlide(12)">
+                    <circle cx="40" cy="280" r="32" fill="rgba(168,85,247,0.15)" stroke="#a855f7" stroke-width="2"/>
+                    <text x="40" y="286" text-anchor="middle" fill="#a855f7" font-size="22" font-weight="bold">🧭</text>
+                    <text x="0" y="325" text-anchor="middle" fill="#e2e8f0" font-size="13" font-weight="700">NAVIGATE</text>
+                </g>
+                
+                <!-- Axis 3: Bottom-right (Validate) -->
+                <g class="axis-node" onclick="goToSlide(13)">
+                    <circle cx="320" cy="280" r="32" fill="rgba(34,197,94,0.15)" stroke="#22c55e" stroke-width="2"/>
+                    <text x="320" y="286" text-anchor="middle" fill="#22c55e" font-size="22" font-weight="bold">✅</text>
+                    <text x="360" y="325" text-anchor="middle" fill="#e2e8f0" font-size="13" font-weight="700">VALIDATE</text>
+                </g>
+                
+                <!-- Center label -->
+                <text x="180" y="185" text-anchor="middle" fill="#94a3b8" font-size="12" font-weight="600">
+                    YOUR
+                </text>
+                <text x="180" y="200" text-anchor="middle" fill="#94a3b8" font-size="12" font-weight="600">
+                    CODEBASE
+                </text>
+            </svg>
+        </div>
+        <div class="three-col" style="max-width:850px;text-align:left;">
+            <div>
+                <p style="font-size:0.88rem;"><strong class="text-primary">Q1:</strong> Does the agent understand <em>WHAT</em> we want?</p>
+            </div>
+            <div>
+                <p style="font-size:0.88rem;"><strong style="color:var(--secondary);">Q2:</strong> Can the agent find <em>WHERE</em> things are?</p>
+            </div>
+            <div>
+                <p style="font-size:0.88rem;"><strong class="text-success">Q3:</strong> Can the agent tell if it did <em>RIGHT</em>?</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 11: AXIS 1 — INSTRUCT DEEP DIVE
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="11" id="slide11">
+    <div class="full-width animate-in" style="text-align:center;">
+        <div style="display:flex;align-items:center;justify-content:center;gap:0.75rem;margin-bottom:1.5rem;">
+            <span style="font-size:2.5rem;">📝</span>
+            <h2 style="margin:0;">Axis 1: INSTRUCT</h2>
+        </div>
+        <p style="max-width:550px;margin:0 auto 2rem;font-size:1.1rem;">
+            "Does the agent understand <strong>WHAT</strong> we want?"
+        </p>
+        <div class="badge badge-blue" style="margin-bottom:1.5rem;">Weight: 38%</div>
+        
+        <div class="three-col" style="max-width:1050px;text-align:left;">
+            <div class="card">
+                <div style="font-size:1.6rem;margin-bottom:0.5rem;">📋</div>
+                <h3 style="font-size:1rem;">Agent Instructions</h3>
+                <p style="font-size:0.84rem;color:var(--text-dim);">CLAUDE.md, .cursorrules, copilot-instructions.md</p>
+                <div style="margin-top:0.75rem;"><strong class="text-primary">+20 pts</strong></div>
+            </div>
+            <div class="card">
+                <div style="font-size:1.6rem;margin-bottom:0.5rem;">🏗️</div>
+                <h3 style="font-size:1rem;">Spec-Driven Dev</h3>
+                <p style="font-size:0.84rem;color:var(--text-dim);">ARCHITECTURE.md, ADRs, design docs</p>
+                <div style="margin-top:0.75rem;"><strong class="text-primary">+10 pts</strong></div>
+            </div>
+            <div class="card">
+                <div style="font-size:1.6rem;margin-bottom:0.5rem;">📖</div>
+                <h3 style="font-size:1rem;">Documentation</h3>
+                <p style="font-size:0.84rem;color:var(--text-dim);">README quality, CONTRIBUTING guide</p>
+                <div style="margin-top:0.75rem;"><strong class="text-primary">+8 pts</strong></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 12: AXIS 2 — NAVIGATE DEEP DIVE
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="12" id="slide12">
+    <div class="full-width animate-in" style="text-align:center;">
+        <div style="display:flex;align-items:center;justify-content:center;gap:0.75rem;margin-bottom:1.5rem;">
+            <span style="font-size:2.5rem;">🧭</span>
+            <h2 style="margin:0;">Axis 2: NAVIGATE</h2>
+        </div>
+        <p style="max-width:550px;margin:0 auto 2rem;font-size:1.1rem;">
+            "Can the agent find its way around?"
+        </p>
+        <div class="badge badge-purple" style="margin-bottom:1.5rem;">Weight: 34%</div>
+        
+        <div class="three-col" style="max-width:1050px;text-align:left;">
+            <div class="card">
+                <div style="font-size:1.6rem;margin-bottom:0.5rem;">🗺️</div>
+                <h3 style="font-size:1rem;">Navigability</h3>
+                <p style="font-size:0.84rem;color:var(--text-dim);">File structure, naming, no 2000-line files</p>
+                <div style="margin-top:0.75rem;"><strong style="color:var(--secondary);">+18 pts</strong></div>
+            </div>
+            <div class="card">
+                <div style="font-size:1.6rem;margin-bottom:0.5rem;">🔧</div>
+                <h3 style="font-size:1rem;">Tooling</h3>
+                <p style="font-size:0.84rem;color:var(--text-dim);">Linter, formatter, type checker configured</p>
+                <div style="margin-top:0.75rem;"><strong style="color:var(--secondary);">+8 pts</strong></div>
+            </div>
+            <div class="card">
+                <div style="font-size:1.6rem;margin-bottom:0.5rem;">⚙️</div>
+                <h3 style="font-size:1rem;">Environment</h3>
+                <p style="font-size:0.84rem;color:var(--text-dim);">.env.example, Dockerfile, version pinned</p>
+                <div style="margin-top:0.75rem;"><strong style="color:var(--secondary);">+8 pts</strong></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 13: AXIS 3 — VALIDATE DEEP DIVE
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="13" id="slide13">
+    <div class="full-width animate-in" style="text-align:center;">
+        <div style="display:flex;align-items:center;justify-content:center;gap:0.75rem;margin-bottom:1.5rem;">
+            <span style="font-size:2.5rem;">✅</span>
+            <h2 style="margin:0;">Axis 3: VALIDATE</h2>
+        </div>
+        <p style="max-width:550px;margin:0 auto 2rem;font-size:1.1rem;">
+            "Can the agent tell if it did it <strong>RIGHT</strong>?"
+        </p>
+        <div class="badge badge-green" style="margin-bottom:1.5rem;">Weight: 28%</div>
+        
+        <div class="three-col" style="max-width:1050px;text-align:left;">
+            <div class="card">
+                <div style="font-size:1.6rem;margin-bottom:0.5rem;">🧪</div>
+                <h3 style="font-size:1rem;">Testing</h3>
+                <p style="font-size:0.84rem;color:var(--text-dim);">Test framework, test files, coverage config</p>
+                <div style="margin-top:0.75rem;"><strong class="text-success">+16 pts</strong></div>
+            </div>
+            <div class="card">
+                <div style="font-size:1.6rem;margin-bottom:0.5rem;">🔄</div>
+                <h3 style="font-size:1rem;">CI/CD Pipeline</h3>
+                <p style="font-size:0.84rem;color:var(--text-dim);">CI config, quality gates, security policy</p>
+                <div style="margin-top:0.75rem;"><strong class="text-success">+12 pts</strong></div>
+            </div>
+            <div class="card" style="opacity:0.5;">
+                <div style="font-size:1.6rem;margin-bottom:0.5rem;">🔒</div>
+                <h3 style="font-size:1rem;">Security</h3>
+                <p style="font-size:0.84rem;color:var(--text-dim);">SECURITY.md, Dependabot, secrets detection</p>
+                <div style="margin-top:0.75rem;"><strong class="text-success">(bonus)</strong></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 14: MATURITY LEVELS
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="14" id="slide14">
+    <div class="full-width animate-in" style="text-align:center;">
+        <h2 style="margin-bottom:0.5rem;">Maturity Levels</h2>
+        <p style="margin-bottom:2rem;color:var(--text-dim);">From chaos to autonomy — 5 stages</p>
+        
+        <div class="level-bar-container">
+            <div class="level-row">
+                <span class="level-num text-error">L5</span>
+                <span class="level-name">Autonomous</span>
+                <div class="progress-bar" style="flex:1;"><div class="progress-fill purple" style="width:95%;"></div></div>
+                <span class="level-threshold">≥95%</span>
+            </div>
+            <div class="level-row">
+                <span class="level-num text-success">L4</span>
+                <span class="level-name">Optimized</span>
+                <div class="progress-bar" style="flex:1;"><div class="progress-fill green" style="width:85%;"></div></div>
+                <span class="level-threshold">≥85%</span>
+            </div>
+            <div class="level-row">
+                <span class="level-num text-primary">L3</span>
+                <span class="level-name">Structured</span>
+                <div class="progress-bar" style="flex:1;"><div class="progress-fill blue" style="width:70%;"></div></div>
+                <span class="level-threshold">≥70%</span>
+            </div>
+            <div class="level-row">
+                <span class="level-num" style="color:var(--warning);">L2</span>
+                <span class="level-name">Guided</span>
+                <div class="progress-bar" style="flex:1;"><div class="progress-fill yellow" style="width:55%;"></div></div>
+                <span class="level-threshold">≥55%</span>
+            </div>
+            <div class="level-row">
+                <span class="level-num text-darker">L1</span>
+                <span class="level-name">Foundational</span>
+                <div class="progress-bar" style="flex:1;"><div class="progress-fill red" style="width:40%;"></div></div>
+                <span class="level-threshold">≥40%</span>
+            </div>
+        </div>
+        
+        <div style="margin-top:2rem;">
+            <p style="font-size:0.9rem;color:var(--text-dim);">
+                Each level requires <strong>80% of criteria met</strong> at that tier.
+                <br>You can't skip levels — they're sequential.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 15: HOW SCORING WORKS
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="15" id="slide15">
+    <div class="full-width animate-in" style="text-align:center;">
+        <h2 style="margin-bottom:2rem;">How Scoring Works</h2>
+        <div class="split-layout" style="max-width:950px;">
+            <div>
+                <div class="terminal" style="text-align:left;">
+                    <div class="terminal-header">
+                        <div class="terminal-dot dot-red"></div>
+                        <div class="terminal-dot dot-yellow"></div>
+                        <div class="terminal-dot dot-green"></div>
+                    </div>
+                    <div class="terminal-body">
+<span class="prompt">$</span> <span class="cmd">python scan_static.py ./my-repo --all</span>
+
+<span class="output">╭─────────────────────────────────────╮
+│  📝 AXIS 1: INSTRUCT               │
+│  Score: 58/100 ████████░░░░ 58%    │
+│                                     │
+│  ✅ README.md          found       +8 │
+│  ✅ CLAUDE.md          found      +20 │
+│  ❌ ARCHITECTURE.md     missing    -10 │
+│  ❌ CONTRIBUTING.md     missing     -5 │
+├─────────────────────────────────────┤
+│  🧭 AXIS 2: NAVIGATE               │
+│  Score: 71/100 ██████████░░░ 71%   │
+│                                     │
+│  ✅ .editorconfig       found      +2 │
+│  ✅ Ruff configured     [tool.ruff] +6 │
+│  ❌ pyrightconfig.json  missing     -6 │
+│  ⚠️  Large files         2 found    -2 │
+├─────────────────────────────────────┤
+│  ✅ AXIS 3: VALIDATE               │
+│  Score: 39/100 █████░░░░░░ 39%     │
+│                                     │
+│  ✅ pytest configured  [tool.pytest] +6 │
+│  ✅ Test files found   12 files    +5 │
+│  ❌ CI workflow         missing     -6 │
+│  ❌ coverage             NO         -4 │
+╰─────────────────────────────────────╯
+
+Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align:left;display:flex;flex-direction:column;gap:1rem;">
+                <div class="card">
+                    <strong>Step 1:</strong> Static checks per axis
+                    <p style="font-size:0.84rem;color:var(--text-dim);margin-top:0.3rem;">File existence, content detection, glob patterns</p>
+                </div>
+                <div class="card">
+                    <strong>Step 2:</strong> Per-axis percentage (0–100)
+                    <p style="font-size:0.84rem;color:var(--text-dim);margin-top:0.3rem;">Score earned / Max possible × 100</p>
+                </div>
+                <div class="card">
+                    <strong>Step 3:</strong> Weighted overall + maturity level
+                    <p style="font-size:0.84rem;color:var(--text-dim);margin-top:0.3rem;">Weighted average → level gate at thresholds</p>
+                </div>
+                <div class="card" style="border-color:rgba(168,85,247,0.3);">
+                    <strong style="color:var(--secondary);">Hybrid Mode</strong>
+                    <p style="font-size:0.84rem;color:var(--text-dim);margin-top:0.3rem;">Add LLM semantic scoring: 60% static + 40% AI judgment</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 16: MEET THE TEST SUBJECTS
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="16" id="slide16">
+    <div class="full-width animate-in" style="text-align:center;">
+        <h2 style="margin-bottom:2rem;">Meet the Test Subjects 🐁</h2>
+        <div class="split-layout" style="max-width:900px;">
+            <div class="compare-card compare-bad">
+                <div style="font-size:2.5rem;margin-bottom:0.5rem;">🔴</div>
+                <h3 style="color:var(--error);">Repo A: Chaos Monkey</h3>
+                <div style="text-align:left;margin-top:1rem;font-size:0.85rem;color:var(--text-dim);">
+                    <p>❌ No CLAUDE.md, no README</p>
+                    <p>❌ No linter, no formatter</p>
+                    <p>❌ No tests, no CI</p>
+                    <p>❌ 400-line files everywhere</p>
+                    <p>❌ No .env.example</p>
+                </div>
+                <div class="badge badge-red" style="margin-top:1rem;">Expected: ~20%</div>
+            </div>
+            <div class="compare-card compare-good">
+                <div style="font-size:2.5rem;margin-bottom:0.5rem;">🟢</div>
+                <h3 style="color:var(--success);">Repo B: Agent Heaven</h3>
+                <div style="text-align:left;margin-top:1rem;font-size:0.85rem;color:var(--text-dim);">
+                    <p>✅ Full CLAUDE.md</p>
+                    <p>✅ Ruff + Black + Pyright</p>
+                    <p>✅ 12 test files + coverage</p>
+                    <p>✅ Clean module structure</p>
+                    <p>✅ CI pipeline + Dependabot</p>
+                </div>
+                <div class="badge badge-green" style="margin-top:1rem;">Expected: ~80%</div>
+            </div>
+        </div>
+        <p style="margin-top:2rem;color:var(--text-dim);font-size:0.92rem;">
+            Same language (Python). Same complexity.<br>
+            <strong>Different readiness.</strong>
+        </p>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 17: MAGIC MOMENT #1 — SAME TOOL
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="17" id="slide17">
+    <div class="full-width animate-in" style="text-align:center;">
+        <div class="badge badge-amber" style="margin-bottom:1rem;font-size:0.9rem;">✨ MAGIC MOMENT #1</div>
+        <h2 style="margin-bottom:1.5rem;">Same Tool. Different Scores.</h2>
+        
+        <div class="split-layout" style="max-width:950px;">
+            <div class="compare-card compare-bad" style="padding:1.25rem;">
+                <h3 style="color:var(--error);font-size:1rem;">Chaos Monkey</h3>
+                <div class="big-score text-error" style="font-size:3.5rem;margin:0.5rem 0;">23%</div>
+                <div class="progress-bar"><div class="progress-fill red" style="width:23%;"></div></div>
+                <p style="font-size:0.8rem;margin-top:0.5rem;color:var(--text-dim);">Level 1: Foundational</p>
+            </div>
+            <div class="compare-card compare-good" style="padding:1.25rem;">
+                <h3 style="color:var(--success);font-size:1rem;">Agent Heaven</h3>
+                <div class="big-score text-success" style="font-size:3.5rem;margin:0.5rem 0;">81%</div>
+                <div class="progress-bar"><div class="progress-fill green" style="width:81%;"></div></div>
+                <p style="font-size:0.8rem;margin-top:0.5rem;color:var(--text-dim);">Level 4: Optimized</p>
+            </div>
+        </div>
+        
+        <div style="margin-top:2.5rem;max-width:600px;margin-left:auto;margin-right:auto;
+            padding:1.5rem;border-radius:var(--radius-lg);background:linear-gradient(135deg,rgba(79,140,255,0.08),rgba(168,85,247,0.08));
+            border:1px solid rgba(79,140,255,0.15);">
+            <p style="font-size:1.15rem;margin:0;font-weight:600;">
+                The difference isn't the agent.
+                <br><span class="text-gradient">It's the codebase.</span>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 18: PHASE DIVIDER — INSTRUCT
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="18" id="slide18">
+    <div class="section-divider animate-in">
+        <div class="phase-num">Phase 2 — Hands-On</div>
+        <h2>📝 <span class="text-primary">INSTRUCT</span></h2>
+        <p>"Does the agent understand WHAT we want?"</p>
+        <div style="margin-top:2rem;">
+            <span class="badge badge-blue">~25 minutes</span>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 19: SCAN YOUR REPO — AXIS 1
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="19" id="slide19">
+    <div class="full-width animate-in" style="text-align:center;">
+        <h2 style="margin-bottom:1rem;">Your Turn 🔍</h2>
+        <p style="margin-bottom:2rem;">Scan YOUR repository — Axis 1 only</p>
+        
+        <div class="terminal" style="max-width:680px;text-align:left;margin:0 auto 2rem;">
+            <div class="terminal-header">
+                <div class="terminal-dot dot-red"></div>
+                <div class="terminal-dot dot-yellow"></div>
+                <div class="terminal-dot dot-green"></div>
+            </div>
+            <div class="terminal-body">
+<span class="prompt">$</span> <span class="cmd">python scripts/scan_static.py ~/your-repo --axis instruct</span>
+
+<span class="output" style="animation:pulse 2s infinite;">↑ Scanning your repo... (results appear here)</span>
+            </div>
+        </div>
+        
+        <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+            <div class="card" style="max-width:220px;">
+                <strong>No repo?</strong>
+                <p style="font-size:0.84rem;color:var(--text-dim);margin-top:0.3rem;">Use repos/demo-bad/ or demo-good/</p>
+            </div>
+            <div class="card" style="max-width:220px;">
+                <strong>Stuck?</strong>
+                <p style="font-size:0.84rem;color:var(--text-dim);margin-top:0.3rem;">Ask a neighbor or raise hand 🙋</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 20: THE QUICKEST WIN
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="20" id="slide20">
+    <div class="full-width animate-in" style="text-align:center;">
+        <div class="badge badge-green" style="margin-bottom:1rem;">QUICKEST WIN</div>
+        <h2 style="margin-bottom:1rem;">One File = <span class="text-success">+20 Points</span></h2>
+        <p style="margin-bottom:2rem;">Create a <code style="background:var(--primary-dim);color:var(--primary);padding:2px 8px;border-radius:4px;font-family:var(--mono);">CLAUDE.md</code> (or <code style="background:var(--primary-dim);color:var(--primary);padding:2px 8px;border-radius:4px;font-family:var(--mono);">AGENTS.md</code>)</p>
+        
+        <div class="terminal" style="max-width:680px;text-align:left;margin:0 auto 1.5rem;">
+            <div class="terminal-header">
+                <div class="terminal-dot dot-red"></div>
+                <div class="terminal-dot dot-yellow"></div>
+                <div class="terminal-dot dot-green"></div>
+            </div>
+            <div class="terminal-body" style="font-size:0.78rem;">
+<span class="comment"># Project Context — Agent Instructions</span>
+
+<span class="output">## Overview
+<span class="dim">One paragraph about what this project does</span>
+
+## Architecture
+- Framework: FastAPI / Django / Flask
+- Main entry point: src/main.py
+- Key directories: src/, tests/, config/
+
+## Conventions
+- Style: ruff (with black compat)
+- Type hints: strict (pyright)
+- String quotes: double
+
+## Commands
+- Run tests: pytest
+- Run linter: ruff check .
+- Format: ruff format .
+
+## Pitfalls
+- Don't use import *
+- Don't add deps without updating pyproject.toml</span>
+            </div>
+        </div>
+        
+        <p style="font-size:0.92rem;color:var(--text-dim);">
+            Template provided → Fill in for <strong>YOUR</strong> project → Save to root
+        </p>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 21: MAGIC MOMENT #2 — DELTA
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="21" id="slide21">
+    <div class="full-width animate-in" style="text-align:center;">
+        <div class="badge badge-amber" style="margin-bottom:1rem;font-size:0.9rem;">✨ MAGIC MOMENT #2</div>
+        <h2 style="margin-bottom:1.5rem;">Before → After</h2>
+        
+        <div style="max-width:700px;margin:0 auto;">
+            <div class="split-layout" style="max-width:none;gap:2rem;">
+                <div class="card" style="text-align:center;">
+                    <p style="font-size:0.85rem;color:var(--text-dim);margin-bottom:0.5rem;">BEFORE</p>
+                    <div class="big-score text-error" style="font-size:3.5rem;">35%</div>
+                    <div class="progress-bar" style="margin-top:0.5rem;">
+                        <div class="progress-fill red" style="width:35%;"></div>
+                    </div>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:center;">
+                    <span style="font-size:2.5rem;color:var(--success);">→</span>
+                </div>
+                <div class="card" style="text-align:center;">
+                    <p style="font-size:0.85rem;color:var(--text-dim);margin-bottom:0.5rem;">AFTER</p>
+                    <div class="big-score text-success" style="font-size:3.5rem;">63%</div>
+                    <div class="score-change score-up" style="margin-top:0.5rem;">+28 points!</div>
+                    <div class="progress-bar" style="margin-top:0.5rem;">
+                        <div class="progress-fill green" style="width:63%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top:2.5rem;max-width:550px;margin-left:auto;margin-right:auto;
+            padding:1.25rem;border-radius:var(--radius);background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.15);">
+            <p style="font-size:1.05rem;margin:0;">
+                <strong>"That's it? One file?"</strong><br>
+                <span style="color:var(--text-dim);">Yes. Agent readiness isn't about rewriting your codebase.<br>
+                It's about giving agents the <strong>right information</strong>.</span>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 22: PHASE DIVIDER — NAVIGATE
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="22" id="slide22">
+    <div class="section-divider animate-in">
+        <div class="phase-num">Phase 3 — Hands-On</div>
+        <h2>🧭 <span style="color:var(--secondary);">NAVIGATE</span></h2>
+        <p>"Can the agent find its way around?"</p>
+        <div style="margin-top:2rem;">
+            <span class="badge badge-purple">~20 minutes</span>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 23: PICK YOUR FIX
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="23" id="slide23">
+    <div class="full-width animate-in" style="text-align:center;">
+        <h2 style="margin-bottom:0.5rem;">Pick ONE Fix</h2>
+        <p style="margin-bottom:2rem;color:var(--text-dim);">Based on your scan results — choose what helps most</p>
+        
+        <div class="three-col" style="max-width:1050px;">
+            <div class="card" style="cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'">
+                <div style="font-size:1.5rem;margin-bottom:0.5rem;">🅰️</div>
+                <h3 style="font-size:1rem;">.env.example</h3>
+                <p style="font-size:0.84rem;color:var(--text-dim);">Document your env vars</p>
+                <div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
+                    <span class="badge badge-green">30 sec</span>
+                    <span class="badge badge-blue">+4 pts</span>
+                </div>
+            </div>
+            <div class="card" style="cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'">
+                <div style="font-size:1.5rem;margin-bottom:0.5rem;">🅱️</div>
+                <h3 style="font-size:1rem;">pyrightconfig.json</h3>
+                <p style="font-size:0.84rem;color:var(--text-dim);">Enable type checking</p>
+                <div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
+                    <span class="badge badge-amber">2 min</span>
+                    <span class="badge badge-blue">+6 pts</span>
+                </div>
+            </div>
+            <div class="card" style="cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'">
+                <div style="font-size:1.5rem;margin-bottom:0.5rem;">🅲</div>
+                <h3 style="font-size:1rem;">.editorconfig</h3>
+                <p style="font-size:0.84rem;color:var(--text-dim);">Consistent editor settings</p>
+                <div style="margin-top:0.75rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
+                    <span class="badge badge-green">1 min</span>
+                    <span class="badge badge-blue">+2 pts</span>
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top:1.5rem;">
+            <p style="font-size:0.88rem;color:var(--text-dim);">
+                Or 🅳: Configure Ruff properly (~3 min, +6 pts)
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 24: PHASE DIVIDER — VALIDATE
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="24" id="slide24">
+    <div class="section-divider animate-in">
+        <div class="phase-num">Phase 4 — Hands-On</div>
+        <h2>✅ <span class="text-success">VALIDATE</span></h2>
+        <p>"Can the agent tell if it did RIGHT?"</p>
+        <div style="margin-top:2rem;">
+            <span class="badge badge-green">~30 minutes</span>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 25: TESTING PARADOX
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="25" id="slide25">
+    <div class="full-width animate-in" style="text-align:center;">
+        <div class="badge badge-amber" style="margin-bottom:1rem;">CONTROVERSIAL TAKE</div>
+        <h2 style="margin-bottom:1.5rem;">The Testing Paradox</h2>
+        
+        <div style="max-width:650px;margin:0 auto 2rem;">
+            <div class="card card-highlight" style="text-align:left;padding:2rem;">
+                <p style="font-size:1.1rem;margin:0;">
+                    Tests are NOT for finding bugs.<br><br>
+                    <strong class="text-gradient">Tests are for giving AGENTS a safety net.</strong>
+                </p>
+            </div>
+        </div>
+        
+        <div class="split-layout" style="max-width:850px;">
+            <div class="card" style="border-color:rgba(239,68,68,0.2);">
+                <strong style="color:var(--error);">Without Tests</strong>
+                <ol style="font-size:0.88rem;margin-top:0.75rem;padding-left:1.2rem;color:var(--text-dim);">
+                    <li>Agent writes code</li>
+                    <li><strong>You</strong> manually verify everything</li>
+                    <li>Bottleneck. Fatigue. Mistakes.</li>
+                </ol>
+            </div>
+            <div class="card" style="border-color:rgba(34,197,94,0.2);">
+                <strong style="color:var(--success);">With Tests</strong>
+                <ol style="font-size:0.88rem;margin-top:0.75rem;padding-left:1.2rem;color:var(--text-dim);">
+                    <li>Agent writes code</li>
+                    <li>Agent runs tests → Pass ✓</li>
+                    <li><strong>You</strong> review PR confidently</li>
+                </ol>
+            </div>
+        </div>
+        
+        <p style="margin-top:2rem;font-size:0.92rem;color:var(--text-dim);">
+            Tests multiply your effectiveness <strong>with agents</strong>.
+        </p>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 26: CI TEMPLATE
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="26" id="slide26">
+    <div class="full-width animate-in" style="text-align:center;">
+        <h2 style="margin-bottom:1rem;">The CI File 🔄</h2>
+        <p style="margin-bottom:1.5rem;color:var(--text-dim);">Copy. Adapt. Commit. Done.</p>
+        
+        <div class="terminal" style="max-width:720px;text-align:left;margin:0 auto;">
+            <div class="terminal-header">
+                <div class="terminal-dot dot-red"></div>
+                <div class="terminal-dot dot-yellow"></div>
+                <div class="terminal-dot dot-green"></div>
+                <span style="margin-left:auto;font-size:0.78rem;color:var(--text-dimmer);">.github/workflows/ci.yml</span>
+            </div>
+            <div class="terminal-body" style="font-size:0.74rem;">
+<span class="comment"># Copy this template to your repo</span>
+
+<span class="keyword">name</span>: <span class="string">CI</span>
+<span class="keyword">on</span>: [push, pull_request]
+
+<span class="keyword">jobs</span>:
+  <span class="keyword">quality</span>:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: <span class="string">"3.12"</span> }
+      - run: pip install ruff pytest
+      - run: ruff check .
+      - run: ruff format --check
+
+  <span class="keyword">test</span>:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+      - run: pip install -e ".[dev]"
+      - run: pytest tests/ -v --tb=short
+            </div>
+        </div>
+        
+        <div style="margin-top:1.5rem;display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+            <span class="badge badge-green">+6 pts if present</span>
+            <span class="badge badge-blue">Adapt to your stack</span>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 27: HYBRID MOMENT — FULL REPORT
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="27" id="slide27">
+    <div class="full-width animate-in" style="text-align:center;">
+        <div class="badge badge-amber" style="margin-bottom:1rem;font-size:0.9rem;">
+            ✨✨✨ MAGIC MOMENT #3 — THE PEAK ✨✨✨
+        </div>
+        <h2 style="margin-bottom:1rem;">Full Scan — Hybrid Mode</h2>
+        <p style="margin-bottom:1.5rem;color:var(--text-dim);">Static checks (60%) + LLM semantic analysis (40%)</p>
+        
+        <div class="terminal" style="max-width:720px;text-align:left;margin:0 auto 1.5rem;">
+            <div class="terminal-header">
+                <div class="terminal-dot dot-red"></div>
+                <div class="terminal-dot dot-yellow"></div>
+                <div class="terminal-dot dot-green"></div>
+            </div>
+            <div class="terminal-body" style="font-size:0.78rem;">
+<span class="prompt">$</span> <span class="cmd">python scan_static.py ./my-repo --all --hybrid</span>
+
+<span class="output">╭─────────────────────────────────────────────╮
+│  AGENT READINESS ASSESSMENT              │
+│  Repo: my-awesome-project                 │
+│  ═══════════════════════════════════════  │
+│                                             │
+│  Overall: 56%  │  Level 2: GUIDED          │
+│              ▲▸ Level 3 (+14pts needed)    │
+│                                             │
+│  ┌──────────┬────────┬──────┬────────┐    │
+│  │ Axis     │ Static │ LLM  │ Final  │    │
+│  ├──────────┼────────┼──────┼────────┤    │
+│  │ 📝Instr  │   65%  │ 50%  │  59%   │    │
+│  │ 🧭Navi   │   72%  │ 60%  │  67%   │    │
+│  │ ✅Valid  │   38%  │ 45%  │  41%   │    │
+│  ├──────────┼────────┼──────┼────────┤    │
+│  │ COMBINED │   58%  │ 52%  │  56%   │    │
+│  └──────────┴────────┴──────┴────────┘    │
+│                                             │
+│  🏆 Top 3 Quick Wins:                       │
+│  1. +12% Add SECURITY.md (low effort)      │
+│  2. +10% Enable coverage (med effort)      │
+│  3. +8%  Add pre-commit hooks (med)         │
+╰─────────────────────────────────────────────╯</span>
+            </div>
+        </div>
+        
+        <div style="max-width:600px;margin:0 auto;text-align:left;">
+            <div class="card" style="border-color:rgba(168,85,247,0.25);">
+                <strong style="color:var(--secondary);">Why hybrid?</strong>
+                <ul style="font-size:0.86rem;margin-top:0.5rem;padding-left:1.2rem;color:var(--text-dim);">
+                    <li><strong>Static</strong>: "Does the FILE exist?" (facts)</li>
+                    <li><strong>LLM</strong>: "Is the CONTENT good?" (judgment)</li>
+                    <li>You need <strong>both</strong> for the full picture</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 28: RADAR CHART REVEAL
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="28" id="slide28">
+    <div class="full-width animate-in" style="text-align:center;">
+        <div class="badge badge-amber" style="margin-bottom:1rem;font-size:0.9rem;">VISUALIZE YOUR PROGRESS</div>
+        <h2 style="margin-bottom:1.5rem;">Your Agent Readiness Radar</h2>
+        
+        <div style="display:flex;justify-content:center;gap:3rem;align-items:center;flex-wrap:wrap;">
+            <div>
+                <canvas id="slideRadar" width="300" height="280"></canvas>
+            </div>
+            <div style="text-align:left;min-width:220px;">
+                <div style="display:flex;flex-direction:column;gap:1rem;">
+                    <div>
+                        <div style="display:flex;justify-content:space-between;">
+                            <span>📝 Instruct</span>
+                            <strong class="text-primary">59%</strong>
+                        </div>
+                        <div class="progress-bar" style="margin-top:4px;">
+                            <div class="progress-fill blue" style="width:59%;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="display:flex;justify-content:space-between;">
+                            <span>🧭 Navigate</span>
+                            <strong style="color:var(--secondary);">67%</strong>
+                        </div>
+                        <div class="progress-bar" style="margin-top:4px;">
+                            <div class="progress-fill purple" style="width:67%;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="display:flex;justify-content:space-between;">
+                            <span>✅ Validate</span>
+                            <strong class="text-success">41%</strong>
+                        </div>
+                        <div class="progress-bar" style="margin-top:4px;">
+                            <div class="progress-fill green" style="width:41%;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top:1.5rem;padding:0.75rem;border-radius:8px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.15);">
+                    <p style="font-size:0.85rem;margin:0;">
+                        Put this in your engineering blog 📝<br>
+                        Share with your team 👥<br>
+                        Track progress over time 📈
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 29: AUTO-FIX DEMO
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="29" id="slide29">
+    <div class="full-width animate-in" style="text-align:center;">
+        <h2 style="margin-bottom:1rem;">Beyond Manual Fixes 🤖</h2>
+        <p style="margin-bottom:2rem;color:var(--text-dim);">The toolkit can also generate fixes automatically</p>
+        
+        <div class="terminal" style="max-width:680px;text-align:left;margin:0 auto 1.5rem;">
+            <div class="terminal-header">
+                <div class="terminal-dot dot-red"></div>
+                <div class="terminal-dot dot-yellow"></div>
+                <div class="terminal-dot dot-green"></div>
+            </div>
+            <div class="terminal-body">
+<span class="prompt">$</span> <span class="cmd">python apply_fix.py --list ./my-repo</span>
+
+<span class="output">📋 Recommended fixes (4):
+
+  agent-instructions  → CLAUDE.md           [instruct] +20pt (medium)
+  editorconfig        → .editorconfig       [navigate]  +2pt  (low)
+  env-example         → .env.example        [navigate]  +4pt  (low)
+  security-policy     → SECURITY.md         [validate]  +2pt  (low)
+
+<span class="prompt">$</span> <span class="cmd">python apply_fix.py security-policy ./my-repo</span>
+
+<span class="ok">✅ Created: SECURITY.md (412 chars)
+   Axis: validate | Effort: low | Potential gain: +2pts</span>
+            </div>
+        </div>
+        
+        <p style="font-size:0.9rem;color:var(--text-dim);">
+            Review each generated file → accept, edit, or discard
+        </p>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 30: FINAL REPORT
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="30" id="slide30">
+    <div class="full-width animate-in" style="text-align:center;">
+        <div class="badge badge-green" style="margin-bottom:1rem;">TAKEAWAY TIME</div>
+        <h2 style="margin-bottom:1.5rem;">Generate Your Report Package 📦</h2>
+        
+        <div class="split-layout" style="max-width:900px;">
+            <div class="terminal" style="text-align:left;">
+                <div class="terminal-header">
+                    <div class="terminal-dot dot-red"></div>
+                    <div class="terminal-dot dot-yellow"></div>
+                    <div class="terminal-dot dot-green"></div>
+                </div>
+                <div class="terminal-body" style="font-size:0.78rem;">
+<span class="prompt">$</span> <span class="cmd">python scan_static.py ./repo --all \</span>
+<span class="cmd">  --format json --output ./report/</span>
+
+<span class="prompt">$</span> <span class="cmd">python report_gen.py ./report/report.json \</span>
+<span class="cmd">  --output ./report/</span>
+
+<span class="ok">✅ report.txt          (terminal summary)
+✅ recommendations.md  (prioritized todo list)
+✅ badge.svg           (maturity level badge)
+
+$ ls ./report/
+report.txt  recommendations.md  badge.svg  report.json</span>
+                </div>
+            </div>
+            <div style="text-align:left;display:flex;flex-direction:column;gap:0.75rem;">
+                <div class="card">
+                    <strong>📄 report.txt</strong>
+                    <p style="font-size:0.82rem;color:var(--text-dim);">Shareable summary, print-friendly</p>
+                </div>
+                <div class="card">
+                    <strong>📋 recommendations.md</strong>
+                    <p style="font-size:0.82rem;color:var(--text-dim);">Prioritized improvement plan</p>
+                </div>
+                <div class="card">
+                    <strong>🏷️ badge.svg</strong>
+                    <p style="font-size:0.82rem;color:var(--text-dim);">Put in your README!</p>
+                </div>
+                <div class="card" style="border-color:rgba(79,140,255,0.2);">
+                    <strong>📊 radar.html</strong>
+                    <p style="font-size:0.82rem;color:var(--text-dim);">Interactive visualization</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 31: WHAT YOU TAKE HOME
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="31" id="slide31">
+    <div class="full-width animate-in" style="text-align:center;">
+        <h2 style="margin-bottom:2rem;">What You Take Home 🎁</h2>
+        
+        <div class="three-col" style="max-width:1050px;">
+            <div class="card card-highlight" style="text-align:center;">
+                <div style="font-size:2.8rem;margin-bottom:0.75rem;">🧠</div>
+                <h3 style="font-size:1.05rem;">Mental Model</h3>
+                <p style="font-size:0.85rem;color:var(--text-dim);">The 3-axis framework to think about ANY codebase's agent-readiness</p>
+            </div>
+            <div class="card card-highlight" style="text-align:center;">
+                <div style="font-size:2.8rem;margin-bottom:0.75rem;">🔢</div>
+                <h3 style="font-size:1.05rem;">A Number</h3>
+                <p style="font-size:0.85rem;color:var(--text-dim);">Your codebase's score — and how much you improved it today</p>
+            </div>
+            <div class="card card-highlight" style="text-align:center;">
+                <div style="font-size:2.8rem;margin-bottom:0.75rem;">🛠️</div>
+                <h3 style="font-size:1.05rem;">A Toolkit</h3>
+                <p style="font-size:0.85rem;color:var(--text-dim);">Scanner, fixer, reporter — reusable on any Python project</p>
+            </div>
+        </div>
+        
+        <div style="margin-top:2.5rem;">
+            <p style="font-size:1rem;color:var(--text-dim);">
+                Not theory. Not hype.<br>
+                <strong class="text-gradient">Your repo. Your score. Your improvements.</strong>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 32: ROAD AHEAD (POST-WORKSHOP)
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="32" id="slide32">
+    <div class="full-width animate-in" style="text-align:center;">
+        <h2 style="margin-bottom:1.5rem;">What's Next 🚀</h2>
+        <p style="margin-bottom:2rem;color:var(--text-dim);">Post-workshop roadmap</p>
+        
+        <div style="max-width:750px;margin:0 auto;text-align:left;display:flex;flex-direction:column;gap:0.75rem;">
+            <div class="card" style="display:flex;align-items:center;gap:1rem;">
+                <span class="badge badge-green">Soon</span>
+                <div>
+                    <strong>Full 39-check engine</strong>
+                    <p style="font-size:0.82rem;color:var(--text-dim);margin:0;">Porting Kodus checks to Python, plugin architecture</p>
+                </div>
+            </div>
+            <div class="card" style="display:flex;align-items:center;gap:1rem;">
+                <span class="badge badge-blue">Soon</span>
+                <div>
+                    <strong>CI Gate Integration</strong>
+                    <p style="font-size:0.82rem;color:var(--text-dim);margin:0;"><code>--ci --min-level 3</code> fails PRs below threshold</p>
+                </div>
+            </div>
+            <div class="card" style="display:flex;align-items:center;gap:1rem;">
+                <span class="badge badge-purple">Later</span>
+                <div>
+                    <strong>History & Trend Charts</strong>
+                    <p style="font-size:0.82rem;color:var(--text-dim);margin:0;">Track progress over time, compare branches</p>
+                </div>
+            </div>
+            <div class="card" style="display:flex;align-items:center;gap:1rem;">
+                <span class="badge badge-amber">Later</span>
+                <div>
+                    <strong>Team Dashboard</strong>
+                    <p style="font-size:0.82rem;color:var(--text-dim);margin:0;">Compare scores across org repos</p>
+                </div>
+            </div>
+            <div class="card" style="display:flex;align-items:center;gap:1rem;">
+                <span class="badge badge-red">Someday</span>
+                <div>
+                    <strong>GitHub App</strong>
+                    <p style="font-size:0.82rem;color:var(--text-dim);margin:0;">Auto-scan on PR, comment with suggestions</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 33: THANK YOU + RESOURCES
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="33" id="slide33">
+    <div class="full-width animate-in" style="text-align:center;">
+        <div style="font-size:4rem;margin-bottom:1rem;">🙏</div>
+        <h2 style="margin-bottom:1rem;">Thank You!</h2>
+        <p style="margin-bottom:2rem;font-size:1.05rem;color:var(--text-dim);">
+            Questions? Let's discuss.
+        </p>
+        
+        <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:2rem;">
+            <a href="https://github.com/RisorseArtificiali/agent-ready-skill" target="_blank"
+               class="btn btn-primary" style="text-decoration:none;">
+                ⭐ Star the Repo
+            </a>
+            <a href="https://github.com/RisorseArtificiali/agent-ready-skill/issues" target="_blank"
+               class="btn btn-outline" style="text-decoration:none;">
+                🐛 Found a Bug?
+            </a>
+        </div>
+        
+        <div class="card" style="max-width:450px;margin:0 auto;text-align:left;">
+            <p style="font-size:0.9rem;margin:0;">
+                <strong>Repo:</strong> <code style="background:var(--primary-dim);color:var(--primary);padding:2px 6px;border-radius:4px;font-family:var(--mono);font-size:0.82rem;">RisorseArtificiali/agent-ready-skill</code><br>
+                <strong>License:</strong> MIT<br>
+                <strong>Dependencies:</strong> rich, pyyaml, jinja2 (that's it!)
+            </p>
+        </div>
+        
+        <div style="margin-top:2rem;">
+            <p style="font-size:0.85rem;color:var(--text-darker);">
+                Built with ❤️ by Stefano Maeste • PyCon Italia 2026
+            </p>
+        </div>
+    </div>
+</div>
+
+</div><!-- end slide container -->
+
+<!-- ═════════════════════════════════════════
+     JAVASCRIPT — Navigation & Interactions
+     ═════════════════════════════════════════ -->
+<script>
+// ─── State ───
+let currentSlide = 1;
+const totalSlides = 33;
+
+// ─── Navigation ───
+function goToSlide(n) {
+    if (n < 1 || n > totalSlides) return;
+    
+    const current = document.querySelector('.slide.active');
+    const next = document.getElementById('slide' + n);
+    
+    if (current) {
+        current.classList.remove('active');
+        current.classList.add('exit');
+        setTimeout(() => current.classList.remove('exit'), 500);
+    }
+    
+    if (next) {
+        setTimeout(() => next.classList.add('active'), 50);
+    }
+    
+    currentSlide = n;
+    updateCounter();
+    updateDots();
+    
+    // Trigger radar chart draw on slide 28
+    if (n === 28) setTimeout(drawSlideRadar, 400);
+}
+
+function nextSlide() { goToSlide(currentSlide + 1); }
+function prevSlide() { goToSlide(currentSlide - 1); }
+
+// ─── Counter ───
+function updateCounter() {
+    const el = document.getElementById('slideCounter');
+    el.innerHTML = '';
+    for (let i = 1; i <= totalSlides; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'slide-dot' + (i === currentSlide ? ' active' : '');
+        dot.onclick = () => goToSlide(i);
+        el.appendChild(dot);
+    }
+}
+
+function updateDots() { /* dots updated via counter */ }
+
+// ─── Keyboard ───
+document.addEventListener('keydown', (e) => {
+    switch(e.key) {
+        case 'ArrowRight':
+        case ' ':
+        case 'PageDown':
+            e.preventDefault(); nextSlide(); break;
+        case 'ArrowLeft':
+        case 'PageUp':
+            e.preventDefault(); prevSlide(); break;
+        case 'Home':
+            e.preventDefault(); goToSlide(1); break;
+        case 'End':
+            e.preventDefault(); goToSlide(totalSlides); break;
+    }
+});
+
+// ─── Touch/Swipe ───
+let touchStartX = 0;
+document.addEventListener('touchstart', (e) => touchStartX = e.touches[0].clientX, {passive:true});
+document.addEventListener('touchend', (e) => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) diff > 0 ? nextSlide() : prevSlide();
+}, {passive:true});
+
+// ─── Initialize ───
+updateCounter();
+
+// ─── Mini Radar Chart for Slide 28 (Canvas API, no library) ───
+function drawSlideRadar() {
+    const canvas = document.getElementById('slideRadar');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width, h = canvas.height;
+    const cx = w/2, cy = h/2 + 10;
+    const radius = Math.min(w, h) * 0.38;
+
+    ctx.clearRect(0, 0, w, h);
+
+    // Data
+    const axes = [
+        { label: 'INSTRUCT', value: 0.59, angle: -Math.PI/2 },
+        { label: 'NAVIGATE', value: 0.67, angle: Math.PI/6 },
+        { label: 'VALIDATE', value: 0.41, angle: 5*Math.PI/6 },
+    ];
+    const colors = ['#4f8cff', '#a855f7', '#22c55e'];
+
+    // Draw grid (pentagon-ish, 5 rings)
+    for (let ring = 5; ring >= 1; ring--) {
+        const r = radius * (ring / 5);
+        ctx.beginPath();
+        axes.forEach((ax, i) => {
+            const x = cx + Math.cos(ax.angle) * r;
+            const y = cy + Math.sin(ax.angle) * r;
+            if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        });
+        ctx.closePath();
+        ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+    }
+
+    // Draw axis lines
+    axes.forEach(ax => {
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx + Math.cos(ax.angle) * radius, cy + Math.sin(ax.angle) * radius);
+        ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+        ctx.stroke();
+    });
+
+    // Draw data polygon
+    ctx.beginPath();
+    axes.forEach((ax, i) => {
+        const x = cx + Math.cos(ax.angle) * radius * ax.value;
+        const y = cy + Math.sin(ax.angle) * radius * ax.value;
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(79,140,255,0.15)';
+    ctx.fill();
+    ctx.strokeStyle = '#4f8cff';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    // Draw data points
+    axes.forEach((ax, i) => {
+        const x = cx + Math.cos(ax.angle) * radius * ax.value;
+        const y = cy + Math.sin(ax.angle) * radius * ax.value;
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, Math.PI * 2);
+        ctx.fillStyle = colors[i];
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+    });
+
+    // Draw labels
+    ctx.font = 'bold 11px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    axes.forEach(ax => {
+        const x = cx + Math.cos(ax.angle) * (radius + 24);
+        const y = cy + Math.sin(ax.angle) * (radius + 20);
+        ctx.fillStyle = '#e2e8f0';
+        ctx.fillText(ax.label, x, y);
+    });
+}
+</script>
+
+<style>
+/* Terminal syntax highlighting within slides */
+.terminal-body .comment { color: #6a9955; }
+.terminal-body .keyword { color: #569cd6; }
+.terminal-body .string { color: #ce9178; }
+.terminal-body .dim { color: #6a737d; }
+.terminal-body .ok { color: #4ec9b0; }
+</style>
+
+</body>
+</html>

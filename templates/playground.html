@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Readiness — Interactive Playground</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg: #0a0a14;
+    --surface: #12121f;
+    --surface-light: #1a1a2e;
+    --border: rgba(255,255,255,0.08);
+    --primary: #4f8cff;
+    --primary-dim: rgba(79,140,255,0.12);
+    --secondary: #a855f7;
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --error: #ef4444;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --text-darker: #64748b;
+    --radius: 12px;
+    --font: 'Inter', -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* Background */
+.bg-glow { position: fixed; width: 600px; height: 600px; border-radius: 50%; filter: blur(140px); opacity: 0.08; pointer-events: none; z-index: 0; }
+.bg-glow.b1 { background: var(--primary); top: -200px; right: -200px; }
+.bg-glow.b2 { background: var(--secondary); bottom: -200px; left: -200px; }
+.grid-overlay { position: fixed; inset: 0; background-image: linear-gradient(rgba(79,140,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(79,140,255,0.02) 1px, transparent 1px); background-size: 60px 60px; pointer-events: none; z-index: 0; }
+
+/* Layout */
+.container { max-width: 1200px; margin: 0 auto; padding: 2rem; position: relative; z-index: 1; }
+
+/* Header */
+header { text-align: center; padding: 3rem 0 2rem; }
+header h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; letter-spacing: -0.03em; }
+header h1 .gradient { background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+header p { color: var(--text-dim); font-size: 1.05rem; margin-top: 0.5rem; max-width: 550px; margin-left: auto; margin-right: auto; }
+
+/* Main grid */
+.main-grid { display: grid; grid-template-columns: 380px 1fr; gap: 2rem; align-items: start; }
+@media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } }
+
+/* Panel */
+.panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.panel-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.panel-header h2 { font-size: 1.05rem; font-weight: 700; }
+.panel-body { padding: 1.5rem; }
+
+/* Check items */
+.check-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.check-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.7rem 0.9rem; border-radius: 10px; cursor: pointer; transition: all 0.15s ease; user-select: none; border: 1px solid transparent; }
+.check-item:hover { background: rgba(255,255,255,0.03); }
+.check-item.active { background: rgba(34,197,94,0.06); border-color: rgba(34,197,94,0.15); }
+.check-checkbox { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--text-darker); display: flex; align-items: center; justify-content: center; transition: all 0.15s ease; flex-shrink: 0; }
+.check-item.active .check-checkbox { background: var(--success); border-color: var(--success); }
+.check-checkbox::after { content: '✓'; color: #fff; font-size: 12px; font-weight: bold; opacity: 0; transition: opacity 0.15s; }
+.check-item.active .check-checkbox::after { opacity: 1; }
+.check-info { flex: 1; min-width: 0; }
+.check-name { font-size: 0.9rem; font-weight: 500; }
+.check-desc { font-size: 0.76rem; color: var(--text-dimmer); margin-top: 2px; }
+.check-pts { font-family: var(--mono); font-size: 0.82rem; font-weight: 600; color: var(--text-dimmer); white-space: nowrap; }
+.check-item.active .check-pts { color: var(--success); }
+
+/* Axis tabs */
+.axis-tabs { display: flex; gap: 0; margin-bottom: 1.25rem; }
+.axis-tab { flex: 1; padding: 0.65rem; text-align: center; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text-dim); transition: all 0.15s; border-radius: 8px 8px 0 0; }
+.axis-tab:first-child { border-radius: 8px 0 0 0; }
+.axis-tab:last-child { border-radius: 0 8px 0 0; }
+.axis-tab.active { background: var(--surface-light); color: var(--text); border-color: transparent; }
+.axis-tab.instruct.active { border-bottom: 2px solid var(--primary); color: var(--primary); }
+.axis-tab.navigate.active { border-bottom: 2px solid var(--secondary); color: var(--secondary); }
+.axis-tab.validate.active { border-bottom: 2px solid var(--success); color: var(--success); }
+
+/* Radar area */
+.radar-section { display: flex; flex-direction: column; gap: 1.5rem; }
+.radar-container { display: flex; justify-content: center; align-items: center; padding: 1.5rem; }
+#radarCanvas { max-width: 100%; }
+
+/* Score cards */
+.score-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.score-card { text-align: center; padding: 1.25rem 1rem; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--border); transition: all 0.2s; }
+.score-card .icon { font-size: 1.6rem; margin-bottom: 0.35rem; }
+.score-card .label { font-size: 0.82rem; color: var(--text-dim); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.score-card .value { font-size: 2.2rem; font-weight: 800; font-family: var(--font); line-height: 1; margin: 0.35rem 0; }
+.score-card .bar { height: 6px; border-radius: 99px; background: rgba(255,255,255,0.06); overflow: hidden; }
+.score-card .bar-fill { height: 100%; border-radius: 99px; transition: width 0.4s cubic-bezier(0.22,1,0.36,1); }
+
+/* Overall score */
+.overall-card { text-align: center; padding: 2rem; border-radius: var(--radius); background: linear-gradient(135deg, var(--surface-light), var(--surface)); border: 1px solid var(--border); margin-top: 1rem; }
+.overall-label { font-size: 0.85rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700; }
+.overall-value { font-size: clamp(3rem, 6vw, 4.5rem); font-weight: 900; line-height: 1; margin: 0.25rem 0; }
+.overall-level { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
+.overall-hint { font-size: 0.84rem; color: var(--text-dim); }
+
+/* Badge preview */
+.badge-preview { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem; padding: 0.5rem 1.25rem; border-radius: 999px; font-family: var(--mono); font-size: 0.88rem; font-weight: 700; }
+.badge-copy-btn { margin-left: 0.75rem; padding: 0.3rem 0.75rem; border-radius: 6px; background: rgba(255,255,255,0.06); border: 1px solid var(--border); color: var(--text-dim); font-size: 0.78rem; cursor: pointer; font-family: var(--font); transition: all 0.15s; }
+.badge-copy-btn:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+
+/* Quick actions */
+.quick-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.quick-btn { padding: 0.45rem 0.9rem; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text-dim); transition: all 0.15s; font-family: var(--font); }
+.quick-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-dim); }
+
+/* Footer */
+footer { text-align: center; padding: 3rem 0 2rem; color: var(--text-darker); font-size: 0.82rem; }
+footer a { color: var(--primary); text-decoration: none; }
+
+/* Color utilities */
+.c-instruct { color: var(--primary); }
+.c-navigate { color: var(--secondary); }
+.c-validate { color: var(--success); }
+.bg-instruct { background: var(--primary); }
+.bg-navigate { background: var(--secondary); }
+.bg-validate { background: var(--success); }
+
+@media (max-width: 600px) {
+    .container { padding: 1rem; }
+    .score-cards { grid-template-columns: 1fr; }
+    .axis-tabs { flex-wrap: wrap; }
+    .axis-tab { flex: 1 1 calc(33% - 4px); }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-glow b1"></div>
+<div class="bg-glow b2"></div>
+<div class="grid-overlay"></div>
+
+<div class="container">
+
+<header>
+    <h1>🤖 Agent Readiness <span class="gradient">Playground</span></h1>
+    <p>Toggle checks to simulate your codebase's readiness. Watch the radar update in real-time.</p>
+</header>
+
+<div class="main-grid">
+
+<!-- LEFT PANEL: Checks -->
+<div style="position: sticky; top: 2rem;">
+    <div class="panel">
+        <div class="panel-header">
+            <h2>🔍 Checks</h2>
+            <div class="quick-actions" style="margin:0;">
+                <button class="quick-btn" onclick="setAll(true)">All ✓</button>
+                <button class="quick-btn" onclick="setAll(false)">None ✗</button>
+                <button class="quick-btn" onclick="setPreset('bad')">😈 Bad</button>
+                <button class="quick-btn" onclick="setPreset('ok')">👌 OK</button>
+                <button class="quick-btn" onclick="setPreset('good')">🌟 Good</button>
+            </div>
+        </div>
+        
+        <div class="axis-tabs">
+            <div class="axis-tab instruct active" data-axis="instruct" onclick="switchAxis('instruct')">📝 Instruct</div>
+            <div class="axis-tab navigate" data-axis="navigate" onclick="switchAxis('navigate')">🧭 Navigate</div>
+            <div class="axis-tab validate" data-axis="validate" onclick="switchAxis('validate')">✅ Validate</div>
+        </div>
+        
+        <div class="panel-body" id="checksContainer">
+            <!-- Populated by JS -->
+        </div>
+    </div>
+</div>
+
+<!-- RIGHT PANEL: Radar + Scores -->
+<div class="radar-section">
+    
+    <!-- Per-axis scores -->
+    <div class="score-cards">
+        <div class="score-card">
+            <div class="icon">📝</div>
+            <div class="label c-instruct">Instruct</div>
+            <div class="value c-instruct" id="scoreInstruct">0%</div>
+            <div class="bar"><div class="bar-fill bg-instruct" id="barInstruct" style="width:0%"></div></div>
+        </div>
+        <div class="score-card">
+            <div class="icon">🧭</div>
+            <div class="label c-navigate">Navigate</div>
+            <div class="value c-navigate" id="scoreNavigate">0%</div>
+            <div class="bar"><div class="bar-fill bg-navigate" id="barNavigate" style="width:0%"></div></div>
+        </div>
+        <div class="score-card">
+            <div class="icon">✅</div>
+            <div class="label c-validate">Validate</div>
+            <div class="value c-validate" id="scoreValidate">0%</div>
+            <div class="bar"><div class="bar-fill bg-validate" id="barValidate" style="width:0%"></div></div>
+        </div>
+    </div>
+    
+    <!-- Radar chart -->
+    <div class="panel radar-container">
+        <canvas id="radarCanvas" width="400" height="360"></canvas>
+    </div>
+    
+    <!-- Overall -->
+    <div class="overall-card">
+        <div class="overall-label">Overall Score</div>
+        <div class="overall-value" id="overallScore">0%</div>
+        <div class="overall-level" id="overallLevel">Level 0 — Unknown</div>
+        <div class="overall-hint" id="overallHint">Toggle checks to see your score</div>
+        <div class="badge-preview" id="badgePreview" style="display:none;">
+            agent-ready
+            <span id="badgeLabel">L0 0%</span>
+            <button class="badge-copy-btn" onclick="copyBadge()">Copy SVG</button>
+        </div>
+    </div>
+    
+</div><!-- end right panel -->
+
+</div><!-- end main-grid -->
+
+<footer>
+    <p>Part of <a href="https://github.com/RisorseArtificiali/agent-ready-skill">agent-ready-skill</a> • PyCon Italia 2026 Workshop</p>
+</footer>
+
+</div><!-- end container -->
+
+<script>
+// ═════════════════════════════════════════
+// CHECK DEFINITIONS
+// ═════════════════════════════════════════
+const CHECKS = {
+    instruct: [
+        { id: 'claude_md',       name: 'CLAUDE.md / .cursorrules',     desc: 'Agent instruction file',          pts: 20 },
+        { id: 'readme',          name: 'README (quality)',             desc: '>500 chars + sections',           pts: 8 },
+        { id: 'contributing',    name: 'CONTRIBUTING.md',              desc: 'How to contribute',               pts: 5 },
+        { id: 'architecture',    name: 'ARCHITECTURE.md / ADRs',      desc: 'Design decisions documented',      pts: 10 },
+    ],
+    navigate: [
+        { id: 'editorconfig',    name: '.editorconfig',                desc: 'Consistent editor settings',       pts: 2 },
+        { id: 'linter',          name: 'Linter (Ruff / Flake8)',      desc: 'Code linting configured',         pts: 6 },
+        { id: 'formatter',       name: 'Formatter (Black / Ruff)',    desc: 'Auto-formatting configured',      pts: 6 },
+        { id: 'type_checker',    name: 'Type Checker (Pyright/Mypy)',  desc: 'Static type checking',             pts: 6 },
+        { id: 'env_example',     name: '.env.example',                 desc: 'Environment variables documented', pts: 4 },
+        { id: 'no_large_files',  name: 'No Large Files (>300 lines)',  desc: 'Manageable file sizes',           pts: 4 },
+        { id: 'version_pinned',  name: 'Python Version Pinned',        desc: '.python-version or pyproject',     pts: 3 },
+        { id: 'lock_file',       name: 'Dependency Lock File',         desc: 'poetry.lock / uv.lock',           pts: 3 },
+    ],
+    validate: [
+        { id: 'test_framework',  name: 'Test Framework Configured',     desc: 'pytest.ini or [tool.pytest]',     pts: 6 },
+        { id: 'test_files',      name: 'Test Files Exist (≥5)',        desc: 'Actual test files present',       pts: 5 },
+        { id: 'ci_configured',   name: 'CI Pipeline',                  desc: 'GitHub Actions / GitLab CI',       pts: 6 },
+        { id: 'coverage',        name: 'Coverage Configured',           desc: 'coverage tool configured',        pts: 4 },
+        { id: 'pre_commit',      name: 'Pre-commit Hooks',             desc: 'Automated checks on commit',      pts: 3 },
+        { id: 'security_policy', name: 'SECURITY.md',                  desc: 'Vulnerability reporting guide',   pts: 2 },
+        { id: 'dep_automation',  name: 'Dep Update Automation',        desc: 'Dependabot / Renovate',           pts: 2 },
+    ],
+};
+
+const WEIGHTS = { instruct: 38, navigate: 34, validate: 28 };
+
+const LEVELS = [
+    { min: 95, name: 'Autonomous',   icon: '🚀', hint: 'Agents are effective team members' },
+    { min: 85, name: 'Optimized',    icon: '⚡', hint: 'Agents validate their own work' },
+    { min: 70, name: 'Structured',   icon: '🏗️',  hint: 'Agents navigate autonomously' },
+    { min: 55, name: 'Guided',       icon: '📍',  hint: 'Agents can follow instructions' },
+    { min: 40, name: 'Foundational', icon: '🌱',  hint: 'The project exists' },
+    { min: 0,  name: 'Unknown',      icon: '❓',  hint: 'Not enough data' },
+];
+
+// State
+let state = {};
+Object.keys(CHECKS).forEach(axis => {
+    CHECKS[axis].forEach(c => state[c.id] = false);
+});
+let currentAxis = 'instruct';
+
+// ═════════════════════════════════════════
+// RENDER CHECKS LIST
+// ═════════════════════════════════════════
+function renderChecks() {
+    const container = document.getElementById('checksContainer');
+    const checks = CHECKS[currentAxis];
+    let html = '<div class="check-list">';
+    checks.forEach(c => {
+        const active = state[c.id] ? 'active' : '';
+        html += `
+        <div class="check-item ${active}" onclick="toggleCheck('${c.id}')">
+            <div class="check-checkbox"></div>
+            <div class="check-info">
+                <div class="check-name">${c.name}</div>
+                <div class="check-desc">${c.desc}</div>
+            </div>
+            <div class="check-pts">+${c.pts}</div>
+        </div>`;
+    });
+    html += '</div>';
+    
+    // Axis summary
+    const axisScore = calcAxisScore(currentAxis);
+    const axisMax = calcAxisMax(currentAxis);
+    html += `<div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:0.85rem;color:var(--text-dim);">${currentAxis.charAt(0).toUpperCase() + currentAxis.slice(1)} subtotal:</span>
+        <span style="font-family:var(--mono);font-weight:700;font-size:1rem;" class="c-${currentAxis}">${axisScore}/${axisMax}</span>
+    </div>`;
+    
+    container.innerHTML = html;
+}
+
+function switchAxis(axis) {
+    currentAxis = axis;
+    document.querySelectorAll('.axis-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector(`.axis-tab.${axis}`).classList.add('active');
+    renderChecks();
+}
+
+function toggleCheck(id) {
+    state[id] = !state[id];
+    renderChecks();
+    updateScores();
+    drawRadar();
+}
+
+function setAll(val) {
+    Object.keys(state).forEach(k => state[k] = val);
+    renderChecks();
+    updateScores();
+    drawRadar();
+}
+
+function setPreset(preset) {
+    Object.keys(state).forEach(k => state[k] = false);
+    if (preset === 'bad') {
+        // Only very basic stuff
+        state.readme = true;
+        state.editorconfig = true;
+        state.lock_file = true;
+        state.test_framework = true;
+        state.test_files = true;
+    } else if (preset === 'ok') {
+        // Most things but not everything
+        state.claude_md = true;
+        state.readme = true;
+        state.contributing = true;
+        state.editorconfig = true;
+        state.linter = true;
+        state.formatter = true;
+        state.env_example = true;
+        state.version_pinned = true;
+        state.lock_file = true;
+        state.test_framework = true;
+        state.test_files = true;
+        state.ci_configured = true;
+        state.pre_commit = true;
+    } else if (preset === 'good') {
+        Object.keys(state).forEach(k => state[k] = true);
+    }
+    renderChecks();
+    updateScores();
+    drawRadar();
+}
+
+// ═════════════════════════════════════════
+// SCORING
+// ═════════════════════════════════════════
+function calcAxisScore(axis) {
+    return CHECKS[axis].reduce((sum, c) => sum + (state[c.id] ? c.pts : 0), 0);
+}
+function calcAxisMax(axis) {
+    return CHECKS[axis].reduce((sum, c) => sum + c.pts, 0);
+}
+function calcAxisPct(axis) {
+    const max = calcAxisMax(axis);
+    return max > 0 ? Math.round(calcAxisScore(axis) / max * 100) : 0;
+}
+
+function getLevel(pct) {
+    for (const lv of LEVELS) { if (pct >= lv.min) return lv; }
+    return LEVELS[LEVELS.length - 1];
+}
+
+function updateScores() {
+    ['instruct','navigate','validate'].forEach(axis => {
+        const pct = calcAxisPct(axis);
+        document.getElementById(`score${axis.charAt(0).toUpperCase()+axis.slice(1)}`).textContent = pct + '%';
+        document.getElementById(`bar${axis.charAt(0).toUpperCase()+axis.slice(1)}`).style.width = pct + '%';
+    });
+    
+    // Weighted overall
+    const wI = calcAxisPct('instruct') * WEIGHTS.instruct;
+    const wN = calcAxisPct('navigate') * WEIGHTS.navigate;
+    const wV = calcAxisPct('validate') * WEIGHTS.validate;
+    const overall = Math.round((wI + wN + wV) / 100);
+    
+    document.getElementById('overallScore').textContent = overall + '%';
+    
+    const level = getLevel(overall);
+    document.getElementById('overallLevel').textContent = `Level ${LEVELS.indexOf(level)}: ${level.name}`;
+    document.getElementById('overallHint').textContent = level.hint;
+    
+    // Badge
+    const badge = document.getElementById('badgePreview');
+    badge.style.display = 'inline-flex';
+    const lvlIdx = LEVELS.indexOf(level);
+    const colors = ['#555','#f57c00','#1976d2','#388e3c','#7b1fa2'];
+    badge.style.background = `${colors[lvlIdx]}22`;
+    badge.style.color = colors[lvlIdx];
+    badge.style.border = `1px solid ${colors[lvlIdx]}44`;
+    document.getElementById('badgeLabel').textContent = `L${lvlIdx} ${overall}%`;
+}
+
+// ═════════════════════════════════════════
+// RADAR CHART (Canvas API)
+// ═════════════════════════════════════════
+function drawRadar() {
+    const canvas = document.getElementById('radarCanvas');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const cx = W/2, cy = H/2 + 10;
+    const R = Math.min(W, H) * 0.37;
+
+    ctx.clearRect(0, 0, W, H);
+
+    const axes = [
+        { label: 'INSTRUCT', value: calcAxisPct('instruct')/100, angle: -Math.PI/2, color: '#4f8cff' },
+        { label: 'NAVIGATE', value: calcAxisPct('navigate')/100, angle: Math.PI/6,       color: '#a855f7' },
+        { label: 'VALIDATE', value: calcAxisPct('validate')/100, angle: 5*Math.PI/6,      color: '#22c55e' },
+    ];
+
+    // Grid rings
+    for (let ring = 5; ring >= 1; ring--) {
+        const r = R * (ring / 5);
+        ctx.beginPath();
+        axes.forEach((ax, i) => {
+            const x = cx + Math.cos(ax.angle) * r;
+            const y = cy + Math.sin(ax.angle) * r;
+            i === 0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+        });
+        ctx.closePath();
+        ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        // Ring label
+        if (ring < 5) {
+            ctx.fillStyle = 'rgba(255,255,255,0.12)';
+            ctx.font = '10px Inter';
+            ctx.fillText(ring*20+'%', cx+4, cy - r + 12);
+        }
+    }
+
+    // Axis lines
+    axes.forEach(ax => {
+        ctx.beginPath(); ctx.moveTo(cx,cy);
+        ctx.lineTo(cx+Math.cos(ax.angle)*R, cy+Math.sin(ax.angle)*R);
+        ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+        ctx.stroke();
+    });
+
+    // Data polygon
+    ctx.beginPath();
+    axes.forEach((ax, i) => {
+        const x = cx + Math.cos(ax.angle) * R * ax.value;
+        const y = cy + Math.sin(ax.angle) * R * ax.value;
+        i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    });
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(79,140,255,0.12)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(79,140,255,0.7)';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    // Data points + labels
+    axes.forEach(ax => {
+        const px = cx + Math.cos(ax.angle) * R * ax.value;
+        const py = cy + Math.sin(ax.angle) * R * ax.value;
+        ctx.beginPath();
+        ctx.arc(px, py, 6, 0, Math.PI*2);
+        ctx.fillStyle = ax.color;
+        ctx.fill();
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke();
+
+        // Outer labels
+        const lx = cx + Math.cos(ax.angle) * (R + 28);
+        const ly = cy + Math.sin(ax.angle) * (R + 24);
+        ctx.fillStyle = ax.color;
+        ctx.font = 'bold 11px Inter';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(ax.label, lx, ly);
+
+        // Value near point
+        ctx.fillStyle = '#e2e8f0';
+        ctx.font = 'bold 10px JetBrains Mono';
+        const vx = cx + Math.cos(ax.angle) * R * ax.value * 0.55;
+        const vy = cy + Math.sin(ax.angle) * R * ax.value * 0.55;
+        ctx.fillText(Math.round(ax.value*100)+'%', vx, vy);
+    });
+
+    // Center text
+    ctx.fillStyle = 'rgba(255,255,255,0.15)';
+    ctx.font = 'bold 10px Inter';
+    ctx.textAlign = 'center';
+    ctx.fillText('YOUR', cx, cy-5);
+    ctx.fillText('CODEBASE', cx, cy+9);
+}
+
+function copyBadge() {
+    const overall = document.getElementById('overallScore').textContent;
+    const level = document.getElementById('overallLevel').textContent;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="24"><rect width="160" height="24" rx="12" fill="#12121f"/><text x="50%" y="16" fill="#e2e8f0" text-anchor="middle" font-family="system-ui" font-size="11" font-weight="bold">agent-ready ${level}: ${overall}</text></svg>`;
+    navigator.clipboard.writeText(svg).then(() => {
+        const btn = document.querySelector('.badge-copy-btn');
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy SVG', 1500);
+    });
+}
+
+// ═════════════════════════════════════════
+// INIT
+// ═════════════════════════════════════════
+renderChecks();
+updateScores();
+drawRadar();
+
+// Responsive redraw
+window.addEventListener('resize', () => drawRadar());
+</script>
+</body>
+</html>
