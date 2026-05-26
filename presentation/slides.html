@@ -658,7 +658,7 @@ body.notes-mode .duration-tag { display: inline-block; }
         </div>
     </div>
     <aside class="speaker-notes">
-        Quick room read — raise your hand if. Python in production? Most hands up. Used an AI coding agent — Cursor, Claude Code, Copilot, anything? Almost everyone. Had an agent break your codebase at least once? Lots of laughter. That last group is who I'm talking to today. Also: now is the time to open your laptop, clone the workshop repo if you haven't, and pip install rich pyyaml. We move quickly from here.
+        Quick room read — raise your hand if. Python in production? Most hands up. Used an AI coding agent — Cursor, Claude Code, Copilot, anything? Almost everyone. Had an agent break your codebase at least once? Lots of laughter. That last group is who I'm talking to today. Also: now is the time to open your laptop, clone the guinea pig repo if you haven't, and make sure Claude Code is working. We move quickly from here.
     </aside>
 </div>
 
@@ -1039,7 +1039,7 @@ body.notes-mode .duration-tag { display: inline-block; }
                         <div class="terminal-dot dot-green"></div>
                     </div>
                     <div class="terminal-body">
-<span class="prompt">$</span> <span class="cmd">python scan_static.py ./my-repo --all</span>
+<span class="prompt">$</span> <span class="cmd">/agent-ready scan .</span>
 
 <span class="output">╭─────────────────────────────────────╮
 │  📝 AXIS 1: INSTRUCT               │
@@ -1073,26 +1073,26 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
             </div>
             <div style="text-align:left;display:flex;flex-direction:column;gap:1rem;">
                 <div class="card">
-                    <strong>Step 1:</strong> Static checks per axis
-                    <p style="font-size:0.84rem;color:var(--text-dim);margin-top:0.3rem;">File existence, content detection, glob patterns</p>
+                    <strong>Step 1:</strong> Agent scans 8 dimensions
+                    <p style="font-size:0.84rem;color:var(--text-dim);margin-top:0.3rem;">File existence, content quality, structure analysis</p>
                 </div>
                 <div class="card">
-                    <strong>Step 2:</strong> Per-axis percentage (0–100)
-                    <p style="font-size:0.84rem;color:var(--text-dim);margin-top:0.3rem;">Score earned / Max possible × 100</p>
+                    <strong>Step 2:</strong> Per-dimension scoring (0–100)
+                    <p style="font-size:0.84rem;color:var(--text-dim);margin-top:0.3rem;">Weighted rubric with evidence-based assessment</p>
                 </div>
                 <div class="card">
-                    <strong>Step 3:</strong> Weighted overall + maturity level
+                    <strong>Step 3:</strong> Overall score + maturity level
                     <p style="font-size:0.84rem;color:var(--text-dim);margin-top:0.3rem;">Weighted average → level gate at thresholds</p>
                 </div>
                 <div class="card" style="border-color:rgba(168,85,247,0.3);">
-                    <strong style="color:var(--secondary);">Hybrid Mode</strong>
-                    <p style="font-size:0.84rem;color:var(--text-dim);margin-top:0.3rem;">Add LLM semantic scoring: 60% static + 40% AI judgment</p>
+                    <strong style="color:var(--secondary);">Agent-Powered</strong>
+                    <p style="font-size:0.84rem;color:var(--text-dim);margin-top:0.3rem;">The agent itself assesses your code — not a static script</p>
                 </div>
             </div>
         </div>
     </div>
     <aside class="speaker-notes">
-        Three-step scoring. Step one — static checks per axis. Does the file exist? Does the section exist? Is the tool configured? These are deterministic. Step two — sum the points earned, divide by max possible, get a 0 to 100 percentage. Step three — weighted average across the three axes, gate against the maturity ladder. Later we layer hybrid mode on top: 60 percent static plus 40 percent LLM judgment for content quality. We'll see that in Phase 4.
+        Three-step scoring. Step one — the agent scans all 8 dimensions. Does the file exist? Is the content good? Is the structure clear? Step two — weighted rubric produces a 0 to 100 percentage per dimension. Step three — map to three axes, gate against the maturity ladder. The key insight: this isn't a static script — it's the agent itself reading and judging your codebase, just like a new team member would. That's what makes this different from tools like Kodus or Factory.ai.
     </aside>
 </div>
 
@@ -1207,7 +1207,7 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
                 <div class="terminal-dot dot-green"></div>
             </div>
             <div class="terminal-body">
-<span class="prompt">$</span> <span class="cmd">python scripts/scan_static.py ~/your-repo --axis instruct</span>
+<span class="prompt">$</span> <span class="cmd">/agent-ready scan .</span>
 
 <span class="output" style="animation:pulse 2s infinite;">↑ Scanning your repo... (results appear here)</span>
             </div>
@@ -1358,7 +1358,7 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
                     <div class="terminal-dot dot-green"></div>
                 </div>
                 <div class="terminal-body" style="font-size:0.78rem;">
-<span class="prompt">$</span> <span class="cmd">python scripts/scan_static.py ~/your-repo --axis navigate</span>
+<span class="prompt">$</span> <span class="cmd">/agent-ready scan .</span>
 
 <span class="output">╭──────────────────────────────────────╮
 │  🧭 AXIS 2: NAVIGATE                 │
@@ -1481,7 +1481,7 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
                 <div class="terminal-dot dot-green"></div>
             </div>
             <div class="terminal-body" style="font-size:0.78rem;">
-<span class="prompt">$</span> <span class="cmd">python scripts/scan_static.py ~/your-repo --axis validate</span>
+<span class="prompt">$</span> <span class="cmd">/agent-ready scan .</span>
 
 <span class="output">╭──────────────────────────────────────╮
 │  ✅ AXIS 3: VALIDATE                  │
@@ -1619,8 +1619,8 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
         <div class="badge badge-amber" style="margin-bottom:1rem;font-size:0.9rem;">
             ✨✨✨ MAGIC MOMENT #3 — THE PEAK ✨✨✨
         </div>
-        <h2 style="margin-bottom:1rem;">Full Scan — Hybrid Mode</h2>
-        <p style="margin-bottom:1.5rem;color:var(--text-dim);">Static checks (60%) + LLM semantic analysis (40%)</p>
+        <h2 style="margin-bottom:1rem;">Full Scan — The Complete Picture</h2>
+        <p style="margin-bottom:1.5rem;color:var(--text-dim);">The agent assesses all 8 dimensions and scores your project</p>
         
         <div class="terminal" style="max-width:720px;text-align:left;margin:0 auto 1.5rem;">
             <div class="terminal-header">
@@ -1629,7 +1629,7 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
                 <div class="terminal-dot dot-green"></div>
             </div>
             <div class="terminal-body" style="font-size:0.78rem;">
-<span class="prompt">$</span> <span class="cmd">python scan_static.py ./my-repo --all --hybrid</span>
+<span class="prompt">$</span> <span class="cmd">/agent-ready scan .</span>
 
 <span class="output">╭─────────────────────────────────────────────╮
 │  AGENT READINESS ASSESSMENT              │
@@ -1659,17 +1659,17 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
         
         <div style="max-width:600px;margin:0 auto;text-align:left;">
             <div class="card" style="border-color:rgba(168,85,247,0.25);">
-                <strong style="color:var(--secondary);">Why hybrid?</strong>
+                <strong style="color:var(--secondary);">Why agent-powered scoring?</strong>
                 <ul style="font-size:0.86rem;margin-top:0.5rem;padding-left:1.2rem;color:var(--text-dim);">
-                    <li><strong>Static</strong>: "Does the FILE exist?" (facts)</li>
-                    <li><strong>LLM</strong>: "Is the CONTENT good?" (judgment)</li>
-                    <li>You need <strong>both</strong> for the full picture</li>
+                    <li><strong>Structure</strong>: "Does the FILE exist?" (presence)</li>
+                    <li><strong>Quality</strong>: "Is the CONTENT useful?" (judgment)</li>
+                    <li>Static tools can only check the first — agents check <strong>both</strong></li>
                 </ul>
             </div>
         </div>
     </div>
     <aside class="speaker-notes">
-        Magic Moment number three — the peak. We run --all --hybrid. The full report shows static and LLM columns side by side. Why both? Because static checks tell you whether the FILE exists. LLM checks tell you whether the CONTENT is actually good. You might have a CI file that doesn't test anything meaningful — static green, LLM red. Or beautiful docs but no CLAUDE.md — static red, LLM green. You need both columns to see the truth.
+        Magic Moment number three — the peak. We run the full scan and see all 8 dimensions scored. This is what makes agent-powered scoring different from static tools. Static tools can tell you whether a file exists. The agent tells you whether the content is actually useful. You might have a CI file that doesn't test anything meaningful. Or a README that says nothing actionable. The agent catches both — presence AND quality. That's why this approach matters.
     </aside>
 </div>
 
@@ -1735,9 +1735,9 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
      ═════════════════════════════════════════ -->
 <div class="slide" data-slide="31" id="slide31" data-duration="4">
     <div class="full-width animate-in" style="text-align:center;">
-        <h2 style="margin-bottom:1rem;">Beyond Manual Fixes 🤖</h2>
-        <p style="margin-bottom:2rem;color:var(--text-dim);">The toolkit can also generate fixes automatically</p>
-        
+        <h2 style="margin-bottom:1rem;">The Agent Fixes What The Agent Needs 🤖</h2>
+        <p style="margin-bottom:2rem;color:var(--text-dim);">The same agent that scans can also generate fixes — contextualized to YOUR project</p>
+
         <div class="terminal" style="max-width:680px;text-align:left;margin:0 auto 1.5rem;">
             <div class="terminal-header">
                 <div class="terminal-dot dot-red"></div>
@@ -1745,28 +1745,37 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
                 <div class="terminal-dot dot-green"></div>
             </div>
             <div class="terminal-body">
-<span class="prompt">$</span> <span class="cmd">python apply_fix.py --list ./my-repo</span>
+<span class="prompt">$</span> <span class="cmd">/agent-ready fix</span>
 
-<span class="output">📋 Recommended fixes (4):
+<span class="output">🔍 Loading previous scores...
+📊 Gaps identified (sorted by impact):
 
-  agent-instructions  → CLAUDE.md           [instruct] +20pt (medium)
-  editorconfig        → .editorconfig       [navigate]  +2pt  (low)
-  env-example         → .env.example        [navigate]  +4pt  (low)
-  security-policy     → SECURITY.md         [validate]  +2pt  (low)
+  1. CLAUDE.md missing           [instruct] +20pt
+  2. No CI pipeline              [validate] +12pt
+  3. .editorconfig missing       [navigate]  +4pt
+  4. No .env.example             [navigate]  +4pt
 
-<span class="prompt">$</span> <span class="cmd">python apply_fix.py security-policy ./my-repo</span>
+## Files to Generate
 
-<span class="ok">✅ Created: SECURITY.md (412 chars)
-   Axis: validate | Effort: low | Potential gain: +2pts</span>
+  ✨ CLAUDE.md — project-specific instructions
+  ✨ .editorconfig — consistent formatting
+  ✨ .env.example — environment template
+
+Proceed? (y/n)</span>
+<span class="prompt">></span> <span class="cmd">y</span>
+
+<span class="ok">✅ Created: CLAUDE.md (tailored to your FastAPI project)
+✅ Created: .editorconfig
+✅ Created: .env.example (detected 3 env vars in source)</span>
             </div>
         </div>
-        
+
         <p style="font-size:0.9rem;color:var(--text-dim);">
-            Review each generated file → accept, edit, or discard
+            Not boilerplate — the agent reads YOUR code and generates contextualized files
         </p>
     </div>
     <aside class="speaker-notes">
-        We've been fixing manually all morning. Here's the punchline: there's an auto-fix command. apply_fix.py --list shows you what gaps it can auto-generate based on the same scoring rubric. Then apply_fix.py with a target name generates a file tailored to your project. Same criteria as the scan. Scan measures, fix improves, scan again validates. The loop closes. Use this on Monday to bulk-fix the rest of your repos.
+        We've been fixing manually — and with Claude's help — all morning. Here's the punchline: there's a dedicated fix skill. /agent-ready fix loads your previous scores, identifies the gaps, and generates files tailored to YOUR project. Not boilerplate — contextualized content. The agent reads your code, understands your framework, and creates what's missing. Same criteria as the scan. Scan measures, fix improves, scan again validates. The loop closes. This is what static tools CAN'T do.
     </aside>
 </div>
 
@@ -1786,11 +1795,13 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
                     <div class="terminal-dot dot-green"></div>
                 </div>
                 <div class="terminal-body" style="font-size:0.78rem;">
-<span class="prompt">$</span> <span class="cmd">python scan_static.py ./repo --all \</span>
-<span class="cmd">  --format json --output ./report/</span>
+<span class="prompt">$</span> <span class="cmd">/agent-ready report</span>
 
-<span class="prompt">$</span> <span class="cmd">python report_gen.py ./report/report.json \</span>
-<span class="cmd">  --output ./report/</span>
+<span class="output">Generating comprehensive report...</span>
+
+<span class="prompt">$</span> <span class="cmd">/agent-ready diff</span>
+
+<span class="output">Comparing current state vs initial scan...</span>
 
 <span class="ok">✅ report.txt          (terminal summary)
 ✅ recommendations.md  (prioritized todo list)
@@ -1821,7 +1832,7 @@ report.txt  recommendations.md  badge.svg  report.json</span>
         </div>
     </div>
     <aside class="speaker-notes">
-        One more command: scan_static.py --all combined with report_gen.py builds a takeaway package. Four files. report.txt for sharing, recommendations.md as your prioritized backlog, badge.svg to embed in your README, and the radar HTML for posterity. Run this on every repo you own. Put the badge in your README so your future self — and the next AI agent that lands there — knows where it stands.
+        Two more skills to close the loop. /agent-ready report generates a comprehensive assessment document — detailed per-dimension analysis, prioritized recommendations, the full picture. /agent-ready diff compares your current state with a previous scan and shows exactly what improved and by how much. Run these on every repo you own. Share the report with your team so everyone — humans and AI agents — knows where the codebase stands.
     </aside>
 </div>
 
@@ -1846,7 +1857,7 @@ report.txt  recommendations.md  badge.svg  report.json</span>
             <div class="card card-highlight" style="text-align:center;">
                 <div style="font-size:2.8rem;margin-bottom:0.75rem;">🛠️</div>
                 <h3 style="font-size:1.05rem;">A Toolkit</h3>
-                <p style="font-size:0.85rem;color:var(--text-dim);">Scanner, fixer, reporter — reusable on any Python project</p>
+                <p style="font-size:0.85rem;color:var(--text-dim);">5 Agent Skills — scan, fix, report, diff — install once, use everywhere</p>
             </div>
         </div>
         
@@ -1858,7 +1869,7 @@ report.txt  recommendations.md  badge.svg  report.json</span>
         </div>
     </div>
     <aside class="speaker-notes">
-        Quick recap of what's in your laptop right now. The mental model — three axes, three questions, anyone can draw it. Your number — proof of where you started and where you ended this morning. And the toolkit — three Python scripts and a folder of templates that run on any Python repo. Mental model, number, toolkit. That's the workshop.
+        Quick recap of what's in your laptop right now. The mental model — three axes, three questions, anyone can draw it. Your number — proof of where you started and where you ended this morning. And the toolkit — five Agent Skills that you install once and use on every project. /agent-ready scan, fix, report, diff. The agent assesses your code, fixes the gaps, and shows you the improvement. Mental model, number, toolkit. That's the workshop.
     </aside>
 </div>
 
@@ -1874,8 +1885,8 @@ report.txt  recommendations.md  badge.svg  report.json</span>
             <div class="card" style="display:flex;align-items:center;gap:1rem;">
                 <span class="badge badge-green">Soon</span>
                 <div>
-                    <strong>Full 39-check engine</strong>
-                    <p style="font-size:0.82rem;color:var(--text-dim);margin:0;">Porting Kodus checks to Python, plugin architecture</p>
+                    <strong>Multi-agent support</strong>
+                    <p style="font-size:0.82rem;color:var(--text-dim);margin:0;">Skills for Cursor, Copilot, Windsurf — not just Claude</p>
                 </div>
             </div>
             <div class="card" style="display:flex;align-items:center;gap:1rem;">

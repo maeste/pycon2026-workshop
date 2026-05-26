@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Measuring AI-Readiness — PyCon Italia 2026 Workshop</title>
+<meta name="description" content="A Three-Axis Maturity Model for Agent-Optimized Codebases. Hands-on workshop by Stefano Maestri.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg: #0a0a14;
+    --surface: #12121f;
+    --surface-light: #1a1a2e;
+    --border: rgba(255,255,255,0.08);
+    --primary: #4f8cff;
+    --primary-dim: rgba(79,140,255,0.15);
+    --secondary: #a855f7;
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --text: #e2e8f0;
+    --text-dim: #94a3b8;
+    --font: 'Inter', -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', 'Fira Code', monospace;
+    --radius: 12px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 16px; }
+body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.hero {
+    text-align: center;
+    padding: 4rem 1.5rem 2.5rem;
+    position: relative;
+}
+.hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 600px 400px at 50% 0%, rgba(79,140,255,0.08), transparent),
+        radial-gradient(ellipse 400px 300px at 30% 80%, rgba(168,85,247,0.05), transparent);
+    pointer-events: none;
+}
+.hero-badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--primary);
+    background: var(--primary-dim);
+    padding: 0.35rem 1rem;
+    border-radius: 999px;
+    margin-bottom: 1.5rem;
+}
+.hero h1 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 0.75rem;
+}
+.hero h1 .gradient {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.hero .subtitle {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--text-dim);
+    max-width: 600px;
+    margin: 0 auto 1rem;
+    line-height: 1.5;
+}
+.hero .meta {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.hero .meta span { display: flex; align-items: center; gap: 0.4rem; }
+
+.triangle-container {
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0 0.5rem;
+}
+.triangle-container svg { width: 220px; height: 200px; }
+
+.main { max-width: 960px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+
+.section-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 1rem;
+}
+
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-bottom: 3rem; }
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+.card:hover {
+    border-color: rgba(255,255,255,0.18);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+}
+.card .icon {
+    font-size: 2rem;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    margin-bottom: 0.2rem;
+}
+.card .icon.blue   { background: rgba(79,140,255,0.12); }
+.card .icon.purple { background: rgba(168,85,247,0.12); }
+.card .icon.green  { background: rgba(34,197,94,0.12); }
+.card .icon.amber  { background: rgba(245,158,11,0.12); }
+.card h3 { font-size: 1.1rem; font-weight: 700; }
+.card p  { font-size: 0.88rem; color: var(--text-dim); line-height: 1.55; flex: 1; }
+.card .arrow {
+    font-size: 0.82rem;
+    color: var(--primary);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.3rem;
+}
+
+.repos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 3rem; }
+
+.repo-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.repo-card:hover { border-color: rgba(255,255,255,0.18); }
+.repo-card .gh-icon {
+    width: 36px; height: 36px; flex-shrink: 0;
+    fill: var(--text-dim);
+}
+.repo-card .repo-info { flex: 1; }
+.repo-card .repo-name {
+    font-family: var(--mono);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--primary);
+}
+.repo-card .repo-desc { font-size: 0.8rem; color: var(--text-dim); margin-top: 0.2rem; }
+
+.axis-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 3rem;
+}
+.axis-item {
+    text-align: center;
+    padding: 1.25rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+.axis-item .label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.3rem;
+}
+.axis-item .label.instruct { color: #3b82f6; }
+.axis-item .label.navigate { color: #06b6d4; }
+.axis-item .label.validate { color: #22c55e; }
+.axis-item .weight { font-size: 1.6rem; font-weight: 800; margin-bottom: 0.2rem; }
+.axis-item .question { font-size: 0.78rem; color: var(--text-dim); line-height: 1.4; }
+
+footer {
+    text-align: center;
+    padding: 2rem 1.5rem 3rem;
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    border-top: 1px solid var(--border);
+    max-width: 960px;
+    margin: 0 auto;
+}
+footer a { color: var(--primary); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+@media (max-width: 640px) {
+    .axis-strip { grid-template-columns: 1fr; }
+    .hero { padding: 2.5rem 1rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+    <div class="hero-badge">PyCon Italia 2026 &middot; Workshop</div>
+    <h1>Measuring <span class="gradient">AI-Readiness</span></h1>
+    <p class="subtitle">A Three-Axis Maturity Model for Agent-Optimized Codebases</p>
+    <div class="meta">
+        <span>Stefano Maestri</span>
+        <span>Fri May 29, 11:00&ndash;13:00</span>
+        <span>2h hands-on</span>
+    </div>
+
+    <div class="triangle-container">
+        <svg viewBox="0 0 220 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="110,18 20,175 200,175" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <polygon points="110,18 20,175 200,175" fill="url(#triGrad)" opacity="0.12"/>
+            <circle cx="110" cy="18" r="6" fill="#3b82f6"/>
+            <text x="110" y="8" text-anchor="middle" fill="#3b82f6" font-size="10" font-weight="700" font-family="Inter, sans-serif">INSTRUCT</text>
+            <circle cx="20" cy="175" r="6" fill="#06b6d4"/>
+            <text x="20" y="195" text-anchor="middle" fill="#06b6d4" font-size="10" font-weight="700" font-family="Inter, sans-serif">NAVIGATE</text>
+            <circle cx="200" cy="175" r="6" fill="#22c55e"/>
+            <text x="200" y="195" text-anchor="middle" fill="#22c55e" font-size="10" font-weight="700" font-family="Inter, sans-serif">VALIDATE</text>
+            <defs>
+                <linearGradient id="triGrad" x1="110" y1="18" x2="110" y2="175" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#3b82f6"/>
+                    <stop offset="100%" stop-color="#22c55e"/>
+                </linearGradient>
+            </defs>
+        </svg>
+    </div>
+</div>
+
+<div class="main">
+
+    <div class="section-label">Workshop Materials</div>
+    <div class="cards">
+        <a class="card" href="presentation/workshop.html">
+            <div class="icon blue">&#128214;</div>
+            <h3>Workshop Guide</h3>
+            <p>Step-by-step instructions for all 5 phases. Prerequisites, commands, catch-up checkpoints.</p>
+            <span class="arrow">Open guide &rarr;</span>
+        </a>
+        <a class="card" href="presentation/slides.html">
+            <div class="icon purple">&#127916;</div>
+            <h3>Slide Deck</h3>
+            <p>35 slides with the full presentation. Use arrow keys to navigate, press N for speaker notes.</p>
+            <span class="arrow">Open slides &rarr;</span>
+        </a>
+        <a class="card" href="presentation/playground.html">
+            <div class="icon green">&#127918;</div>
+            <h3>Interactive Playground</h3>
+            <p>Toggle readiness checks and watch your 3-axis score update in real time. Radar chart included.</p>
+            <span class="arrow">Open playground &rarr;</span>
+        </a>
+    </div>
+
+    <div class="section-label">Repositories</div>
+    <div class="repos">
+        <a class="repo-card" href="https://github.com/maeste/quicknote-demo" target="_blank" rel="noopener">
+            <svg class="gh-icon" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            <div class="repo-info">
+                <div class="repo-name">maeste/quicknote-demo</div>
+                <div class="repo-desc">Guinea pig project &mdash; clone this to follow along</div>
+            </div>
+        </a>
+        <a class="repo-card" href="https://github.com/RisorseArtificiali/agent-ready-skill" target="_blank" rel="noopener">
+            <svg class="gh-icon" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+            <div class="repo-info">
+                <div class="repo-name">RisorseArtificiali/agent-ready-skill</div>
+                <div class="repo-desc">Agent Skills &mdash; install globally for /agent-ready on any project</div>
+            </div>
+        </a>
+    </div>
+
+    <div class="section-label">The Three Axes</div>
+    <div class="axis-strip">
+        <div class="axis-item">
+            <div class="label instruct">INSTRUCT</div>
+            <div class="weight">38%</div>
+            <div class="question">Does the agent understand<br><strong>WHAT</strong> we want?</div>
+        </div>
+        <div class="axis-item">
+            <div class="label navigate">NAVIGATE</div>
+            <div class="weight">34%</div>
+            <div class="question">Can the agent find its<br>way <strong>WHERE</strong> things are?</div>
+        </div>
+        <div class="axis-item">
+            <div class="label validate">VALIDATE</div>
+            <div class="weight">28%</div>
+            <div class="question">Can the agent verify<br>it did it <strong>RIGHT</strong>?</div>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <p>Workshop by <a href="https://github.com/maeste">Stefano Maestri</a> &middot; PyCon Italia 2026</p>
+</footer>
+
+</body>
+</html>
