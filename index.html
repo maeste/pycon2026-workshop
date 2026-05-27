@@ -208,6 +208,23 @@ body {
 .axis-item .weight { font-size: 1.6rem; font-weight: 800; margin-bottom: 0.2rem; }
 .axis-item .question { font-size: 0.78rem; color: var(--text-dim); line-height: 1.4; }
 
+.qr-strip {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+.qr-item {
+    text-align: center;
+    padding: 1.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+.qr-item img { width: 160px; height: 160px; image-rendering: pixelated; margin-bottom: 0.75rem; }
+.qr-item .qr-label { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.2rem; }
+.qr-item .qr-url { font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim); word-break: break-all; }
+
 footer {
     text-align: center;
     padding: 2rem 1.5rem 3rem;
@@ -222,6 +239,7 @@ footer a:hover { text-decoration: underline; }
 
 @media (max-width: 640px) {
     .axis-strip { grid-template-columns: 1fr; }
+    .qr-strip { grid-template-columns: 1fr; max-width: 300px; margin-left: auto; margin-right: auto; }
     .hero { padding: 2.5rem 1rem 1.5rem; }
 }
 </style>
@@ -298,6 +316,20 @@ footer a:hover { text-decoration: underline; }
                 <div class="repo-desc">Agent Skills &mdash; install globally for /agent-ready on any project</div>
             </div>
         </a>
+    </div>
+
+    <div class="section-label">Scan the QR</div>
+    <div class="qr-strip">
+        <div class="qr-item">
+            <img src="presentation/img/qr-workshop.png" alt="QR code linking to this workshop page">
+            <div class="qr-label">This Workshop</div>
+            <div class="qr-url">maeste.it/pycon2026-workshop</div>
+        </div>
+        <div class="qr-item">
+            <img src="presentation/img/qr-homepage.png" alt="QR code linking to Stefano Maestri's homepage">
+            <div class="qr-label">Homepage</div>
+            <div class="qr-url">maeste.it</div>
+        </div>
     </div>
 
     <div class="section-label">The Three Axes</div>
