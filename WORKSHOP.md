@@ -18,7 +18,34 @@ Before the workshop, make sure you have:
 
 ## Setup (do this at the start)
 
-### 1. Clone the workshop project
+### 1. Install the Agent-Ready skills
+
+The skills are what power `/agent-ready scan`, `/agent-ready fix`, `/agent-ready report` and `/agent-ready diff`. Choose one method:
+
+**Method A — Quick copy (fastest)**
+
+```bash
+git clone https://github.com/RisorseArtificiali/agent-ready-skill.git /tmp/agent-ready-skill
+mkdir -p ~/.claude/skills
+cp -r /tmp/agent-ready-skill/skills/* ~/.claude/skills/
+rm -rf /tmp/agent-ready-skill
+```
+
+**Method B — Clone + symlink (recommended, stays updated)**
+
+```bash
+git clone https://github.com/RisorseArtificiali/agent-ready-skill.git ~/agent-ready-skill
+cd ~/agent-ready-skill
+for skill in skills/*/; do
+  ln -sf "$(pwd)/$skill" "$HOME/.claude/skills/$(basename $skill)"
+done
+```
+
+With method B, a future `git pull` inside `~/agent-ready-skill` updates all skills automatically.
+
+> **Verify:** restart Claude Code, then type `/agent-ready` — you should see the skill listed.
+
+### 2. Clone the workshop project
 
 ```bash
 git clone https://github.com/maeste/quicknote-demo.git
@@ -30,24 +57,21 @@ git checkout step-0-bare
 > about local changes, run `git stash` first (or `git checkout -- .` to discard
 > your changes). Your work isn't lost — `git stash pop` brings it back.
 
-### 2. Verify Claude Code works
+### 3. Verify everything works
 
-Open Claude Code in the `quicknote-demo` directory and type something.
-If it responds, you're ready.
+Open Claude Code in the `quicknote-demo` directory and run:
+
+```
+/agent-ready scan .
+```
+
+If you see an 8-dimension assessment with a score, you're ready.
 
 ---
 
 ## Phase 1: The First Scan (15 min)
 
-### Get the scan skills
-
-```bash
-git checkout step-1-scan
-```
-
-This adds the `/agent-ready` skills to your project (under `.claude/skills/`).
-
-### Run your first assessment
+### Scan the guinea pig
 
 In Claude Code:
 
@@ -107,7 +131,7 @@ minimal and the impact is enormous.
 ### Falling behind?
 
 ```bash
-git checkout step-2-instruct
+git checkout step-1-instruct
 ```
 
 This gives you a pre-made CLAUDE.md and improved README.
@@ -122,14 +146,6 @@ It covers:
 - Project Navigability — weight: 18
 - Documentation & Comprehension — weight: 8
 - Skills & Tooling — weight: 8
-
-### Get the fix skill
-
-```bash
-git checkout step-3-fix-ready
-```
-
-This adds the `/agent-ready fix` skill while keeping your INSTRUCT improvements.
 
 ### Let the agent fix the gaps
 
@@ -160,6 +176,12 @@ NAVIGATE should improve noticeably.
 
 Run `/agent-ready fix` on your real project and see what it suggests.
 
+### Falling behind?
+
+```bash
+git checkout step-2-navigate
+```
+
 ---
 
 ## Phase 4: VALIDATE — Let the Agent Check Its Work (25 min)
@@ -188,12 +210,6 @@ and update operations.
 
 The agent writes the files. You review. Done.
 
-### Get report and diff skills
-
-```bash
-git checkout step-4-validate
-```
-
 ### See your journey
 
 ```
@@ -211,8 +227,9 @@ This generates a full assessment report you can share with your team.
 
 ### Falling behind?
 
-The `step-4-validate` branch includes pre-made CI, tests, and config files
-as a catch-up checkpoint.
+```bash
+git checkout step-3-validate
+```
 
 ---
 
@@ -221,26 +238,17 @@ as a catch-up checkpoint.
 ### See what "Optimized" looks like
 
 ```bash
-git checkout step-5-complete
+git checkout step-4-complete
 /agent-ready scan .
 ```
 
 This is a fully agent-ready project scoring ~85/100.
 
-### Take-home: install the skills globally
+### What you take home
 
-To use these skills on any project:
-
-```bash
-git clone https://github.com/maeste/agent-ready-skill.git
-cd agent-ready-skill
-for skill in skills/*/; do
-  ln -sf "$(pwd)/$skill" "$HOME/.claude/skills/$(basename $skill)"
-done
-```
-
-Now `/agent-ready scan`, `/agent-ready fix`, `/agent-ready report`, and
-`/agent-ready diff` work in every project you open with Claude Code.
+The skills are already installed globally. From now on, `/agent-ready scan`,
+`/agent-ready fix`, `/agent-ready report`, and `/agent-ready diff` work on
+**every project** you open with Claude Code.
 
 ---
 
@@ -268,7 +276,8 @@ The 8 scoring dimensions map to 3 axes:
 
 ## Resources
 
-- **Skills repo**: https://github.com/maeste/agent-ready-skill
+- **Skills repo**: https://github.com/RisorseArtificiali/agent-ready-skill
+- **Guinea pig repo**: https://github.com/maeste/quicknote-demo
 - **Interactive playground**: Open `playground.html` in your browser
 - **Slides**: Open `slides.html` in your browser
 

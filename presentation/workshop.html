@@ -186,7 +186,7 @@ footer {
 <p class="lead">Measuring AI-Readiness &mdash; PyCon Italia 2026 &middot; Fri May 29, 11:00&ndash;13:00</p>
 
 <!-- ═══ PREREQUISITES ═══ -->
-<h2><span class="phase-num setup">Setup</span> Prerequisites</h2>
+<h2><span class="phase-num setup">Setup</span> Prerequisites &amp; Installation</h2>
 
 <p>Before the workshop, make sure you have:</p>
 <ul class="checklist">
@@ -197,7 +197,27 @@ footer {
     <li>Optionally: a Python project of your own to test on</li>
 </ul>
 
-<h3>1. Clone the workshop project</h3>
+<h3>1. Install the Agent-Ready skills</h3>
+<p>The skills power <code>/agent-ready scan</code>, <code>/agent-ready fix</code>, <code>/agent-ready report</code> and <code>/agent-ready diff</code>. Choose one method:</p>
+
+<p><strong>Method A &mdash; Quick copy</strong> (fastest)</p>
+<pre><code><span class="cmd">git clone https://github.com/RisorseArtificiali/agent-ready-skill.git /tmp/agent-ready-skill</span>
+<span class="cmd">mkdir -p ~/.claude/skills</span>
+<span class="cmd">cp -r /tmp/agent-ready-skill/skills/* ~/.claude/skills/</span>
+<span class="cmd">rm -rf /tmp/agent-ready-skill</span></code></pre>
+
+<p><strong>Method B &mdash; Clone + symlink</strong> (recommended, stays updated)</p>
+<pre><code><span class="cmd">git clone https://github.com/RisorseArtificiali/agent-ready-skill.git ~/agent-ready-skill</span>
+<span class="cmd">cd ~/agent-ready-skill</span>
+<span class="cmd">for skill in skills/*/; do</span>
+<span class="cmd">  ln -sf "$(pwd)/$skill" "$HOME/.claude/skills/$(basename $skill)"</span>
+<span class="cmd">done</span></code></pre>
+
+<div class="callout tip">
+    With method B, a future <code>git pull</code> inside <code>~/agent-ready-skill</code> updates all skills automatically.
+</div>
+
+<h3>2. Clone the workshop project</h3>
 <pre><code><span class="cmd">git clone https://github.com/maeste/quicknote-demo.git</span>
 <span class="cmd">cd quicknote-demo</span>
 <span class="cmd">git checkout step-0-bare</span></code></pre>
@@ -206,19 +226,17 @@ footer {
     <strong>Catch-up tip:</strong> If you need to switch to a later branch and git complains about local changes, run <code>git stash</code> first (or <code>git checkout -- .</code> to discard). Your work isn't lost &mdash; <code>git stash pop</code> brings it back.
 </div>
 
-<h3>2. Verify Claude Code works</h3>
-<p>Open Claude Code in the <code>quicknote-demo</code> directory and type something. If it responds, you're ready.</p>
+<h3>3. Verify everything works</h3>
+<p>Open Claude Code in the <code>quicknote-demo</code> directory and run:</p>
+<pre><code><span class="cmd">/agent-ready scan .</span></code></pre>
+<p>If you see an 8-dimension assessment with a score, you're ready.</p>
 
 <hr>
 
 <!-- ═══ PHASE 1 ═══ -->
 <h2><span class="phase-num p1">Phase 1</span> The First Scan <small style="color:var(--text-dim);font-weight:400;">(15 min)</small></h2>
 
-<h3>Get the scan skills</h3>
-<pre><code><span class="cmd">git checkout step-1-scan</span></code></pre>
-<p>This adds the <code>/agent-ready</code> skills to your project (under <code>.claude/skills/</code>).</p>
-
-<h3>Run your first assessment</h3>
+<h3>Scan the guinea pig</h3>
 <p>In Claude Code:</p>
 <pre><code><span class="cmd">/agent-ready scan .</span></code></pre>
 <p>Watch the agent analyze your project across 8 dimensions. You'll see a score around <strong>10&ndash;15/100</strong> &mdash; don't worry, that's the point!</p>
@@ -257,7 +275,7 @@ where things are, how to run/test/lint, and what conventions to follow.</code></
 <p>Ask Claude to write a CLAUDE.md for your real project too. The effort is minimal and the impact is enormous.</p>
 
 <h3>Falling behind?</h3>
-<pre><code><span class="cmd">git checkout step-2-instruct</span></code></pre>
+<pre><code><span class="cmd">git checkout step-1-instruct</span></code></pre>
 <p>This gives you a pre-made CLAUDE.md and improved README.</p>
 
 <hr>
@@ -271,10 +289,6 @@ where things are, how to run/test/lint, and what conventions to follow.</code></
     <li>Documentation &amp; Comprehension &mdash; weight: 8</li>
     <li>Skills &amp; Tooling &mdash; weight: 8</li>
 </ul>
-
-<h3>Get the fix skill</h3>
-<pre><code><span class="cmd">git checkout step-3-fix-ready</span></code></pre>
-<p>This adds the <code>/agent-ready fix</code> skill while keeping your INSTRUCT improvements.</p>
 
 <h3>Let the agent fix the gaps</h3>
 <p>In Claude Code:</p>
@@ -299,6 +313,9 @@ where things are, how to run/test/lint, and what conventions to follow.</code></
 <h3>Try on your repo</h3>
 <p>Run <code>/agent-ready fix</code> on your real project and see what it suggests.</p>
 
+<h3>Falling behind?</h3>
+<pre><code><span class="cmd">git checkout step-2-navigate</span></code></pre>
+
 <hr>
 
 <!-- ═══ PHASE 4 ═══ -->
@@ -319,9 +336,6 @@ ruff check and pytest.</code></pre>
 and update operations.</code></pre>
 <p>The agent writes the files. You review. Done.</p>
 
-<h3>Get report and diff skills</h3>
-<pre><code><span class="cmd">git checkout step-4-validate</span></code></pre>
-
 <h3>See your journey</h3>
 <pre><code><span class="cmd">/agent-ready diff</span></code></pre>
 <p>This compares your current state with the initial assessment and shows exactly what improved and by how much.</p>
@@ -330,7 +344,7 @@ and update operations.</code></pre>
 <p>This generates a full assessment report you can share with your team.</p>
 
 <h3>Falling behind?</h3>
-<p>The <code>step-4-validate</code> branch includes pre-made CI, tests, and config files as a catch-up checkpoint.</p>
+<pre><code><span class="cmd">git checkout step-3-validate</span></code></pre>
 
 <hr>
 
@@ -338,18 +352,14 @@ and update operations.</code></pre>
 <h2><span class="phase-num wrap">Phase 5</span> The Complete Picture <small style="color:var(--text-dim);font-weight:400;">(15 min)</small></h2>
 
 <h3>See what "Optimized" looks like</h3>
-<pre><code><span class="cmd">git checkout step-5-complete</span>
+<pre><code><span class="cmd">git checkout step-4-complete</span>
 <span class="cmd">/agent-ready scan .</span></code></pre>
 <p>This is a fully agent-ready project scoring ~85/100.</p>
 
-<h3>Take-home: install the skills globally</h3>
-<p>To use these skills on any project:</p>
-<pre><code><span class="cmd">git clone https://github.com/RisorseArtificiali/agent-ready-skill.git</span>
-<span class="cmd">cd agent-ready-skill</span>
-<span class="cmd">for skill in skills/*/; do</span>
-<span class="cmd">  ln -sf "$(pwd)/$skill" "$HOME/.claude/skills/$(basename $skill)"</span>
-<span class="cmd">done</span></code></pre>
-<p>Now <code>/agent-ready scan</code>, <code>/agent-ready fix</code>, <code>/agent-ready report</code>, and <code>/agent-ready diff</code> work in every project you open with Claude Code.</p>
+<h3>What you take home</h3>
+<p>The skills are already installed globally from the setup step. From now on,
+<code>/agent-ready scan</code>, <code>/agent-ready fix</code>, <code>/agent-ready report</code>, and
+<code>/agent-ready diff</code> work on <strong>every project</strong> you open with Claude Code.</p>
 
 <hr>
 
