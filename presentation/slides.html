@@ -1879,53 +1879,45 @@ agent-ready-scores.prev.json   badge.svg</span>
 </div>
 
 <!-- ═════════════════════════════════════════
-     SLIDE 34: ROAD AHEAD (POST-WORKSHOP)
+     SLIDE 35: GREENFIELD — START READY
      ═════════════════════════════════════════ -->
 <div class="slide" data-slide="35" id="slide35" data-duration="3">
     <div class="full-width animate-in" style="text-align:center;">
-        <h2 style="margin-bottom:1.5rem;">What's Next 🚀</h2>
-        <p style="margin-bottom:2rem;color:var(--text-dim);">Post-workshop roadmap</p>
-        
-        <div style="max-width:750px;margin:0 auto;text-align:left;display:flex;flex-direction:column;gap:0.75rem;">
-            <div class="card" style="display:flex;align-items:center;gap:1rem;">
-                <span class="badge badge-green">Soon</span>
-                <div>
-                    <strong>Multi-agent support</strong>
-                    <p style="font-size:0.82rem;color:var(--text-dim);margin:0;">Skills for Cursor, Copilot, Windsurf — not just Claude</p>
-                </div>
+        <div class="badge badge-green" style="margin-bottom:1rem;">NEW PROJECT?</div>
+        <h2 style="margin-bottom:0.75rem;">Start Agent-Ready on Day One 🌱</h2>
+        <p style="margin-bottom:1.75rem;color:var(--text-dim);max-width:640px;margin-left:auto;margin-right:auto;">
+            Everything today was <strong>brownfield</strong> — fixing an existing repo.
+            For a brand-new project, don't accumulate the debt in the first place.
+        </p>
+
+        <div class="terminal" style="max-width:680px;text-align:left;margin:0 auto 1.5rem;">
+            <div class="terminal-header">
+                <div class="terminal-dot dot-red"></div>
+                <div class="terminal-dot dot-yellow"></div>
+                <div class="terminal-dot dot-green"></div>
             </div>
-            <div class="card" style="display:flex;align-items:center;gap:1rem;">
-                <span class="badge badge-blue">Soon</span>
-                <div>
-                    <strong>CI Gate Integration</strong>
-                    <p style="font-size:0.82rem;color:var(--text-dim);margin:0;"><code>--ci --min-level 3</code> fails PRs below threshold</p>
-                </div>
-            </div>
-            <div class="card" style="display:flex;align-items:center;gap:1rem;">
-                <span class="badge badge-purple">Later</span>
-                <div>
-                    <strong>History & Trend Charts</strong>
-                    <p style="font-size:0.82rem;color:var(--text-dim);margin:0;">Track progress over time, compare branches</p>
-                </div>
-            </div>
-            <div class="card" style="display:flex;align-items:center;gap:1rem;">
-                <span class="badge badge-amber">Later</span>
-                <div>
-                    <strong>Team Dashboard</strong>
-                    <p style="font-size:0.82rem;color:var(--text-dim);margin:0;">Compare scores across org repos</p>
-                </div>
-            </div>
-            <div class="card" style="display:flex;align-items:center;gap:1rem;">
-                <span class="badge badge-red">Someday</span>
-                <div>
-                    <strong>GitHub App</strong>
-                    <p style="font-size:0.82rem;color:var(--text-dim);margin:0;">Auto-scan on PR, comment with suggestions</p>
-                </div>
+            <div class="terminal-body" style="font-size:0.78rem;">
+<span class="prompt">$</span> <span class="cmd">/agent-ready init . --agents claude</span>
+
+<span class="output">🌱 Scaffolding a portable-first baseline…
+
+  ✨ AGENTS.md (&lt; 200 lines)  🔗 CLAUDE.md → AGENTS.md
+  ✨ .env.example + .gitignore secret coverage
+  ✨ docs/agent-execution.md  (sandbox policy)
+  ✨ .github/workflows/ci.yml + .pre-commit-config.yaml
+  ✨ specs/TEMPLATE.md
+
+Baseline score: 41/100  🟡 Partially Ready</span>
             </div>
         </div>
+
+        <p style="font-size:0.92rem;color:var(--text-dim);max-width:680px;margin:0 auto;">
+            <strong>init</strong> (greenfield) sets an opinionated baseline ·
+            <strong>fix</strong> (brownfield) remediates by impact. Same rubric, two entry points.
+        </p>
     </div>
     <aside class="speaker-notes">
-        What's next — public roadmap. Broader multi-agent coverage beyond claude/codex/opencode/pi. CI gate integration so a PR fails if the score drops below your team's minimum. History and trend charts. Team dashboards. Eventually a GitHub App that comments on PRs automatically. Star the repo, file issues, send PRs. This is v2. Your feedback shapes what's next.
+        One more skill, and it's the mirror image of everything we did today. Everything so far was brownfield — taking an existing repo and remediating it. But the cheapest agent-readiness is the debt you never take on. /agent-ready init scaffolds a portable-first baseline for a brand-new or empty project: a concise AGENTS.md with a CLAUDE.md bridge, secret-hygiene defaults, a documented sandbox/execution policy, CI and pre-commit, a spec template — then runs a quick scan so you start around forty out of a hundred instead of ten. init is for greenfield, fix is for brownfield; same seven-dimension rubric, two entry points. Next project you spin up, run init first — your future self, and every agent that lands there, will thank you.
     </aside>
 </div>
 
