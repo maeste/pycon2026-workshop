@@ -184,7 +184,7 @@ body {
 
 .axis-strip {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
     margin-bottom: 3rem;
 }
@@ -205,6 +205,7 @@ body {
 .axis-item .label.instruct { color: #3b82f6; }
 .axis-item .label.navigate { color: #06b6d4; }
 .axis-item .label.validate { color: #22c55e; }
+.axis-item .label.secure { color: #f59e0b; }
 .axis-item .weight { font-size: 1.6rem; font-weight: 800; margin-bottom: 0.2rem; }
 .axis-item .question { font-size: 0.78rem; color: var(--text-dim); line-height: 1.4; }
 
@@ -266,6 +267,8 @@ footer a:hover { text-decoration: underline; }
             <text x="20" y="195" text-anchor="middle" fill="#06b6d4" font-size="10" font-weight="700" font-family="Inter, sans-serif">NAVIGATE</text>
             <circle cx="200" cy="175" r="6" fill="#22c55e"/>
             <text x="200" y="195" text-anchor="middle" fill="#22c55e" font-size="10" font-weight="700" font-family="Inter, sans-serif">VALIDATE</text>
+            <circle cx="110" cy="123" r="7" fill="#f59e0b"/>
+            <text x="110" y="110" text-anchor="middle" fill="#f59e0b" font-size="10" font-weight="700" font-family="Inter, sans-serif">+ SECURE</text>
             <defs>
                 <linearGradient id="triGrad" x1="110" y1="18" x2="110" y2="175" gradientUnits="userSpaceOnUse">
                     <stop offset="0%" stop-color="#3b82f6"/>
@@ -283,13 +286,13 @@ footer a:hover { text-decoration: underline; }
         <a class="card" href="presentation/workshop.html">
             <div class="icon blue">&#128214;</div>
             <h3>Workshop Guide</h3>
-            <p>Step-by-step instructions for all 5 phases. Prerequisites, commands, catch-up checkpoints.</p>
+            <p>Step-by-step instructions for all 6 phases. Skill install, AGENTS.md, commands, catch-up checkpoints.</p>
             <span class="arrow">Open guide &rarr;</span>
         </a>
         <a class="card" href="presentation/slides.html">
             <div class="icon purple">&#127916;</div>
             <h3>Slide Deck</h3>
-            <p>35 slides with the full presentation. Use arrow keys to navigate, press N for speaker notes.</p>
+            <p>36 slides with the full presentation. Use arrow keys to navigate, press N for speaker notes.</p>
             <span class="arrow">Open slides &rarr;</span>
         </a>
         <a class="card" href="presentation/playground.html">
@@ -332,22 +335,27 @@ footer a:hover { text-decoration: underline; }
         </div>
     </div>
 
-    <div class="section-label">The Three Axes</div>
+    <div class="section-label">The Four Axes</div>
     <div class="axis-strip">
         <div class="axis-item">
             <div class="label instruct">INSTRUCT</div>
-            <div class="weight">38%</div>
-            <div class="question">Does the agent understand<br><strong>WHAT</strong> we want?</div>
+            <div class="weight">28%</div>
+            <div class="question">Understand<br><strong>WHAT</strong> we want?</div>
         </div>
         <div class="axis-item">
             <div class="label navigate">NAVIGATE</div>
-            <div class="weight">34%</div>
-            <div class="question">Can the agent find its<br>way <strong>WHERE</strong> things are?</div>
+            <div class="weight">30%</div>
+            <div class="question">Find <strong>WHERE</strong><br>&amp; reach for tools?</div>
         </div>
         <div class="axis-item">
             <div class="label validate">VALIDATE</div>
-            <div class="weight">28%</div>
-            <div class="question">Can the agent verify<br>it did it <strong>RIGHT</strong>?</div>
+            <div class="weight">30%</div>
+            <div class="question">Verify it did it<br><strong>RIGHT</strong>?</div>
+        </div>
+        <div class="axis-item">
+            <div class="label secure">SECURE</div>
+            <div class="weight">12%</div>
+            <div class="question">Can the agent<br>run <strong>SAFELY</strong>?</div>
         </div>
     </div>
 

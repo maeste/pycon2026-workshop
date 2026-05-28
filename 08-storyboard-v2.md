@@ -1,266 +1,101 @@
-# Workshop Storyboard v2 — Skills-First Approach
+# Workshop Storyboard v2 — Skills-First, Four-Axis (agent-ready v2)
 
-> **Replaces**: `04-workshop-storyboard.md` (which was based on `scan_static.py`)
-> **Workshop**: PyCon Italia 2026, Fri May 29, 11:00-13:00 (120 min)
-> **Approach**: Use existing `agent-ready-skill` skills directly — no Python scripts to build
+> **Replaces** the v1 storyboard. Aligned to **agent-ready-skill v2**:
+> 7 dimensions, 4 axes, AGENTS.md-first, Portable/Target layers, Security & Sandbox.
+> **Workshop**: PyCon Italia 2026, Fri May 29, 11:00-13:00 (120 min).
 
-## Key Differences from v1
+## The model (v2)
 
-| Aspect | v1 (storyboard v1) | v2 (this document) |
-|--------|-------|-------|
-| Core tool | `scan_static.py` (deterministic Python script) | `/agent-ready scan` (agent skill) |
-| Fix mechanism | `apply_fix.py` (Jinja2 templates) | `/agent-ready fix` (agent generates contextual files) |
-| Reports | `report_gen.py` | `/agent-ready report` + `/agent-ready diff` |
-| Dependencies | `pip install rich pyyaml jinja2` | Claude Code only |
-| Determinism | 100% deterministic | Agent-based (intentional — it's the point) |
-| Unique value | Same as Kodus/Factory | **Agent assesses and fixes itself** |
+| Axis | Wt | Question | Dimensions |
+|------|----|----------|------------|
+| 📝 INSTRUCT | 28 | Understand WHAT? | D1 Agent Instructions & Context (18) + D7 Spec-Driven Workflow & Docs (10) |
+| 🧭 NAVIGATE | 30 | Find WHERE + tools? | D2 Navigability & Code Intelligence (18) + D5 Agent Tooling & Capabilities (12) |
+| ✅ VALIDATE | 30 | Did it RIGHT? | D3 Testing & Feedback (16) + D4 CI/CD, Automation & Governance (14) |
+| 🛡️ SECURE | 12 | Run SAFELY? | D6 Security & Sandbox (12) |
 
-## Conventions
+**Layers**: every sub-criterion is **portable** (any agent) or **target** (only with `--agents`).
+**Levels**: L1 ≥40 · L2 ≥55 · L3 ≥70 · L4 ≥85 · L5 ≥95.
 
-```
-🎤  = Teacher speaks / demo
-💻  = Participants work in Claude Code
-🔍  = Participants analyze their OWN repo
-⚡  = "Magic moment"
-🎁  = Deliverable / takeaway
-[Sn] = Slide reference
-```
+## The narrative spine
 
-## Guinea Pig: quicknote-demo
+The talk was pitched as **three axes**. Building v2, security kept surfacing a
+question none of the three answered — *can the agent run safely?* — so the model
+grew a **fourth axis: SECURE**. The reveal (slide 14) turns the title/content
+tension into the most memorable moment of the talk.
 
-A simple Python CLI for managing notes. Branches:
+Other v2 shifts to land:
+- **AGENTS.md**, not CLAUDE.md, is the primary file (cross-vendor). CLAUDE.md = a symlink bridge.
+- **Evidence over folklore**: directory-depth/naming heuristics retired; instruction *bloat* penalized.
+- **The agent assesses & fixes itself** — the differentiator vs static tools (Kodus/Factory.ai).
 
-```
-step-0-bare        ~10/100   Bare project
-step-1-scan        ~10/100   + scan skills
-step-2-instruct    ~35/100   + CLAUDE.md, README, CONTRIBUTING
-step-3-fix-ready   ~35/100   + fix skill (no codebase changes)
-step-4-validate    ~65/100   + report/diff skills + CI + tests
-step-5-complete    ~85/100   Fully optimized
-```
-
----
-
-## FULL TIMELINE (120 min)
-
-### PHASE 0: Setup & Icebreaker [00:00–00:10] (10 min) — Slides 1-5
+## Guinea pig: quicknote-demo (branches = pure project states; skills are global)
 
 ```
-00:00  🎤  Welcome + poll (2 min)
-       - Written Python in production?
-       - Used an AI coding agent?
-       - Had an agent mess up your codebase?
-
-00:02  🎤  The Promise (3 min)
-       "In 2 hours you'll measure how ready YOUR codebase is for
-        AI agents, fix the most impactful gaps, and walk out with
-        a reusable toolkit."
-
-00:05  💻  Setup Check (5 min)
-       - Everyone: git clone quicknote-demo && cd quicknote-demo
-       - Verify Claude Code works
-       - git checkout step-0-bare
+step-0-bare        bare CLI                                  ~10/100
+step-1-instruct    AGENTS.md (+CLAUDE.md symlink), README, specs/, ADR, templates
+step-2-navigate    ARCHITECTURE, .mcp.json (serena), scripts/, type hints
+step-3-validate    tests, CI (lint+type+test), pre-commit, dependabot, CODEOWNERS
+step-4-secure      docs/agent-execution.md, .env.example, .gitignore secrets, devcontainer, lockfile
+step-5-complete    project skill, restrictive .claude/settings.json            ~85/100
 ```
 
 ---
 
-### PHASE 1: The Problem + First Scan [00:10–00:25] (15 min) — Slides 6-17
+## TIMELINE (120 min)
 
-```
-00:10  🎤  Why Agents Fail — Storytime (5 min)
-       "Last month I asked Claude Code to add validation to our API.
-        It added tests in the wrong directory.
-        It followed linting rules from 2 years ago.
-        It couldn't find where we keep request schemas."
+### PHASE 0 — Setup & Install (10 min) · slides 1–5
+- Poll: used an AI agent? been burned by one?
+- Install the 6 skills into `~/.claude/skills/` (Method A copy or B symlink).
+- `git clone quicknote-demo && git checkout step-0-bare`.
+- Verify: `/agent-ready scan .` returns a 4-axis score.
 
-       → Agents are NOT stupid. They are UNINFORMED.
+### PHASE 1 — The Model + First Scan + Layers (15 min) · slides 6–17
+- Why agents fail → three failure modes → three axes (slide 10), with a footnote teasing a 4th.
+- Deep-dives: INSTRUCT (11), NAVIGATE (12), VALIDATE (13).
+- **⚡ Slide 14 — the SECURE reveal**: "I pitched three; security forced a fourth."
+- Maturity ladder (15), scoring + **Portable vs Target** (16), two test subjects (17).
+- 💻 First scan on the guinea pig (~10). Then `--agents claude` to show the target layer light up.
+- 🔍 "Now your repo": `/agent-ready scan ~/your-project`.
 
-00:15  🎤  Introduce Three-Axis Model (3 min)
-              📝 INSTRUCT
-             /            \
-            /              \
-      🧭 NAVIGATE —— ✅ VALIDATE
+### PHASE 2 — INSTRUCT (20 min) · slides 18–21
+- 💻 Ask Claude: *"write a concise AGENTS.md (<200 lines)…"* → review → save.
+- `ln -s AGENTS.md CLAUDE.md` (bridge, no drift).
+- ⚡ Re-scan: INSTRUCT jumps. **Concise beats bloated** (v2 penalty).
+- 🔍 Do it on your repo. Catch-up: `git checkout step-1-instruct`.
 
-       "Does it know WHAT? Can it find WHERE? Can it check HOW?"
+### PHASE 3 — NAVIGATE (18 min) · slides 22–24
+- 💻 `/agent-ready fix` → agent generates ARCHITECTURE / repo map, `.mcp.json` (Serena), `scripts/`.
+- Disambiguation: code *supports* semantic nav (D2) vs tooling *wired up* (D5).
+- ⚡ Re-scan. Catch-up: `git checkout step-2-navigate`.
 
-00:18  💻  First Scan — The Moment of Truth (4 min)
-       git checkout step-1-scan
-       /agent-ready scan .
+### PHASE 4 — VALIDATE (18 min) · slides 25–28
+- 💻 Ask Claude for CI (ruff + mypy + pytest) and tests with descriptive assertions.
+- Feedback *quality* is the lever — tests are the agent's only signal.
+- ⚡ Re-scan. Catch-up: `git checkout step-3-validate`.
 
-       Score: ~10/100 😬
-       Watch the agent work in real-time — it reads files,
-       checks structure, evaluates content.
+### PHASE 5 — SECURE, the 4th axis (18 min) · slides 29–30
+- 🛡️ `/agent-ready fix security_sandbox` → `docs/agent-execution.md` (LINCE among options),
+  `.env.example`, `.gitignore` secrets, lockfile flagged.
+- ⚡⚡⚡ Slide 30 — **full 4-axis scan** with `--agents claude`: all four bars + Portable/Target maxes
+  + explained findings (why/consequence/fix/effort).
+- Catch-up: `git checkout step-4-secure`.
 
-00:22  🔍  Try on YOUR repo (3 min)
-       /agent-ready scan ~/your-real-project
-       "Who scored higher than the guinea pig?"
-       (Everyone. Laughs. But also surprises.)
-```
-
----
-
-### PHASE 2: INSTRUCT [00:25–00:50] (25 min) — Slides 18-21
-
-```
-00:25  🎤  Introduce INSTRUCT axis (3 min)
-       "Your agent just landed. It knows nothing.
-        What's the FIRST thing it needs?"
-       → Instructions. Context. MEANING.
-
-       Dimensions: Agent Instructions (20) + Spec-Driven (10) + Claude-Specific (8)
-
-00:28  💻  The Quickest Win: CLAUDE.md (10 min)
-       Don't write it from scratch. Ask Claude:
-
-       "Read this project and write me a CLAUDE.md that describes
-        what the project is, where things are, how to run/test/lint,
-        and what conventions to follow."
-
-       Claude reads the code → generates CLAUDE.md → 30 seconds.
-       Review it. Tweak if needed. Save.
-
-00:38  💻  Re-scan (3 min)
-       /agent-ready scan .
-
-       ⚡ MAGIC MOMENT #1: INSTRUCT jumps from ~0% to ~50-60%
-       "ONE FILE. One conversation with Claude. That's it."
-
-00:41  🔍  Try on YOUR repo (7 min)
-       "Ask Claude to write a CLAUDE.md for your real project."
-       Those who finish early: also improve their README.
-
-00:48  🎤  Catch-up + transition (2 min)
-       Falling behind? git checkout step-2-instruct
-       "Your agent now knows WHAT to do. But does it know WHERE?"
-```
+### PHASE 6 — Wrap (20 min) · slides 31–36
+- 📊 Radar (31, now 4 axes) or the playground.
+- 🔧 Fix recap (32), `/agent-ready report --format html` + `diff` → `.agent-ready/` (33).
+- `git checkout step-5-complete` → ~85/100, "Optimized".
+- 🎁 Take-home (34): skills are global; `/agent-ready init` for greenfield; AGENTS.md is cross-vendor.
+- Roadmap (35), thanks + poll (36): "who gained ≥15 points?"
 
 ---
 
-### PHASE 3: NAVIGATE + Fix Skill [00:50–01:10] (20 min) — Slides 22-24
+## Risk register
 
-```
-00:50  🎤  Introduce NAVIGATE axis (3 min)
-       "Your agent opens a file... 5000 lines of spaghetti.
-        It can't find where tests live. Formats code wrong."
-
-       Dimensions: Navigability (18) + Documentation (8) + Skills & Tooling (8)
-
-00:53  💻  Get the fix skill (2 min)
-       git checkout step-3-fix-ready
-       (Adds agent-ready-fix skill, codebase stays at step-2 state)
-
-00:55  💻  THE MAGIC MOMENT: /agent-ready fix (10 min)
-       /agent-ready fix
-
-       ⚡ MAGIC MOMENT #2: The agent:
-       1. Loads previous scores
-       2. Identifies gaps: ".editorconfig missing, .env.example missing..."
-       3. Asks: "Shall I generate these files?"
-       4. Creates them — CONTEXTUALIZED to this specific project
-
-       "This is what static tools CAN'T do. The agent reads YOUR code
-        and creates files tailored to it."
-
-01:05  🔍  Try on YOUR repo (5 min)
-       /agent-ready scan ~/your-project  (focus on NAVIGATE score)
-       Optional: /agent-ready fix on their real repo
-```
-
----
-
-### PHASE 4: VALIDATE + Diff/Report [01:10–01:40] (30 min) — Slides 25-32
-
-```
-01:10  🎤  Introduce VALIDATE axis (3 min)
-       "This separates 'fun toy' from 'production tool'.
-        Validation is how you TRUST an agent."
-
-       Dimensions: Testing (16) + CI/CD (12)
-
-01:13  💻  Add CI + tests with Claude's help (12 min)
-       "Claude, create a GitHub Actions CI workflow for this project."
-       "Claude, write pytest tests for the storage module."
-
-       Claude generates the files. Review. Save.
-       The effort to add CI + tests: 5 minutes with an agent.
-
-01:25  💻  Get remaining skills + catch up (2 min)
-       git checkout step-4-validate
-       (Adds report + diff skills + all improvements as catch-up)
-
-01:27  💻  See Your Journey — /agent-ready diff (5 min)
-       /agent-ready diff
-
-       Shows: before vs after across all 8 dimensions.
-       Overall: ~10 → ~65 points.
-
-01:32  💻  Full Report (3 min)
-       /agent-ready report
-
-       Comprehensive assessment document with:
-       - Per-dimension breakdown
-       - Evidence for each score
-       - Prioritized recommendations
-
-01:35  📊  Playground — Radar Chart (5 min)
-       Open playground.html in browser
-       Enter your scores → see the radar chart
-       Visualize the 8-dim → 3-axis mapping
-```
-
----
-
-### PHASE 5: Wrap [01:40–02:00] (20 min) — Slides 33-35
-
-```
-01:40  🎤  The Complete Picture (3 min)
-       git checkout step-5-complete
-       /agent-ready scan .
-       Score: ~85/100 — Optimized.
-       "This is what agent-ready looks like."
-
-01:43  🎤  Take-Home: Install Skills Globally (3 min)
-       git clone agent-ready-skill
-       for skill in skills/*/; do
-         ln -sf "$(pwd)/$skill" ~/.claude/skills/$(basename $skill)
-       done
-
-       "Now /agent-ready works on EVERY project."
-
-01:46  🎤  What's Next (3 min)
-       - Multi-agent support (Cursor, Copilot, Windsurf)
-       - CI gate: fail PRs below maturity threshold
-       - History tracking and trends
-       - Community-contributed skills
-
-01:49  🎤  Final Reflection (3 min)
-       "Two hours ago you didn't know how agent-ready your codebase was.
-        Now you have:
-        ✅ A mental model (3 axes, 3 questions)
-        ✅ A number (your score, your improvement)
-        ✅ A toolkit (5 skills, install once, use everywhere)"
-
-01:52  ⚡  Final Magic Moment (3 min)
-       "Show of hands — who improved their score by at least 20 points?"
-       (Most hands go up)
-       "That's 20 points closer to having agents that HELP you
-        instead of HURTING you."
-
-01:55  🎤  Q&A (5 min)
-
-02:00  🎉  END
-```
-
----
-
-## Risk Register
-
-| Risk | Prob | Impact | Mitigation |
-|------|------|--------|------------|
-| Claude Code setup fails | Med | High | Pre-event setup guide via email. Pair up. |
-| Scan results vary between participants | High | Low | Feature, not bug. Focus on direction, not exact numbers. |
-| Scan takes >60 seconds | Med | Low | Use wait time for discussion. "Watch the agent work." |
-| API rate limits with 30+ people | Med | Med | Stagger scans. Pre-computed fallback results in slides. |
-| Someone already at 85%+ | Low | Low | Challenge: "Can you hit 95? What's missing?" |
-| git checkout conflicts | Low | Med | Clean checkouts only. No local changes to lose. |
-| `/agent-ready fix` generates bad content | Low | Med | Review before accepting. Teaching moment about AI oversight. |
+| Risk | Mitigation |
+|------|-----------|
+| Skill install fails | Method A copy fallback; pair up; pre-event email |
+| `--agents` confusion | Default portable is fine; show target only once as the reveal of layers |
+| Scan variance between people | Focus on direction, not exact number; branches are the known-good states |
+| SECURE feels abstract | Anchor on concrete files: `.env.example`, `docs/agent-execution.md`, devcontainer |
+| Time slips | Phase 5 compressible to 10 min; Phase 6 can drop the report/diff demo |
+| AGENTS.md symlink on Windows | Note copy-fallback (`copy AGENTS.md CLAUDE.md`) |

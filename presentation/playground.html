@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agent Readiness — Interactive 3-Axis Playground</title>
+<title>Agent Readiness — Interactive 4-Axis Playground</title>
 <meta name="description" content="Toggle the checks your codebase has. See your agent-readiness score update across the INSTRUCT / NAVIGATE / VALIDATE axes.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -93,7 +93,7 @@ header .kbd-hint kbd { display: inline-block; padding: 0.1rem 0.45rem; backgroun
 
 /* ─── Axis cards ─── */
 .axis-grid { display: grid; grid-template-columns: 1fr; gap: 1.25rem; margin-bottom: 2rem; }
-@media (min-width: 900px) { .axis-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 900px) { .axis-grid { grid-template-columns: repeat(2, 1fr); } }
 
 .axis-card {
     background: var(--surface);
@@ -108,6 +108,7 @@ header .kbd-hint kbd { display: inline-block; padding: 0.1rem 0.45rem; backgroun
 .axis-card[data-axis="instruct"] { border-top: 3px solid var(--primary); }
 .axis-card[data-axis="navigate"] { border-top: 3px solid var(--secondary); }
 .axis-card[data-axis="validate"] { border-top: 3px solid var(--success); }
+.axis-card[data-axis="secure"] { border-top: 3px solid var(--warning); }
 
 .axis-head { padding: 1.25rem 1.4rem 0.9rem; }
 .axis-title { display: flex; align-items: center; gap: 0.65rem; font-size: 1.05rem; font-weight: 700; }
@@ -116,6 +117,7 @@ header .kbd-hint kbd { display: inline-block; padding: 0.1rem 0.45rem; backgroun
 .axis-card[data-axis="instruct"] .name { color: var(--primary); }
 .axis-card[data-axis="navigate"] .name { color: var(--secondary); }
 .axis-card[data-axis="validate"] .name { color: var(--success); }
+.axis-card[data-axis="secure"] .name { color: var(--warning); }
 .axis-weight { font-family: var(--mono); font-size: 0.78rem; color: var(--text-darker); font-weight: 600; }
 .axis-question { font-size: 0.88rem; color: var(--text-dim); margin-top: 0.4rem; font-style: italic; }
 
@@ -125,12 +127,14 @@ header .kbd-hint kbd { display: inline-block; padding: 0.1rem 0.45rem; backgroun
 .axis-card[data-axis="instruct"] .pct { color: var(--primary); }
 .axis-card[data-axis="navigate"] .pct { color: var(--secondary); }
 .axis-card[data-axis="validate"] .pct { color: var(--success); }
+.axis-card[data-axis="secure"] .pct { color: var(--warning); }
 .axis-meter-row .pts { font-family: var(--mono); font-size: 0.8rem; color: var(--text-darker); }
 .bar { height: 7px; border-radius: 99px; background: rgba(255,255,255,0.05); overflow: hidden; }
 .bar-fill { height: 100%; border-radius: 99px; transition: width 0.5s cubic-bezier(0.22,1,0.36,1); width: 0; }
 .axis-card[data-axis="instruct"] .bar-fill { background: linear-gradient(90deg, var(--primary), #7aa8ff); }
 .axis-card[data-axis="navigate"] .bar-fill { background: linear-gradient(90deg, var(--secondary), #c084fc); }
 .axis-card[data-axis="validate"] .bar-fill { background: linear-gradient(90deg, var(--success), #4ade80); }
+.axis-card[data-axis="secure"] .bar-fill { background: linear-gradient(90deg, var(--warning), #fbbf24); }
 
 /* ─── Dimension groups ─── */
 .dim-list { padding: 0.4rem 0.75rem 1rem; display: flex; flex-direction: column; gap: 0.45rem; }
@@ -192,6 +196,7 @@ header .kbd-hint kbd { display: inline-block; padding: 0.1rem 0.45rem; backgroun
 .check-label { flex: 1; min-width: 0; font-size: 0.82rem; cursor: pointer; }
 .check-pts { font-family: var(--mono); font-size: 0.76rem; font-weight: 600; color: var(--text-darker); white-space: nowrap; }
 .check-item.active .check-pts { color: var(--success); }
+.target-tag { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-darker); border: 1px solid var(--border-strong); border-radius: 4px; padding: 0.05rem 0.3rem; margin-left: 0.3rem; vertical-align: middle; }
 
 /* ─── Overall summary ─── */
 .summary-grid {
@@ -347,8 +352,8 @@ footer .footer-divider { color: var(--text-darker); margin: 0 0.5rem; opacity: 0
 <div class="container">
 
 <header role="banner">
-    <h1>Agent Readiness — Interactive <span class="gradient">3-Axis Playground</span></h1>
-    <p class="subtitle">Toggle the checks your codebase has. See your score update.</p>
+    <h1>Agent Readiness — Interactive <span class="gradient">4-Axis Playground</span></h1>
+    <p class="subtitle">Toggle the checks your codebase has. See your score update across INSTRUCT · NAVIGATE · VALIDATE · SECURE.</p>
     <p class="kbd-hint">
         Shortcuts: <kbd>a</kbd> all on
         &nbsp;·&nbsp; <kbd>c</kbd> clear all
@@ -365,9 +370,9 @@ footer .footer-divider { color: var(--text-darker); margin: 0 0.5rem; opacity: 0
 
 <main id="main" role="main">
 
-    <!-- ─── Three axis cards ─── -->
+    <!-- ─── Four axis cards ─── -->
     <section class="axis-grid" aria-labelledby="axesHeading">
-        <h2 id="axesHeading" class="sr-only">Three axes</h2>
+        <h2 id="axesHeading" class="sr-only">Four axes</h2>
 
         <article class="axis-card" data-axis="instruct" aria-labelledby="instructTitle">
             <div class="axis-head">
@@ -376,14 +381,14 @@ footer .footer-divider { color: var(--text-darker); margin: 0 0.5rem; opacity: 0
                         <span class="icon" aria-hidden="true">📝</span>
                         <span class="name">INSTRUCT</span>
                     </div>
-                    <span class="axis-weight" aria-label="Axis weight 38 percent">38%</span>
+                    <span class="axis-weight" aria-label="Axis weight 28 percent">28%</span>
                 </div>
                 <p class="axis-question">Does the agent understand what we want?</p>
             </div>
             <div class="axis-meter">
                 <div class="axis-meter-row">
                     <span class="pct" id="pctInstruct" aria-live="polite">0%</span>
-                    <span class="pts" id="ptsInstruct">0 / 38 pts</span>
+                    <span class="pts" id="ptsInstruct">0 / 28 pts</span>
                 </div>
                 <div class="bar"><div class="bar-fill" id="barInstruct"></div></div>
             </div>
@@ -397,14 +402,14 @@ footer .footer-divider { color: var(--text-darker); margin: 0 0.5rem; opacity: 0
                         <span class="icon" aria-hidden="true">🧭</span>
                         <span class="name">NAVIGATE</span>
                     </div>
-                    <span class="axis-weight" aria-label="Axis weight 34 percent">34%</span>
+                    <span class="axis-weight" aria-label="Axis weight 30 percent">30%</span>
                 </div>
-                <p class="axis-question">Can the agent find its way around?</p>
+                <p class="axis-question">Can the agent find its way around &amp; use the right tools?</p>
             </div>
             <div class="axis-meter">
                 <div class="axis-meter-row">
                     <span class="pct" id="pctNavigate" aria-live="polite">0%</span>
-                    <span class="pts" id="ptsNavigate">0 / 34 pts</span>
+                    <span class="pts" id="ptsNavigate">0 / 30 pts</span>
                 </div>
                 <div class="bar"><div class="bar-fill" id="barNavigate"></div></div>
             </div>
@@ -418,18 +423,39 @@ footer .footer-divider { color: var(--text-darker); margin: 0 0.5rem; opacity: 0
                         <span class="icon" aria-hidden="true">✅</span>
                         <span class="name">VALIDATE</span>
                     </div>
-                    <span class="axis-weight" aria-label="Axis weight 28 percent">28%</span>
+                    <span class="axis-weight" aria-label="Axis weight 30 percent">30%</span>
                 </div>
                 <p class="axis-question">Can the agent tell if it did it right?</p>
             </div>
             <div class="axis-meter">
                 <div class="axis-meter-row">
                     <span class="pct" id="pctValidate" aria-live="polite">0%</span>
-                    <span class="pts" id="ptsValidate">0 / 28 pts</span>
+                    <span class="pts" id="ptsValidate">0 / 30 pts</span>
                 </div>
                 <div class="bar"><div class="bar-fill" id="barValidate"></div></div>
             </div>
             <div class="dim-list" id="dimsValidate"></div>
+        </article>
+
+        <article class="axis-card" data-axis="secure" aria-labelledby="secureTitle">
+            <div class="axis-head">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:0.5rem;">
+                    <div class="axis-title" id="secureTitle">
+                        <span class="icon" aria-hidden="true">🛡️</span>
+                        <span class="name">SECURE</span>
+                    </div>
+                    <span class="axis-weight" aria-label="Axis weight 12 percent">12%</span>
+                </div>
+                <p class="axis-question">Can the agent run safely? <span style="opacity:0.7">(the 4th axis v2 added)</span></p>
+            </div>
+            <div class="axis-meter">
+                <div class="axis-meter-row">
+                    <span class="pct" id="pctSecure" aria-live="polite">0%</span>
+                    <span class="pts" id="ptsSecure">0 / 12 pts</span>
+                </div>
+                <div class="bar"><div class="bar-fill" id="barSecure"></div></div>
+            </div>
+            <div class="dim-list" id="dimsSecure"></div>
         </article>
     </section>
 
@@ -455,11 +481,11 @@ footer .footer-divider { color: var(--text-darker); margin: 0 0.5rem; opacity: 0
 
         <div class="radar-card">
             <div class="radar-head">
-                <h3>Three-axis radar</h3>
+                <h3>Four-axis radar</h3>
                 <span class="hint">live</span>
             </div>
             <div class="radar-wrap">
-                <canvas id="radarCanvas" aria-label="Radar chart showing INSTRUCT, NAVIGATE, and VALIDATE axis percentages"></canvas>
+                <canvas id="radarCanvas" aria-label="Radar chart showing INSTRUCT, NAVIGATE, VALIDATE, and SECURE axis percentages"></canvas>
                 <div id="radarFallback" aria-hidden="false">
                     <p>Radar chart unavailable offline. Axis values:</p>
                     <div class="fallback-bars">
@@ -475,6 +501,10 @@ footer .footer-divider { color: var(--text-darker); margin: 0 0.5rem; opacity: 0
                             <div class="lbl"><span style="color:var(--success)">VALIDATE</span><span id="fbV">0%</span></div>
                             <div class="bar"><div class="bar-fill" id="fbBarV" style="background:var(--success)"></div></div>
                         </div>
+                        <div class="fallback-bar-row">
+                            <div class="lbl"><span style="color:var(--warning)">SECURE</span><span id="fbS">0%</span></div>
+                            <div class="bar"><div class="bar-fill" id="fbBarS" style="background:var(--warning)"></div></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -489,22 +519,21 @@ footer .footer-divider { color: var(--text-darker); margin: 0 0.5rem; opacity: 0
         </button>
         <div class="about-body" id="aboutBody" role="region" aria-labelledby="aboutToggle">
             <div class="about-body-inner">
-                <p>The full <strong>agent-ready-skill</strong> rubric scores a codebase across <strong>8 dimensions</strong>, each weighted by how much it affects an AI agent's ability to work autonomously.</p>
-                <p>For this workshop we remap those 8 dimensions onto <strong>3 axes</strong> built around the question an agent silently asks at each stage: <em>understand</em> what to do (INSTRUCT, 38 pts), <em>find</em> where to do it (NAVIGATE, 34 pts), and <em>verify</em> it did it right (VALIDATE, 28 pts). The 3 axes sum to 100.</p>
+                <p>The <strong>agent-ready-skill</strong> v2 rubric scores a codebase across <strong>7 evidence-based dimensions</strong>, each weighted by how much it actually affects an AI agent's ability to work autonomously. Every sub-criterion is tagged <strong>portable</strong> (counts for any agent) or <strong>target</strong> (only scored when you declare an agent via <code>--agents</code>) — the <span style="color:var(--text-darker)">dimmed</span> checks below are target-specific.</p>
+                <p>For this workshop we remap those 7 dimensions onto <strong>4 axes</strong> built around the question an agent silently asks: <em>understand</em> what to do (INSTRUCT, 28), <em>find</em> where to do it &amp; reach for tools (NAVIGATE, 30), <em>verify</em> it did it right (VALIDATE, 30), and <em>run safely</em> (SECURE, 12). The model started as three axes — building v2, <strong>security forced a fourth</strong>. The 4 axes sum to 100.</p>
                 <p>Your overall score is the raw sum of the points you toggle on. Cross the thresholds <code>40 / 55 / 70 / 85 / 95</code> and you climb the maturity ladder L1 to L5.</p>
-                <table class="dim-table" aria-label="Mapping of 8 dimensions to 3 axes">
+                <table class="dim-table" aria-label="Mapping of 7 dimensions to 4 axes">
                     <thead>
                         <tr><th>Axis</th><th>Dimension</th><th class="num">Pts</th></tr>
                     </thead>
                     <tbody>
-                        <tr><td rowspan="3" style="color:var(--primary);font-weight:700">INSTRUCT</td><td>D1 Agent Instructions</td><td class="num">20</td></tr>
-                        <tr><td>D5 Spec-Driven Workflow</td><td class="num">10</td></tr>
-                        <tr><td>D8 Claude-Specific</td><td class="num">8</td></tr>
-                        <tr><td rowspan="3" style="color:var(--secondary);font-weight:700">NAVIGATE</td><td>D2 Project Navigability</td><td class="num">18</td></tr>
-                        <tr><td>D7 Documentation &amp; Comprehension</td><td class="num">8</td></tr>
-                        <tr><td>D6 Skills &amp; Tooling</td><td class="num">8</td></tr>
-                        <tr><td rowspan="2" style="color:var(--success);font-weight:700">VALIDATE</td><td>D3 Testing &amp; Validation</td><td class="num">16</td></tr>
-                        <tr><td>D4 CI/CD &amp; Automation</td><td class="num">12</td></tr>
+                        <tr><td rowspan="2" style="color:var(--primary);font-weight:700">INSTRUCT</td><td>D1 Agent Instructions &amp; Context</td><td class="num">18</td></tr>
+                        <tr><td>D7 Spec-Driven Workflow &amp; Docs</td><td class="num">10</td></tr>
+                        <tr><td rowspan="2" style="color:var(--secondary);font-weight:700">NAVIGATE</td><td>D2 Navigability &amp; Code Intelligence</td><td class="num">18</td></tr>
+                        <tr><td>D5 Agent Tooling &amp; Capabilities</td><td class="num">12</td></tr>
+                        <tr><td rowspan="2" style="color:var(--success);font-weight:700">VALIDATE</td><td>D3 Testing &amp; Feedback</td><td class="num">16</td></tr>
+                        <tr><td>D4 CI/CD, Automation &amp; Governance</td><td class="num">14</td></tr>
+                        <tr><td style="color:var(--warning);font-weight:700">SECURE</td><td>D6 Security &amp; Sandbox</td><td class="num">12</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -530,79 +559,88 @@ footer .footer-divider { color: var(--text-darker); margin: 0 0.5rem; opacity: 0
 'use strict';
 
 /* ════════════════════════════════════════
-   CANONICAL MODEL
-   3 axes · 8 dimensions · check toggles
-   Weights sum: INSTRUCT 38 + NAVIGATE 34 + VALIDATE 28 = 100
+   CANONICAL MODEL (agent-ready v2)
+   4 axes · 7 dimensions · check toggles
+   Weights sum: INSTRUCT 28 + NAVIGATE 30 + VALIDATE 30 + SECURE 12 = 100
    ════════════════════════════════════════ */
 
+/* v2 model: 7 dimensions → 4 axes. pts per check sum to the dimension weight;
+   dimension weights sum to the axis weight; axes sum to 100.
+   `target: true` = scored only when an agent is declared via --agents. */
 const MODEL = {
     instruct: {
-        label: 'INSTRUCT', icon: '📝', weight: 38, color: '#4f8cff',
+        label: 'INSTRUCT', icon: '📝', weight: 28, color: '#4f8cff',
         dimensions: [
-            { id: 'D1', name: 'Agent Instructions', max: 20, checks: [
-                { id: 'd1_claude_md',  name: 'CLAUDE.md present in root', pts: 5 },
-                { id: 'd1_quality',    name: 'Instructions specific & useful (not boilerplate)', pts: 5 },
-                { id: 'd1_hier_md',    name: 'Hierarchical instructions in subdirs', pts: 5 },
-                { id: 'd1_build_cmds', name: 'Build / test / lint commands documented', pts: 5 },
+            { id: 'D1', name: 'Agent Instructions & Context', max: 18, checks: [
+                { id: 'd1_agents_md',  name: 'AGENTS.md present (portable primary)', pts: 5 },
+                { id: 'd1_quality',    name: 'Instructions specific & useful (build/test/lint, not boilerplate)', pts: 4 },
+                { id: 'd1_concise',    name: 'Concise & non-bloated (< ~200 lines)', pts: 4 },
+                { id: 'd1_hier',       name: 'Hierarchical / scoped instructions', pts: 3 },
+                { id: 'd1_bridge',     name: 'Cross-agent bridge (CLAUDE.md → AGENTS.md)', pts: 2, target: true },
             ]},
-            { id: 'D5', name: 'Spec-Driven Workflow', max: 10, checks: [
-                { id: 'd5_specs_dir',  name: 'specs/ or tasks/ directory with content', pts: 3 },
-                { id: 'd5_issue_tpl',  name: 'Issue templates (.github/ISSUE_TEMPLATE/)', pts: 3 },
-                { id: 'd5_adr',        name: 'ADR / decision docs (docs/adr/)', pts: 2 },
-                { id: 'd5_accept',     name: 'Acceptance criteria in specs', pts: 2 },
-            ]},
-            { id: 'D8', name: 'Claude-Specific', max: 8, checks: [
-                { id: 'd8_claude_dir', name: '.claude/ directory with content', pts: 2 },
-                { id: 'd8_settings',   name: 'settings.local.json configured', pts: 2 },
-                { id: 'd8_hooks',      name: 'Hooks configured (pre/post tool)', pts: 2 },
-                { id: 'd8_mcp',        name: 'MCP servers configured', pts: 2 },
+            { id: 'D7', name: 'Spec-Driven Workflow & Docs', max: 10, checks: [
+                { id: 'd7_specs',      name: 'specs/ or tasks/ with content', pts: 3 },
+                { id: 'd7_accept',     name: 'Acceptance criteria in specs', pts: 2 },
+                { id: 'd7_templates',  name: 'Issue / PR templates', pts: 1 },
+                { id: 'd7_adr',        name: 'ADR / decision records', pts: 2 },
+                { id: 'd7_comprehend', name: 'Docs & comprehension signals (ARCHITECTURE, types, changelog)', pts: 2 },
             ]},
         ],
     },
     navigate: {
-        label: 'NAVIGATE', icon: '🧭', weight: 34, color: '#a855f7',
+        label: 'NAVIGATE', icon: '🧭', weight: 30, color: '#a855f7',
         dimensions: [
-            { id: 'D2', name: 'Project Navigability', max: 18, checks: [
-                { id: 'd2_structure',  name: 'Logical directory structure (depth ≤ 4)', pts: 4 },
-                { id: 'd2_index',      name: 'Index / map file (PROJECT_INDEX.md, ARCHITECTURE.md)', pts: 4 },
-                { id: 'd2_readme',     name: 'README in root (overview, install, usage)', pts: 3 },
-                { id: 'd2_naming',     name: 'Consistent naming (snake_case / camelCase)', pts: 3 },
-                { id: 'd2_env',        name: 'Environment reproducibility (lock file + .env.example)', pts: 4 },
+            { id: 'D2', name: 'Navigability & Code Intelligence', max: 18, checks: [
+                { id: 'd2_repomap',    name: 'Repo map / index (committed or cleanly generatable)', pts: 4 },
+                { id: 'd2_semantic',   name: 'Semantic-nav amenability (typed code, language servers)', pts: 3 },
+                { id: 'd2_deps',       name: 'Dependency & structure clarity (manifests, boundaries)', pts: 3 },
+                { id: 'd2_readme',     name: 'README overview, setup, usage', pts: 3 },
+                { id: 'd2_contracts',  name: 'Machine-readable contracts (OpenAPI/Proto/GraphQL)', pts: 2 },
+                { id: 'd2_filesize',   name: 'File-size sanity (few files > 500 LOC)', pts: 3 },
             ]},
-            { id: 'D7', name: 'Documentation & Comprehension', max: 8, checks: [
-                { id: 'd7_linked',     name: 'Docs linked from CLAUDE.md', pts: 2 },
-                { id: 'd7_api',        name: 'API docs (docstrings, OpenAPI, type annotations)', pts: 2 },
-                { id: 'd7_arch',       name: 'Architecture documented', pts: 1 },
-                { id: 'd7_changelog',  name: 'Changelog / release notes', pts: 1 },
-                { id: 'd7_comprehend', name: 'Code comprehension (types, no huge files, inline docs)', pts: 2 },
-            ]},
-            { id: 'D6', name: 'Skills & Tooling', max: 8, checks: [
-                { id: 'd6_skills',     name: '.claude/skills/ or .claude/commands/ present', pts: 2 },
-                { id: 'd6_makefile',   name: 'Makefile / taskfile / justfile', pts: 3 },
-                { id: 'd6_scripts',    name: 'scripts/ or tools/ directory with helpers', pts: 1 },
-                { id: 'd6_mcp',        name: 'MCP servers in .claude/settings*', pts: 2 },
+            { id: 'D5', name: 'Agent Tooling & Capabilities', max: 12, checks: [
+                { id: 'd5_skills',     name: 'Standard Skills (valid SKILL.md, < 500 lines)', pts: 4 },
+                { id: 'd5_scripts',    name: 'Bundled helper scripts in skills', pts: 2 },
+                { id: 'd5_mcp_decl',   name: 'MCP declaration (.mcp.json or equivalent)', pts: 3 },
+                { id: 'd5_mcp_nav',    name: 'Nav/comprehension MCP wired up (Serena/Sourcegraph)', pts: 2 },
+                { id: 'd5_commands',   name: 'Custom commands / reusable prompts', pts: 1, target: true },
             ]},
         ],
     },
     validate: {
-        label: 'VALIDATE', icon: '✅', weight: 28, color: '#22c55e',
+        label: 'VALIDATE', icon: '✅', weight: 30, color: '#22c55e',
         dimensions: [
-            { id: 'D3', name: 'Testing & Validation', max: 16, checks: [
-                { id: 'd3_tests_dir',  name: 'Test suite present (tests/ or __tests__/)', pts: 3 },
-                { id: 'd3_test_cmd',   name: 'Test commands documented', pts: 3 },
-                { id: 'd3_coverage',   name: 'Coverage configured (> 60% target)', pts: 3 },
-                { id: 'd3_fast',       name: 'Fast test feedback (< 30 s subset)', pts: 3 },
-                { id: 'd3_feedback',   name: 'Error feedback quality (assertions + type checker)', pts: 4 },
+            { id: 'D3', name: 'Testing & Feedback', max: 16, checks: [
+                { id: 'd3_suite',      name: 'Test suite present', pts: 3 },
+                { id: 'd3_commands',   name: 'Test commands documented & discoverable', pts: 3 },
+                { id: 'd3_fast',       name: 'Fast feedback loop (quick subset)', pts: 2 },
+                { id: 'd3_feedback',   name: 'Feedback quality (assertion messages, type checker)', pts: 4 },
+                { id: 'd3_coverage',   name: 'Coverage reasonable (config/target)', pts: 4 },
             ]},
-            { id: 'D4', name: 'CI/CD & Automation', max: 12, checks: [
-                { id: 'd4_ci',         name: 'CI pipeline configured', pts: 3 },
-                { id: 'd4_lint_ci',    name: 'Linting / formatting automated', pts: 3 },
-                { id: 'd4_precommit',  name: 'Pre-commit hooks configured', pts: 2 },
-                { id: 'd4_governance', name: 'Governance (CODEOWNERS, dependabot, security scanning)', pts: 4 },
+            { id: 'D4', name: 'CI/CD, Automation & Governance', max: 14, checks: [
+                { id: 'd4_ci',         name: 'CI runs tests + lint', pts: 4 },
+                { id: 'd4_lint',       name: 'Lint/format automated & configured', pts: 4 },
+                { id: 'd4_precommit',  name: 'Pre-commit hooks', pts: 3 },
+                { id: 'd4_governance', name: 'Governance (CODEOWNERS + Dependabot/Renovate)', pts: 3 },
+            ]},
+        ],
+    },
+    secure: {
+        label: 'SECURE', icon: '🛡️', weight: 12, color: '#f59e0b',
+        dimensions: [
+            { id: 'D6', name: 'Security & Sandbox', max: 12, checks: [
+                { id: 'd6_isolation',  name: 'Committed isolation config (devcontainer, default-deny egress)', pts: 2 },
+                { id: 'd6_exec_policy', name: 'Documented execution policy (docs/agent-execution.md; LINCE among options)', pts: 2 },
+                { id: 'd6_perms',      name: 'Agent permission policy (restrictive deny rules)', pts: 2, target: true },
+                { id: 'd6_secrets',    name: 'Secret hygiene (.gitignore, .env.example, scanning)', pts: 3 },
+                { id: 'd6_supply',     name: 'Supply-chain pinning (committed lockfiles, Dependabot)', pts: 2 },
+                { id: 'd6_injection',  name: 'Injection hygiene (instructions only in trusted files)', pts: 1 },
             ]},
         ],
     },
 };
+
+const AXIS_KEYS = ['instruct', 'navigate', 'validate', 'secure'];
 
 /* Maturity ladder thresholds */
 const LEVELS = [
@@ -636,7 +674,7 @@ const PG = {
     },
     /* overall = raw sum (0..100 because weights sum to 100) */
     computeOverall() {
-        return PG.computeAxis('instruct') + PG.computeAxis('navigate') + PG.computeAxis('validate');
+        return AXIS_KEYS.reduce((sum, k) => sum + PG.computeAxis(k), 0);
     },
     getLevel(score) {
         for (const lv of LEVELS) { if (score >= lv.min) return lv; }
@@ -689,10 +727,11 @@ function renderChecksForAxis(axisKey) {
                     ${dim.checks.map(chk => {
                         const checked = PG.state[chk.id] ? 'checked' : '';
                         const active = PG.state[chk.id] ? 'active' : '';
+                        const tgt = chk.target ? ' <span class="target-tag" title="Target-specific: scored only when you declare an agent with --agents">target</span>' : '';
                         return `
                         <label class="check-item ${active}" data-check-id="${chk.id}">
                             <input type="checkbox" class="check-checkbox" data-check-id="${chk.id}" ${checked} aria-describedby="pts-${chk.id}">
-                            <span class="check-label">${chk.name}</span>
+                            <span class="check-label">${chk.name}${tgt}</span>
                             <span class="check-pts" id="pts-${chk.id}">+${chk.pts}</span>
                         </label>`;
                     }).join('')}
@@ -723,7 +762,7 @@ function renderChecksForAxis(axisKey) {
 }
 
 function renderChecks() {
-    ['instruct', 'navigate', 'validate'].forEach(renderChecksForAxis);
+    AXIS_KEYS.forEach(renderChecksForAxis);
 }
 
 /* Lightweight refresh: update item active class + dim scores + main scores, no full re-render */
@@ -753,7 +792,7 @@ function refreshAfterToggle() {
    RENDERING — scores + zone marker
    ════════════════════════════════════════ */
 function renderScores() {
-    ['instruct', 'navigate', 'validate'].forEach(axisKey => {
+    AXIS_KEYS.forEach(axisKey => {
         const axis = MODEL[axisKey];
         const score = PG.computeAxis(axisKey);
         const pct = Math.round((score / axis.weight) * 100);
@@ -783,12 +822,13 @@ function renderScores() {
     marker.style.left = Math.max(0, Math.min(100, overall)) + '%';
 
     // Fallback bars (visible when Chart.js fails)
-    document.getElementById('fbI').textContent = Math.round(PG.computeAxis('instruct') / 38 * 100) + '%';
-    document.getElementById('fbN').textContent = Math.round(PG.computeAxis('navigate') / 34 * 100) + '%';
-    document.getElementById('fbV').textContent = Math.round(PG.computeAxis('validate') / 28 * 100) + '%';
-    document.getElementById('fbBarI').style.width = Math.round(PG.computeAxis('instruct') / 38 * 100) + '%';
-    document.getElementById('fbBarN').style.width = Math.round(PG.computeAxis('navigate') / 34 * 100) + '%';
-    document.getElementById('fbBarV').style.width = Math.round(PG.computeAxis('validate') / 28 * 100) + '%';
+    const fbMap = { instruct: ['fbI', 'fbBarI'], navigate: ['fbN', 'fbBarN'], validate: ['fbV', 'fbBarV'], secure: ['fbS', 'fbBarS'] };
+    AXIS_KEYS.forEach(axisKey => {
+        const pct = Math.round(PG.computeAxis(axisKey) / MODEL[axisKey].weight * 100);
+        const [pctId, barId] = fbMap[axisKey];
+        document.getElementById(pctId).textContent = pct + '%';
+        document.getElementById(barId).style.width = pct + '%';
+    });
 }
 
 /* ════════════════════════════════════════
@@ -807,14 +847,14 @@ function initRadar() {
     radarChart = new Chart(ctx, {
         type: 'radar',
         data: {
-            labels: ['INSTRUCT', 'NAVIGATE', 'VALIDATE'],
+            labels: ['INSTRUCT', 'NAVIGATE', 'VALIDATE', 'SECURE'],
             datasets: [{
                 label: 'Score (%)',
-                data: [0, 0, 0],
+                data: [0, 0, 0, 0],
                 backgroundColor: 'rgba(79,140,255,0.18)',
                 borderColor: 'rgba(79,140,255,0.9)',
                 borderWidth: 2.5,
-                pointBackgroundColor: ['#4f8cff', '#a855f7', '#22c55e'],
+                pointBackgroundColor: ['#4f8cff', '#a855f7', '#22c55e', '#f59e0b'],
                 pointBorderColor: '#fff',
                 pointBorderWidth: 2,
                 pointRadius: 6,
@@ -856,11 +896,10 @@ function initRadar() {
 }
 
 function drawRadar() {
-    const iPct = Math.round(PG.computeAxis('instruct') / 38 * 100);
-    const nPct = Math.round(PG.computeAxis('navigate') / 34 * 100);
-    const vPct = Math.round(PG.computeAxis('validate') / 28 * 100);
     if (radarChart) {
-        radarChart.data.datasets[0].data = [iPct, nPct, vPct];
+        radarChart.data.datasets[0].data = AXIS_KEYS.map(
+            k => Math.round(PG.computeAxis(k) / MODEL[k].weight * 100)
+        );
         radarChart.update();
     }
 }

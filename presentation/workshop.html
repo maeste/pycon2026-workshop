@@ -13,6 +13,7 @@
     --surface: #12121f;
     --surface-light: #1a1a2e;
     --border: rgba(255,255,255,0.08);
+    --border-strong: rgba(255,255,255,0.14);
     --primary: #4f8cff;
     --primary-dim: rgba(79,140,255,0.15);
     --secondary: #a855f7;
@@ -26,137 +27,90 @@
     --instruct: #3b82f6;
     --navigate: #06b6d4;
     --validate: #22c55e;
+    --secure: #f59e0b;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { font-size: 16px; scroll-behavior: smooth; }
-body {
-    font-family: var(--font);
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.7;
-}
+body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.7; }
 
 .top-bar {
     position: sticky; top: 0; z-index: 100;
-    background: rgba(10,10,20,0.85);
-    backdrop-filter: blur(12px);
+    background: rgba(10,10,20,0.85); backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
-    padding: 0.6rem 1.5rem;
-    display: flex; align-items: center; gap: 1rem;
-    font-size: 0.82rem;
+    padding: 0.6rem 1.5rem; display: flex; align-items: center; gap: 1rem; font-size: 0.82rem;
 }
 .top-bar a { color: var(--primary); text-decoration: none; font-weight: 600; }
 .top-bar a:hover { text-decoration: underline; }
 .top-bar .sep { color: var(--text-dim); }
 
-.container { max-width: 780px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+.container { max-width: 800px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
 
 h1 {
     font-size: 2rem; font-weight: 800; margin-bottom: 0.3rem;
     background: linear-gradient(135deg, var(--primary), var(--secondary));
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
-.lead { font-size: 1.05rem; color: var(--text-dim); margin-bottom: 2rem; }
+.lead { font-size: 1.05rem; color: var(--text-dim); margin-bottom: 1.5rem; }
 
 h2 {
     font-size: 1.35rem; font-weight: 700; margin-top: 3rem; margin-bottom: 1rem;
     padding-bottom: 0.5rem; border-bottom: 1px solid var(--border);
 }
 h2 .phase-num {
-    display: inline-block;
-    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 0.2rem 0.6rem; border-radius: 999px;
+    display: inline-block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 0.2rem 0.6rem; border-radius: 999px;
     margin-right: 0.5rem; vertical-align: middle;
 }
-h2 .phase-num.setup   { background: rgba(148,163,184,0.15); color: var(--text-dim); }
-h2 .phase-num.p1      { background: rgba(239,68,68,0.15); color: #ef4444; }
-h2 .phase-num.instruct{ background: rgba(59,130,246,0.15); color: var(--instruct); }
-h2 .phase-num.navigate{ background: rgba(6,182,212,0.15); color: var(--navigate); }
-h2 .phase-num.validate{ background: rgba(34,197,94,0.15); color: var(--validate); }
-h2 .phase-num.wrap    { background: rgba(168,85,247,0.15); color: var(--secondary); }
+.phase-num.setup    { background: rgba(148,163,184,0.15); color: var(--text-dim); }
+.phase-num.p1       { background: rgba(239,68,68,0.15); color: #ef4444; }
+.phase-num.instruct { background: rgba(59,130,246,0.15); color: var(--instruct); }
+.phase-num.navigate { background: rgba(168,85,247,0.15); color: var(--secondary); }
+.phase-num.validate { background: rgba(34,197,94,0.15); color: var(--validate); }
+.phase-num.secure   { background: rgba(245,158,11,0.15); color: var(--secure); }
+.phase-num.wrap     { background: rgba(168,85,247,0.15); color: var(--secondary); }
 
 h3 { font-size: 1.05rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; }
-
 p { margin-bottom: 0.9rem; }
-
 ul, ol { margin-bottom: 1rem; padding-left: 1.5rem; }
 li { margin-bottom: 0.3rem; }
 li code { font-size: 0.88em; }
-
 strong { font-weight: 600; }
 em { color: var(--text-dim); }
-
 a { color: var(--primary); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
-code {
-    font-family: var(--mono);
-    font-size: 0.88em;
-    background: rgba(255,255,255,0.06);
-    padding: 0.15em 0.4em;
-    border-radius: 4px;
-}
-
+code { font-family: var(--mono); font-size: 0.88em; background: rgba(255,255,255,0.06); padding: 0.15em 0.4em; border-radius: 4px; }
 pre {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 1rem 1.25rem;
-    margin-bottom: 1.2rem;
-    overflow-x: auto;
-    position: relative;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 1rem 1.25rem; margin-bottom: 1.2rem; overflow-x: auto;
 }
-pre code {
-    background: none; padding: 0; font-size: 0.85rem; line-height: 1.6;
-    color: var(--text);
-}
+pre code { background: none; padding: 0; font-size: 0.85rem; line-height: 1.6; color: var(--text); }
 pre .comment { color: var(--text-dim); }
 pre .cmd { color: var(--primary); }
 
 .callout {
-    background: var(--surface);
-    border-left: 3px solid var(--primary);
-    border-radius: 0 var(--radius) var(--radius) 0;
-    padding: 1rem 1.25rem;
-    margin-bottom: 1.2rem;
-    font-size: 0.9rem;
+    background: var(--surface); border-left: 3px solid var(--primary);
+    border-radius: 0 var(--radius) var(--radius) 0; padding: 1rem 1.25rem;
+    margin-bottom: 1.2rem; font-size: 0.9rem;
 }
-.callout.magic {
-    border-left-color: var(--warning);
-    background: rgba(245,158,11,0.05);
-}
-.callout.tip {
-    border-left-color: var(--success);
-}
+.callout.magic { border-left-color: var(--warning); background: rgba(245,158,11,0.05); }
+.callout.tip { border-left-color: var(--success); }
 
 .checklist { list-style: none; padding-left: 0; }
 .checklist li { display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.4rem; }
-.checklist li::before { content: ''; display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border); border-radius: 3px; flex-shrink: 0; margin-top: 3px; }
+.checklist li::before { content: ''; display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border-strong); border-radius: 3px; flex-shrink: 0; margin-top: 3px; }
 
-table {
-    width: 100%; border-collapse: collapse; margin-bottom: 1.2rem;
-    font-size: 0.88rem;
-}
+table { width: 100%; border-collapse: collapse; margin-bottom: 1.2rem; font-size: 0.86rem; }
 th { text-align: left; font-weight: 600; padding: 0.6rem 0.8rem; border-bottom: 2px solid var(--border); }
-td { padding: 0.5rem 0.8rem; border-bottom: 1px solid var(--border); }
+td { padding: 0.5rem 0.8rem; border-bottom: 1px solid var(--border); vertical-align: top; }
 tr:last-child td { border-bottom: none; }
 td code { font-size: 0.84em; }
 
 hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
 
-.back-link {
-    display: inline-flex; align-items: center; gap: 0.3rem;
-    font-size: 0.85rem; color: var(--primary); text-decoration: none;
-    margin-bottom: 1.5rem;
-}
-.back-link:hover { text-decoration: underline; }
-
 footer {
-    text-align: center; padding: 2rem 1.5rem;
-    font-size: 0.8rem; color: var(--text-dim);
-    border-top: 1px solid var(--border);
-    max-width: 780px; margin: 0 auto;
+    text-align: center; padding: 2rem 1.5rem; font-size: 0.8rem; color: var(--text-dim);
+    border-top: 1px solid var(--border); max-width: 800px; margin: 0 auto;
 }
 
 @media (max-width: 640px) {
@@ -185,20 +139,35 @@ footer {
 <h1>Workshop Guide</h1>
 <p class="lead">Measuring AI-Readiness &mdash; PyCon Italia 2026 &middot; Fri May 29, 11:00&ndash;13:00</p>
 
-<!-- ═══ PREREQUISITES ═══ -->
+<p>A maturity model for agent-optimized codebases. We started with <strong>three axes</strong>
+— building v2, security forced a <strong>fourth</strong>.</p>
+
+<table>
+    <thead><tr><th>Axis</th><th>Wt</th><th>Question</th><th>Dimensions (v2)</th></tr></thead>
+    <tbody>
+        <tr><td><strong style="color:var(--instruct)">📝 INSTRUCT</strong></td><td>28%</td><td>Understand WHAT we want?</td><td>Agent Instructions &amp; Context (18) + Spec-Driven Workflow &amp; Docs (10)</td></tr>
+        <tr><td><strong style="color:var(--navigate)">🧭 NAVIGATE</strong></td><td>30%</td><td>Find its way &amp; reach for tools?</td><td>Navigability &amp; Code Intelligence (18) + Agent Tooling &amp; Capabilities (12)</td></tr>
+        <tr><td><strong style="color:var(--validate)">✅ VALIDATE</strong></td><td>30%</td><td>Verify it did it right?</td><td>Testing &amp; Feedback (16) + CI/CD, Automation &amp; Governance (14)</td></tr>
+        <tr><td><strong style="color:var(--secure)">🛡️ SECURE</strong></td><td>12%</td><td>Run safely?</td><td>Security &amp; Sandbox (12)</td></tr>
+    </tbody>
+</table>
+
+<p>Every check is <strong>portable</strong> (counts for any agent) or
+<strong>target-specific</strong> (only scored when you declare an agent with <code>--agents</code>).</p>
+
+<!-- ═══ SETUP ═══ -->
 <h2><span class="phase-num setup">Setup</span> Prerequisites &amp; Installation</h2>
 
-<p>Before the workshop, make sure you have:</p>
 <ul class="checklist">
-    <li><strong>Python 3.11+</strong> installed</li>
-    <li><strong>Claude Code</strong> installed and working (with an active API key or subscription)</li>
-    <li><strong>Git</strong> installed</li>
-    <li>A GitHub account (for cloning)</li>
+    <li><strong>Python 3.11+</strong></li>
+    <li><strong>Claude Code</strong> installed and working</li>
+    <li><strong>Git</strong></li>
+    <li>A GitHub account</li>
     <li>Optionally: a Python project of your own to test on</li>
 </ul>
 
-<h3>1. Install the Agent-Ready skills</h3>
-<p>The skills power <code>/agent-ready scan</code>, <code>/agent-ready fix</code>, <code>/agent-ready report</code> and <code>/agent-ready diff</code>. Choose one method:</p>
+<h3>1. Install the Agent-Ready skills (6 skills)</h3>
+<p>The skills power <code>/agent-ready scan | fix | report | diff | init</code>. Choose one:</p>
 
 <p><strong>Method A &mdash; Quick copy</strong> (fastest)</p>
 <pre><code><span class="cmd">git clone https://github.com/RisorseArtificiali/agent-ready-skill.git /tmp/agent-ready-skill</span>
@@ -209,192 +178,151 @@ footer {
 <p><strong>Method B &mdash; Clone + symlink</strong> (recommended, stays updated)</p>
 <pre><code><span class="cmd">git clone https://github.com/RisorseArtificiali/agent-ready-skill.git ~/agent-ready-skill</span>
 <span class="cmd">cd ~/agent-ready-skill</span>
-<span class="cmd">for skill in skills/*/; do</span>
-<span class="cmd">  ln -sf "$(pwd)/$skill" "$HOME/.claude/skills/$(basename $skill)"</span>
+<span class="cmd">for skill in agent-ready agent-ready-scan agent-ready-fix agent-ready-report agent-ready-diff agent-ready-init; do</span>
+<span class="cmd">  ln -sf "$(pwd)/skills/$skill" "$HOME/.claude/skills/$skill"</span>
 <span class="cmd">done</span></code></pre>
 
-<div class="callout tip">
-    With method B, a future <code>git pull</code> inside <code>~/agent-ready-skill</code> updates all skills automatically.
-</div>
+<div class="callout tip">With method B, a future <code>git pull</code> in <code>~/agent-ready-skill</code> updates all skills.</div>
 
 <h3>2. Clone the workshop project</h3>
 <pre><code><span class="cmd">git clone https://github.com/maeste/quicknote-demo.git</span>
 <span class="cmd">cd quicknote-demo</span>
 <span class="cmd">git checkout step-0-bare</span></code></pre>
 
-<div class="callout tip">
-    <strong>Catch-up tip:</strong> If you need to switch to a later branch and git complains about local changes, run <code>git stash</code> first (or <code>git checkout -- .</code> to discard). Your work isn't lost &mdash; <code>git stash pop</code> brings it back.
-</div>
+<div class="callout tip"><strong>Catch-up tip:</strong> to jump to a later branch, run <code>git stash</code> first if git complains about local changes (<code>git stash pop</code> brings your work back).</div>
 
-<h3>3. Verify everything works</h3>
-<p>Open Claude Code in the <code>quicknote-demo</code> directory and run:</p>
+<h3>3. Verify</h3>
 <pre><code><span class="cmd">/agent-ready scan .</span></code></pre>
-<p>If you see an 8-dimension assessment with a score, you're ready.</p>
+<p>If you see a 4-axis assessment with a score, you're ready.</p>
 
 <hr>
 
 <!-- ═══ PHASE 1 ═══ -->
-<h2><span class="phase-num p1">Phase 1</span> The First Scan <small style="color:var(--text-dim);font-weight:400;">(15 min)</small></h2>
+<h2><span class="phase-num p1">Phase 1</span> The First Scan + Layers <small style="color:var(--text-dim);font-weight:400;">(15 min)</small></h2>
 
 <h3>Scan the guinea pig</h3>
-<p>In Claude Code:</p>
 <pre><code><span class="cmd">/agent-ready scan .</span></code></pre>
-<p>Watch the agent analyze your project across 8 dimensions. You'll see a score around <strong>10&ndash;15/100</strong> &mdash; don't worry, that's the point!</p>
+<p>The agent analyzes 7 dimensions across the 4 axes. Expect <strong>~10-15/100</strong> — that's the point.</p>
+
+<h3>Portable vs Target — declare your agent</h3>
+<p>By default the scan is <strong>portable</strong> (any AI agent). To also score vendor signals, declare a target:</p>
+<pre><code><span class="cmd">/agent-ready scan . --agents claude</span></code></pre>
+<p>Now target sub-criteria activate (a <code>CLAUDE.md</code> bridge, permission rules). Without <code>--agents</code>, those are <code>n/a</code> and excluded — a portable repo is never penalized for vendor files it doesn't need.</p>
 
 <h3>Try on YOUR repo</h3>
-<p>If you brought a real project:</p>
 <pre><code><span class="cmd">/agent-ready scan /path/to/your/project</span></code></pre>
-<p>Compare your real project's score with the guinea pig. Who scored higher?</p>
+<p>Who scored higher than the guinea pig?</p>
 
 <hr>
 
 <!-- ═══ PHASE 2 ═══ -->
-<h2><span class="phase-num instruct">Phase 2</span> INSTRUCT &mdash; Tell the Agent What You Want <small style="color:var(--text-dim);font-weight:400;">(25 min)</small></h2>
+<h2><span class="phase-num instruct">Phase 2</span> INSTRUCT &mdash; Tell the Agent What You Want <small style="color:var(--text-dim);font-weight:400;">(20 min)</small></h2>
 
-<p>The <strong>INSTRUCT</strong> axis measures: <em>"Does the agent understand WHAT we want?"</em></p>
-<ul>
-    <li>Agent Instructions (CLAUDE.md) &mdash; weight: 20</li>
-    <li>Spec-Driven Workflow &mdash; weight: 10</li>
-    <li>Claude-Specific config &mdash; weight: 8</li>
-</ul>
+<p><strong>INSTRUCT (28%)</strong> = Agent Instructions &amp; Context (18) + Spec-Driven Workflow &amp; Docs (10).</p>
 
-<h3>The quickest win: CLAUDE.md</h3>
-<p>Ask Claude to help you create it. In Claude Code, type:</p>
-<pre><code>Read this project and write me a CLAUDE.md that describes what the project is,
-where things are, how to run/test/lint, and what conventions to follow.</code></pre>
-<p>Claude will read your code and generate a contextualized CLAUDE.md. Review it, adjust if needed, and save.</p>
+<h3>The quickest win: AGENTS.md</h3>
+<p><code>AGENTS.md</code> is the cross-vendor standard — one file every agent reads. Don't hand-write it; ask Claude:</p>
+<pre><code>Read this project and write a concise AGENTS.md (under 200 lines): overview,
+build/test/lint commands, structure, conventions, and a short safe-to-run note.</code></pre>
+<p>Review it, then bridge it for Claude Code with a symlink (no duplicate, no drift):</p>
+<pre><code><span class="cmd">ln -s AGENTS.md CLAUDE.md</span></code></pre>
+<p>Codex, opencode, and pi read <code>AGENTS.md</code> natively.</p>
+
+<div class="callout magic"><strong>v2 penalizes bloat.</strong> A focused 150-line AGENTS.md beats a 600-line wall of text. Concise wins — that's the big change from v1.</div>
 
 <h3>Re-scan</h3>
-<pre><code><span class="cmd">/agent-ready scan .</span></code></pre>
+<pre><code><span class="cmd">/agent-ready scan . --agents claude</span></code></pre>
+<p>INSTRUCT should jump. <strong>One file (plus a symlink). That's it.</strong></p>
 
-<div class="callout magic">
-    <strong>Magic Moment #1:</strong> Your INSTRUCT score should jump significantly. <strong>One file. That's it.</strong>
-</div>
-
-<h3>Try on your repo</h3>
-<p>Ask Claude to write a CLAUDE.md for your real project too. The effort is minimal and the impact is enormous.</p>
-
-<h3>Falling behind?</h3>
+<h3>Try on your repo, then catch up if needed</h3>
 <pre><code><span class="cmd">git checkout step-1-instruct</span></code></pre>
-<p>This gives you a pre-made CLAUDE.md and improved README.</p>
 
 <hr>
 
 <!-- ═══ PHASE 3 ═══ -->
-<h2><span class="phase-num navigate">Phase 3</span> NAVIGATE &mdash; Show the Agent Where Things Are <small style="color:var(--text-dim);font-weight:400;">(20 min)</small></h2>
+<h2><span class="phase-num navigate">Phase 3</span> NAVIGATE &mdash; Orient + Tooling <small style="color:var(--text-dim);font-weight:400;">(18 min)</small></h2>
 
-<p>The <strong>NAVIGATE</strong> axis measures: <em>"Can the agent find its way around?"</em></p>
-<ul>
-    <li>Project Navigability &mdash; weight: 18</li>
-    <li>Documentation &amp; Comprehension &mdash; weight: 8</li>
-    <li>Skills &amp; Tooling &mdash; weight: 8</li>
-</ul>
+<p><strong>NAVIGATE (30%)</strong> = Navigability &amp; Code Intelligence (18) + Agent Tooling &amp; Capabilities (12).</p>
 
 <h3>Let the agent fix the gaps</h3>
-<p>In Claude Code:</p>
 <pre><code><span class="cmd">/agent-ready fix</span></code></pre>
+<p>The agent loads your scores, finds gaps, and <strong>generates contextualized files</strong> — an <code>ARCHITECTURE.md</code> / repo map, an <code>.mcp.json</code> declaring a nav server (Serena), a <code>scripts/</code> helper. Not boilerplate — tailored to YOUR project.</p>
 
-<p>The agent will:</p>
-<ol>
-    <li>Load the previous scan results</li>
-    <li>Identify missing files (<code>.editorconfig</code>, <code>.env.example</code>, <code>ARCHITECTURE.md</code>, etc.)</li>
-    <li>Ask for your confirmation</li>
-    <li>Generate contextualized files &mdash; not boilerplate!</li>
-</ol>
+<div class="callout magic"><strong>Magic moment.</strong> This is what static tools can't do: the agent reads your code and writes files specific to it.</div>
 
-<div class="callout magic">
-    <strong>Magic Moment #2:</strong> The agent reads YOUR project and creates files tailored to it. This is what static analysis tools cannot do.
-</div>
+<div class="callout tip"><strong>Disambiguation:</strong> Navigability is whether your code <em>supports</em> semantic navigation (typed, analyzable). Agent Tooling is whether a nav MCP server is <em>actually wired up</em>. You want both.</div>
 
-<h3>Re-scan and compare</h3>
-<pre><code><span class="cmd">/agent-ready scan .</span></code></pre>
-<p>NAVIGATE should improve noticeably.</p>
-
-<h3>Try on your repo</h3>
-<p>Run <code>/agent-ready fix</code> on your real project and see what it suggests.</p>
-
-<h3>Falling behind?</h3>
-<pre><code><span class="cmd">git checkout step-2-navigate</span></code></pre>
+<h3>Re-scan, then catch up if needed</h3>
+<pre><code><span class="cmd">/agent-ready scan .</span>
+<span class="cmd">git checkout step-2-navigate</span></code></pre>
 
 <hr>
 
 <!-- ═══ PHASE 4 ═══ -->
-<h2><span class="phase-num validate">Phase 4</span> VALIDATE &mdash; Let the Agent Check Its Work <small style="color:var(--text-dim);font-weight:400;">(25 min)</small></h2>
+<h2><span class="phase-num validate">Phase 4</span> VALIDATE &mdash; Let the Agent Check Its Work <small style="color:var(--text-dim);font-weight:400;">(18 min)</small></h2>
 
-<p>The <strong>VALIDATE</strong> axis measures: <em>"Can the agent verify its work is correct?"</em></p>
-<ul>
-    <li>Testing &amp; Validation &mdash; weight: 16</li>
-    <li>CI/CD &amp; Automation &mdash; weight: 12</li>
-</ul>
+<p><strong>VALIDATE (30%)</strong> = Testing &amp; Feedback (16) + CI/CD, Automation &amp; Governance (14).</p>
 
-<h3>Add tests and CI with Claude's help</h3>
-<p>Ask Claude:</p>
-<pre><code>Create a basic GitHub Actions CI workflow for this project that runs
-ruff check and pytest.</code></pre>
-<p>And:</p>
-<pre><code>Write pytest tests for the storage module. Cover add, delete, search,
-and update operations.</code></pre>
-<p>The agent writes the files. You review. Done.</p>
+<h3>Add tests + CI with Claude's help</h3>
+<pre><code>Create a GitHub Actions CI workflow that runs ruff check, mypy, and pytest.</code></pre>
+<pre><code>Write pytest tests for the storage module, with descriptive assertion messages.</code></pre>
 
-<h3>See your journey</h3>
-<pre><code><span class="cmd">/agent-ready diff</span></code></pre>
-<p>This compares your current state with the initial assessment and shows exactly what improved and by how much.</p>
+<div class="callout tip">The key word is <strong>feedback</strong>: tests are the agent's only signal. v2 scores feedback <em>quality</em> — descriptive assertions (not bare <code>assert</code>) and a type checker the agent can run.</div>
 
-<pre><code><span class="cmd">/agent-ready report</span></code></pre>
-<p>This generates a full assessment report you can share with your team.</p>
-
-<h3>Falling behind?</h3>
-<pre><code><span class="cmd">git checkout step-3-validate</span></code></pre>
+<h3>Re-scan, then catch up if needed</h3>
+<pre><code><span class="cmd">/agent-ready scan .</span>
+<span class="cmd">git checkout step-3-validate</span></code></pre>
 
 <hr>
 
 <!-- ═══ PHASE 5 ═══ -->
-<h2><span class="phase-num wrap">Phase 5</span> The Complete Picture <small style="color:var(--text-dim);font-weight:400;">(15 min)</small></h2>
+<h2><span class="phase-num secure">Phase 5</span> SECURE &mdash; The Fourth Axis <small style="color:var(--text-dim);font-weight:400;">(18 min)</small></h2>
 
-<h3>See what "Optimized" looks like</h3>
-<pre><code><span class="cmd">git checkout step-4-complete</span>
-<span class="cmd">/agent-ready scan .</span></code></pre>
-<p>This is a fully agent-ready project scoring ~85/100.</p>
+<p><strong>SECURE (12%)</strong> = Security &amp; Sandbox. The axis v2 added — because an agent that understands, navigates, and validates perfectly can still leak secrets or get prompt-injected.</p>
 
-<h3>What you take home</h3>
-<p>The skills are already installed globally from the setup step. From now on,
-<code>/agent-ready scan</code>, <code>/agent-ready fix</code>, <code>/agent-ready report</code>, and
-<code>/agent-ready diff</code> work on <strong>every project</strong> you open with Claude Code.</p>
+<h3>Fix the security baseline</h3>
+<pre><code><span class="cmd">/agent-ready fix security_sandbox</span></code></pre>
+<p>The agent generates a vendor-neutral <code>docs/agent-execution.md</code> (sandbox / execution policy — devcontainer, OS-sandbox, hosted, or <a href="https://lince.sh" target="_blank">LINCE</a>), a redacted <code>.env.example</code>, secret patterns in <code>.gitignore</code>, and flags lockfiles to commit.</p>
+
+<p>What it scores:</p>
+<ul>
+    <li><strong>Committed isolation</strong> (devcontainer with default-deny egress)</li>
+    <li><strong>Documented execution policy</strong> (where non-detectable host sandboxes earn credit)</li>
+    <li><strong>Secret hygiene</strong> + <strong>supply-chain pinning</strong> (committed lockfiles, Dependabot)</li>
+    <li><strong>Injection hygiene</strong> (instructions only in trusted files)</li>
+    <li><strong>Permission policy</strong> <em>(target — with <code>--agents</code>)</em>: restrictive deny rules</li>
+</ul>
+
+<h3>Re-scan, then catch up if needed</h3>
+<pre><code><span class="cmd">/agent-ready scan . --agents claude</span>
+<span class="cmd">git checkout step-4-secure</span></code></pre>
 
 <hr>
 
-<!-- ═══ REFERENCE ═══ -->
-<h2>The Three-Axis Model</h2>
+<!-- ═══ PHASE 6 ═══ -->
+<h2><span class="phase-num wrap">Phase 6</span> The Complete Picture <small style="color:var(--text-dim);font-weight:400;">(15 min)</small></h2>
 
-<p>The 8 scoring dimensions map to 3 axes:</p>
+<h3>See your journey</h3>
+<pre><code><span class="cmd">/agent-ready diff</span></code></pre>
+<p>Shows before/after across all dimensions — overall ~10 → ~65+.</p>
+<pre><code><span class="cmd">/agent-ready report --format html</span></code></pre>
+<p>A layered report in <code>.agent-ready/</code> with <strong>explained findings</strong> (every gap ships <em>why it matters · consequence · how to fix · effort</em>) and a <code>badge.svg</code>.</p>
 
-<table>
-    <thead>
-        <tr><th>Axis</th><th>Weight</th><th>Question</th><th>Dimensions</th></tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><strong style="color:var(--instruct);">INSTRUCT</strong></td>
-            <td>38%</td>
-            <td>Does the agent understand WHAT we want?</td>
-            <td>Agent Instructions (20) + Spec-Driven (10) + Claude-Specific (8)</td>
-        </tr>
-        <tr>
-            <td><strong style="color:var(--navigate);">NAVIGATE</strong></td>
-            <td>34%</td>
-            <td>Can the agent find its way around?</td>
-            <td>Navigability (18) + Documentation (8) + Skills &amp; Tooling (8)</td>
-        </tr>
-        <tr>
-            <td><strong style="color:var(--validate);">VALIDATE</strong></td>
-            <td>28%</td>
-            <td>Can the agent verify its work?</td>
-            <td>Testing (16) + CI/CD (12)</td>
-        </tr>
-    </tbody>
-</table>
+<h3>See what "Optimized" looks like</h3>
+<pre><code><span class="cmd">git checkout step-5-complete</span>
+<span class="cmd">/agent-ready scan . --agents claude</span></code></pre>
+<p>A fully agent-ready project scoring ~85/100.</p>
 
-<h3>Maturity Levels</h3>
+<h3>Take-home</h3>
+<ul>
+    <li>The 6 skills are installed globally — <code>/agent-ready</code> works on <strong>every</strong> project.</li>
+    <li>Starting a <strong>new</strong> project? <code>/agent-ready init . --agents claude</code> scaffolds an agent-ready baseline (AGENTS.md, secret hygiene, execution policy, CI) from day one.</li>
+    <li><code>AGENTS.md</code> is the cross-vendor standard — it pays off whatever agent you use.</li>
+</ul>
+
+<hr>
+
+<h2>Maturity Levels</h2>
 <table>
     <thead><tr><th>Level</th><th>Name</th><th>Threshold</th></tr></thead>
     <tbody>
@@ -405,8 +333,6 @@ and update operations.</code></pre>
         <tr><td>L5</td><td>Autonomous</td><td>&ge; 95%</td></tr>
     </tbody>
 </table>
-
-<hr>
 
 <h2>Resources</h2>
 <ul>
@@ -419,7 +345,7 @@ and update operations.</code></pre>
 </div>
 
 <footer>
-    Workshop by <a href="https://github.com/maeste">Stefano Maestri</a> &middot; PyCon Italia 2026
+    Workshop by <a href="https://github.com/maeste" target="_blank">Stefano Maestri</a> &middot; PyCon Italia 2026
 </footer>
 
 </body>

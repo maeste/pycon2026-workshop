@@ -563,7 +563,7 @@ body.notes-mode .duration-tag { display: inline-block; }
             <div class="card">
                 <div style="font-size:2rem;margin-bottom:0.5rem;">🔴</div>
                 <h3 style="font-size:1.1rem;">Phase 1</h3>
-                <p style="font-size:0.88rem;"><strong>Mental Model</strong><br>The 3-Axis Framework + Live Demo</p>
+                <p style="font-size:0.88rem;"><strong>Mental Model</strong><br>The Axis Framework + Live Demo</p>
                 <div class="badge badge-blue" style="margin-top:0.5rem;">15 min</div>
             </div>
             <div class="card">
@@ -845,9 +845,12 @@ body.notes-mode .duration-tag { display: inline-block; }
                 <p style="font-size:0.88rem;"><strong class="text-success">Q3:</strong> Can the agent tell if it did <em>RIGHT</em>?</p>
             </div>
         </div>
+        <p style="margin-top:1.25rem;font-size:0.82rem;color:var(--text-darker);">
+            …and a <strong class="text-warning">4th question</strong> we'll meet shortly: can the agent run <em>SAFELY</em>? 🛡️
+        </p>
     </div>
     <aside class="speaker-notes">
-        Here's the model: three questions, three axes. WHAT, WHERE, RIGHT. INSTRUCT is the WHAT — what does this project do, what conventions do we follow. NAVIGATE is the WHERE — where does code live, how is it organized. VALIDATE is the RIGHT — how does the agent know it didn't break anything. Click any node on the triangle to jump to that axis. We're going to spend the rest of this workshop on each one in turn.
+        Here's the model: three questions, three axes. WHAT, WHERE, RIGHT. INSTRUCT is the WHAT — what does this project do, what conventions do we follow. NAVIGATE is the WHERE — where does code live, how is it organized, what tools can the agent reach for. VALIDATE is the RIGHT — how does the agent know it didn't break anything. Click any node to jump to that axis. And keep that footnote in mind — there's a fourth question that forced its way in when I built v2. We'll get there.
     </aside>
 </div>
 
@@ -863,31 +866,25 @@ body.notes-mode .duration-tag { display: inline-block; }
         <p style="max-width:550px;margin:0 auto 2rem;font-size:1.1rem;">
             "Does the agent understand <strong>WHAT</strong> we want?"
         </p>
-        <div class="badge badge-blue" style="margin-bottom:1.5rem;">Weight: 38%</div>
-        
-        <div class="three-col" style="max-width:1050px;text-align:left;">
+        <div class="badge badge-blue" style="margin-bottom:1.5rem;">Weight: 28%</div>
+
+        <div class="split-layout" style="max-width:850px;text-align:left;">
             <div class="card">
                 <div style="font-size:1.6rem;margin-bottom:0.5rem;">📋</div>
-                <h3 style="font-size:1rem;">Agent Instructions</h3>
-                <p style="font-size:0.84rem;color:var(--text-dim);">CLAUDE.md, .cursorrules, copilot-instructions.md</p>
-                <div style="margin-top:0.75rem;"><strong class="text-primary">+20 pts</strong></div>
+                <h3 style="font-size:1rem;">D1 · Agent Instructions &amp; Context</h3>
+                <p style="font-size:0.84rem;color:var(--text-dim);"><strong>AGENTS.md</strong> first (cross-vendor), quality over bloat, scoped files. Scores <em>conciseness</em> — bloated instructions hurt.</p>
+                <div style="margin-top:0.75rem;"><strong class="text-primary">+18 pts</strong></div>
             </div>
             <div class="card">
                 <div style="font-size:1.6rem;margin-bottom:0.5rem;">🏗️</div>
-                <h3 style="font-size:1rem;">Spec-Driven Workflow</h3>
-                <p style="font-size:0.84rem;color:var(--text-dim);">ARCHITECTURE.md, ADRs, design docs</p>
+                <h3 style="font-size:1rem;">D7 · Spec-Driven Workflow &amp; Docs</h3>
+                <p style="font-size:0.84rem;color:var(--text-dim);">specs/ with acceptance criteria, ADRs, issue/PR templates, ARCHITECTURE + comprehension signals.</p>
                 <div style="margin-top:0.75rem;"><strong class="text-primary">+10 pts</strong></div>
-            </div>
-            <div class="card">
-                <div style="font-size:1.6rem;margin-bottom:0.5rem;">🪝</div>
-                <h3 style="font-size:1rem;">Claude-Specific</h3>
-                <p style="font-size:0.84rem;color:var(--text-dim);">Hooks, sub-agents, slash commands, MCP wiring</p>
-                <div style="margin-top:0.75rem;"><strong class="text-primary">+8 pts</strong></div>
             </div>
         </div>
     </div>
     <aside class="speaker-notes">
-        INSTRUCT is the heaviest axis at 38 percent. Three sub-dimensions. Agent Instructions worth 20 — that's CLAUDE.md, .cursorrules, AGENTS.md. Spec-Driven Workflow worth 10 — ARCHITECTURE.md, ADRs, design docs that explain decisions. And Claude-Specific worth 8 — hooks, sub-agents, slash commands, MCP wiring. If you have nothing else, write a CLAUDE.md. That single file is the biggest lever you have.
+        INSTRUCT — does the agent understand WHAT we want — is 28 percent. Two dimensions. D1 Agent Instructions worth 18, and here's the big v2 change: the primary file is AGENTS.md, the cross-vendor standard, not CLAUDE.md. CLAUDE.md becomes a one-line symlink bridge. And v2 penalizes instruction BLOAT — a focused 150-line AGENTS.md beats a 600-line wall of text. D7 Spec-Driven Workflow and Docs worth 10 — specs with acceptance criteria, ADRs, templates, architecture docs. If you do one thing: write a tight AGENTS.md.
     </aside>
 </div>
 
@@ -903,31 +900,25 @@ body.notes-mode .duration-tag { display: inline-block; }
         <p style="max-width:550px;margin:0 auto 2rem;font-size:1.1rem;">
             "Can the agent find its way around?"
         </p>
-        <div class="badge badge-purple" style="margin-bottom:1.5rem;">Weight: 34%</div>
-        
-        <div class="three-col" style="max-width:1050px;text-align:left;">
+        <div class="badge badge-purple" style="margin-bottom:1.5rem;">Weight: 30%</div>
+
+        <div class="split-layout" style="max-width:850px;text-align:left;">
             <div class="card">
                 <div style="font-size:1.6rem;margin-bottom:0.5rem;">🗺️</div>
-                <h3 style="font-size:1rem;">Project Navigability</h3>
-                <p style="font-size:0.84rem;color:var(--text-dim);">File structure, naming, no 2000-line files</p>
+                <h3 style="font-size:1rem;">D2 · Navigability &amp; Code Intelligence</h3>
+                <p style="font-size:0.84rem;color:var(--text-dim);">Repo map, <strong>semantic-nav amenability</strong> (typed code), dependency clarity, README, file-size sanity. <em>Depth/naming heuristics retired.</em></p>
                 <div style="margin-top:0.75rem;"><strong style="color:var(--secondary);">+18 pts</strong></div>
             </div>
             <div class="card">
-                <div style="font-size:1.6rem;margin-bottom:0.5rem;">📖</div>
-                <h3 style="font-size:1rem;">Documentation &amp; Comprehension</h3>
-                <p style="font-size:0.84rem;color:var(--text-dim);">README quality, CONTRIBUTING, inline docs</p>
-                <div style="margin-top:0.75rem;"><strong style="color:var(--secondary);">+8 pts</strong></div>
-            </div>
-            <div class="card">
                 <div style="font-size:1.6rem;margin-bottom:0.5rem;">🔧</div>
-                <h3 style="font-size:1rem;">Skills &amp; Tooling</h3>
-                <p style="font-size:0.84rem;color:var(--text-dim);">Linter, formatter, type checker, .env.example, Docker</p>
-                <div style="margin-top:0.75rem;"><strong style="color:var(--secondary);">+8 pts</strong></div>
+                <h3 style="font-size:1rem;">D5 · Agent Tooling &amp; Capabilities</h3>
+                <p style="font-size:0.84rem;color:var(--text-dim);">Standard <strong>Skills</strong>, bundled scripts, <strong>MCP</strong> declaration + nav servers (Serena/Sourcegraph) actually wired up.</p>
+                <div style="margin-top:0.75rem;"><strong style="color:var(--secondary);">+12 pts</strong></div>
             </div>
         </div>
     </div>
     <aside class="speaker-notes">
-        NAVIGATE is 34 percent. Project Navigability worth 18 — that's the big one. Clean module boundaries, no 2000-line files, consistent naming. Documentation and Comprehension worth 8 — that's a good README, CONTRIBUTING, useful inline docs. Skills and Tooling worth 8 — ruff, pyright, .env.example, Dockerfile. The pattern here: NAVIGATE rewards habits that also help your human teammates. There is no AI versus human trade-off.
+        NAVIGATE — can the agent find its way and reach for tools — is 30 percent. D2 Navigability and Code Intelligence worth 18. v2 retired the weak heuristics — directory depth and naming consistency don't predict agent success. What matters: a repo map, code that's amenable to semantic navigation (typed, analyzable), clear dependencies, and no 2000-line files. D5 Agent Tooling worth 12 — standard Skills, an MCP declaration, and crucially nav/comprehension MCP servers like Serena actually wired up so the agent can jump to symbols instead of grepping.
     </aside>
 </div>
 
@@ -943,38 +934,75 @@ body.notes-mode .duration-tag { display: inline-block; }
         <p style="max-width:550px;margin:0 auto 2rem;font-size:1.1rem;">
             "Can the agent tell if it did it <strong>RIGHT</strong>?"
         </p>
-        <div class="badge badge-green" style="margin-bottom:1.5rem;">Weight: 28%</div>
-        
-        <div class="three-col" style="max-width:1050px;text-align:left;">
+        <div class="badge badge-green" style="margin-bottom:1.5rem;">Weight: 30%</div>
+
+        <div class="split-layout" style="max-width:850px;text-align:left;">
             <div class="card">
                 <div style="font-size:1.6rem;margin-bottom:0.5rem;">🧪</div>
-                <h3 style="font-size:1rem;">Testing &amp; Validation</h3>
-                <p style="font-size:0.84rem;color:var(--text-dim);">Test framework, test files, coverage config</p>
+                <h3 style="font-size:1rem;">D3 · Testing &amp; Feedback</h3>
+                <p style="font-size:0.84rem;color:var(--text-dim);">Test suite, documented + fast commands, coverage — and <strong>feedback quality</strong>: descriptive assertions + a type checker the agent can read.</p>
                 <div style="margin-top:0.75rem;"><strong class="text-success">+16 pts</strong></div>
             </div>
             <div class="card">
                 <div style="font-size:1.6rem;margin-bottom:0.5rem;">🔄</div>
-                <h3 style="font-size:1rem;">CI/CD &amp; Automation</h3>
-                <p style="font-size:0.84rem;color:var(--text-dim);">CI config, quality gates, SECURITY.md, pre-commit</p>
-                <div style="margin-top:0.75rem;"><strong class="text-success">+12 pts</strong></div>
-            </div>
-            <div class="card" style="border-color:rgba(34,197,94,0.2);background:rgba(34,197,94,0.04);">
-                <div style="font-size:1.6rem;margin-bottom:0.5rem;">🎯</div>
-                <h3 style="font-size:1rem;">Total Axis Weight</h3>
-                <p style="font-size:0.84rem;color:var(--text-dim);">16 + 12 = 28% of the overall agent-readiness score</p>
-                <div style="margin-top:0.75rem;"><strong class="text-success">28 pts max</strong></div>
+                <h3 style="font-size:1rem;">D4 · CI/CD, Automation &amp; Governance</h3>
+                <p style="font-size:0.84rem;color:var(--text-dim);">CI runs tests + lint, automated formatting, pre-commit, governance (CODEOWNERS + Dependabot/Renovate).</p>
+                <div style="margin-top:0.75rem;"><strong class="text-success">+14 pts</strong></div>
             </div>
         </div>
     </div>
     <aside class="speaker-notes">
-        VALIDATE is 28 percent — the smallest axis by weight, the most underestimated by impact. Testing and Validation worth 16 — pytest configured, real test files, coverage tracking. CI/CD and Automation worth 12 — actual workflow file, quality gates, SECURITY.md, pre-commit. This is where most repos bleed points. Tests aren't optional when agents touch your code — they're the only feedback loop the agent has. Skip this and you're flying blind.
+        VALIDATE — can the agent tell if it did it right — is 30 percent. D3 Testing and Feedback worth 16. The key word is feedback: tests are the agent's only signal. v2 specifically scores feedback QUALITY — descriptive assertion messages, not bare asserts, and a type checker config the agent can run. D4 CI/CD and Governance worth 14 — CI that actually runs tests and lint, pre-commit, plus governance: CODEOWNERS and Dependabot. This is where most repos bleed points. Skip it and the agent is flying blind.
+    </aside>
+</div>
+
+<!-- ═════════════════════════════════════════
+     SLIDE 14: AXIS 4 — SECURE (the reveal)
+     ═════════════════════════════════════════ -->
+<div class="slide" data-slide="14" id="slide14" data-duration="1">
+    <div class="full-width animate-in" style="text-align:center;">
+        <div class="badge badge-amber" style="margin-bottom:1rem;">PLOT TWIST</div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:0.75rem;margin-bottom:1rem;">
+            <span style="font-size:2.5rem;">🛡️</span>
+            <h2 style="margin:0;">Axis 4: SECURE</h2>
+        </div>
+        <p style="max-width:640px;margin:0 auto 1.25rem;font-size:1.05rem;">
+            I submitted this talk with <strong>three</strong> axes. Building v2,
+            one question kept surfacing that none of them answered:
+            <br><strong>"Can the agent run safely?"</strong>
+        </p>
+        <div class="badge badge-amber" style="margin-bottom:1.5rem;">Weight: 12%</div>
+
+        <div class="three-col" style="max-width:1050px;text-align:left;">
+            <div class="card">
+                <div style="font-size:1.6rem;margin-bottom:0.5rem;">📦</div>
+                <h3 style="font-size:1rem;">Sandbox &amp; Isolation</h3>
+                <p style="font-size:0.84rem;color:var(--text-dim);">Committed devcontainer, documented execution policy (LINCE / OS-sandbox / hosted)</p>
+            </div>
+            <div class="card">
+                <div style="font-size:1.6rem;margin-bottom:0.5rem;">🔑</div>
+                <h3 style="font-size:1rem;">Secret &amp; Supply-Chain Hygiene</h3>
+                <p style="font-size:0.84rem;color:var(--text-dim);">.gitignore secrets, .env.example, committed lockfiles, Dependabot</p>
+            </div>
+            <div class="card">
+                <div style="font-size:1.6rem;margin-bottom:0.5rem;">💉</div>
+                <h3 style="font-size:1rem;">Injection &amp; Permissions</h3>
+                <p style="font-size:0.84rem;color:var(--text-dim);">Instructions only in trusted files; restrictive agent deny rules (CVE-2025-59536)</p>
+            </div>
+        </div>
+        <p style="margin-top:1.5rem;font-size:0.92rem;color:var(--text-dim);">
+            Security & Sandbox = <strong class="text-warning">12%</strong> · D6 · the only axis with a single dimension — for now.
+        </p>
+    </div>
+    <aside class="speaker-notes">
+        Here's the plot twist. The talk title says three axes — that's how I pitched it. But building v2, security kept demanding attention that INSTRUCT, NAVIGATE, and VALIDATE didn't cover. An agent that understands, navigates, and validates perfectly can still leak secrets, run untrusted instructions, or get prompt-injected. So v2 adds a fourth axis: SECURE — can the agent run safely? It scores committed sandbox/isolation config, a documented execution policy (LINCE is one option among devcontainer, OS-sandbox, hosted), secret and supply-chain hygiene, and injection/permission hardening. It only rewards evidence in the repo — no unverifiable self-reports. 12 percent today, and I'd bet it grows.
     </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 14: MATURITY LEVELS
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="14" id="slide14" data-duration="1">
+<div class="slide" data-slide="15" id="slide15" data-duration="1">
     <div class="full-width animate-in" style="text-align:center;">
         <h2 style="margin-bottom:0.5rem;">Maturity Levels</h2>
         <p style="margin-bottom:2rem;color:var(--text-dim);">From chaos to autonomy — 5 stages</p>
@@ -1027,7 +1055,7 @@ body.notes-mode .duration-tag { display: inline-block; }
 <!-- ═════════════════════════════════════════
      SLIDE 15: HOW SCORING WORKS
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="15" id="slide15" data-duration="1">
+<div class="slide" data-slide="16" id="slide16" data-duration="1">
     <div class="full-width animate-in" style="text-align:center;">
         <h2 style="margin-bottom:2rem;">How Scoring Works</h2>
         <div class="split-layout" style="max-width:950px;">
@@ -1042,47 +1070,32 @@ body.notes-mode .duration-tag { display: inline-block; }
 <span class="prompt">$</span> <span class="cmd">/agent-ready scan .</span>
 
 <span class="output">╭─────────────────────────────────────╮
-│  📝 AXIS 1: INSTRUCT               │
-│  Score: 58/100 ████████░░░░ 58%    │
-│                                     │
-│  ✅ README.md          found       +8 │
-│  ✅ CLAUDE.md          found      +20 │
-│  ❌ ARCHITECTURE.md     missing    -10 │
-│  ❌ CONTRIBUTING.md     missing     -5 │
+│  📝 INSTRUCT   ████████░░░░  58%   │
+│  🧭 NAVIGATE   ██████████░░  71%   │
+│  ✅ VALIDATE   █████░░░░░░░  39%   │
+│  🛡️ SECURE     ███░░░░░░░░░  25%   │
 ├─────────────────────────────────────┤
-│  🧭 AXIS 2: NAVIGATE               │
-│  Score: 71/100 ██████████░░░ 71%   │
-│                                     │
-│  ✅ .editorconfig       found      +2 │
-│  ✅ Ruff configured     [tool.ruff] +6 │
-│  ❌ pyrightconfig.json  missing     -6 │
-│  ⚠️  Large files         2 found    -2 │
-├─────────────────────────────────────┤
-│  ✅ AXIS 3: VALIDATE               │
-│  Score: 39/100 █████░░░░░░ 39%     │
-│                                     │
-│  ✅ pytest configured  [tool.pytest] +6 │
-│  ✅ Test files found   12 files    +5 │
-│  ❌ CI workflow         missing     -6 │
-│  ❌ coverage             NO         -4 │
+│  Layers (v2):                       │
+│   Portable        54 / 88           │
+│   Target-specific  n/a (no --agents)│
 ╰─────────────────────────────────────╯
 
-Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
+Overall: 52%  │  🟡 Partially Ready</span>
                     </div>
                 </div>
             </div>
-            <div style="text-align:left;display:flex;flex-direction:column;gap:1rem;">
+            <div style="text-align:left;display:flex;flex-direction:column;gap:0.85rem;">
                 <div class="card">
-                    <strong>Step 1:</strong> Agent scans 8 dimensions
-                    <p style="font-size:0.84rem;color:var(--text-dim);margin-top:0.3rem;">File existence, content quality, structure analysis</p>
+                    <strong>Step 1:</strong> Agent scans 7 dimensions
+                    <p style="font-size:0.84rem;color:var(--text-dim);margin-top:0.3rem;">Evidence-based: file presence + content quality, not folklore</p>
                 </div>
                 <div class="card">
-                    <strong>Step 2:</strong> Per-dimension scoring (0–100)
-                    <p style="font-size:0.84rem;color:var(--text-dim);margin-top:0.3rem;">Weighted rubric with evidence-based assessment</p>
+                    <strong>Step 2:</strong> Every sub-criterion tagged
+                    <p style="font-size:0.84rem;color:var(--text-dim);margin-top:0.3rem;"><strong>Portable</strong> (any agent) vs <strong>Target</strong> (only with <code>--agents</code>)</p>
                 </div>
                 <div class="card">
-                    <strong>Step 3:</strong> Overall score + maturity level
-                    <p style="font-size:0.84rem;color:var(--text-dim);margin-top:0.3rem;">Weighted average → level gate at thresholds</p>
+                    <strong>Step 3:</strong> 7 dims → 4 axes → maturity level
+                    <p style="font-size:0.84rem;color:var(--text-dim);margin-top:0.3rem;">Weighted average, gated at 40/55/70/85/95</p>
                 </div>
                 <div class="card" style="border-color:rgba(168,85,247,0.3);">
                     <strong style="color:var(--secondary);">Agent-Powered</strong>
@@ -1092,14 +1105,14 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
         </div>
     </div>
     <aside class="speaker-notes">
-        Three-step scoring. Step one — the agent scans all 8 dimensions. Does the file exist? Is the content good? Is the structure clear? Step two — weighted rubric produces a 0 to 100 percentage per dimension. Step three — map to three axes, gate against the maturity ladder. The key insight: this isn't a static script — it's the agent itself reading and judging your codebase, just like a new team member would. That's what makes this different from tools like Kodus or Factory.ai.
+        Scoring in v2. The agent scans seven evidence-based dimensions — and here's a key v2 idea: every sub-criterion is tagged portable or target. Portable signals — AGENTS.md, tests, CI, lockfiles — count for any agent. Target signals — a CLAUDE.md bridge, vendor permission rules — only count when you declare an agent with --agents. No target declared? Those are marked n/a and excluded, so a portable repo isn't penalized for vendor files it doesn't need. The seven dimensions roll up into our four axes and gate against the maturity ladder. And it's the agent doing the reading — not a static script. That's what sets this apart from Kodus or Factory.ai.
     </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 16: MEET THE TEST SUBJECTS
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="16" id="slide16" data-duration="2">
+<div class="slide" data-slide="17" id="slide17" data-duration="2">
     <div class="full-width animate-in" style="text-align:center;">
         <h2 style="margin-bottom:2rem;">Meet the Test Subjects 🐁</h2>
         <div class="split-layout" style="max-width:900px;">
@@ -1107,11 +1120,11 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
                 <div style="font-size:2.5rem;margin-bottom:0.5rem;">🔴</div>
                 <h3 style="color:var(--error);">Repo A: Chaos Monkey</h3>
                 <div style="text-align:left;margin-top:1rem;font-size:0.85rem;color:var(--text-dim);">
-                    <p>❌ No CLAUDE.md, no README</p>
-                    <p>❌ No linter, no formatter</p>
+                    <p>❌ No AGENTS.md, no README</p>
+                    <p>❌ No linter, no type checker</p>
                     <p>❌ No tests, no CI</p>
-                    <p>❌ 400-line files everywhere</p>
-                    <p>❌ No .env.example</p>
+                    <p>❌ No sandbox policy, secrets leak</p>
+                    <p>❌ No .env.example, no lockfile</p>
                 </div>
                 <div class="badge badge-red" style="margin-top:1rem;">Expected: ~20%</div>
             </div>
@@ -1119,13 +1132,13 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
                 <div style="font-size:2.5rem;margin-bottom:0.5rem;">🟢</div>
                 <h3 style="color:var(--success);">Repo B: Agent Heaven</h3>
                 <div style="text-align:left;margin-top:1rem;font-size:0.85rem;color:var(--text-dim);">
-                    <p>✅ Full CLAUDE.md</p>
-                    <p>✅ Ruff + Black + Pyright</p>
-                    <p>✅ 12 test files + coverage</p>
-                    <p>✅ Clean module structure</p>
-                    <p>✅ CI pipeline + Dependabot</p>
+                    <p>✅ Tight AGENTS.md (+ MCP wired)</p>
+                    <p>✅ Ruff + mypy strict, typed code</p>
+                    <p>✅ Tests + coverage + CI</p>
+                    <p>✅ devcontainer + exec policy</p>
+                    <p>✅ .env.example + lockfile + Dependabot</p>
                 </div>
-                <div class="badge badge-green" style="margin-top:1rem;">Expected: ~80%</div>
+                <div class="badge badge-green" style="margin-top:1rem;">Expected: ~85%</div>
             </div>
         </div>
         <p style="margin-top:2rem;color:var(--text-dim);font-size:0.92rem;">
@@ -1134,14 +1147,14 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
         </p>
     </div>
     <aside class="speaker-notes">
-        I'm going to scan two repos live. Chaos Monkey on the left — intentionally bad. No CLAUDE.md, no linter, no tests, 400-line files. Agent Heaven on the right — full CLAUDE.md, ruff plus black plus pyright, 12 test files, CI pipeline. Same language. Same approximate complexity. Different readiness. Watch what the scanner spits out. Spoiler: the numbers are going to be very different.
+        I'm going to scan two repos live. Chaos Monkey on the left — intentionally bad. No AGENTS.md, no linter, no tests, secrets in the repo, no sandbox policy. Agent Heaven on the right — tight AGENTS.md with MCP wired, ruff plus mypy, tests and CI, a devcontainer and execution policy, lockfile and Dependabot. Same language, same approximate complexity, very different readiness. Watch the four-axis breakdown. Spoiler: the numbers are going to be very different.
     </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 17: MAGIC MOMENT #1 — SAME TOOL
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="17" id="slide17" data-duration="3">
+<div class="slide" data-slide="18" id="slide18" data-duration="3">
     <div class="full-width animate-in" style="text-align:center;">
         <div class="badge badge-amber" style="margin-bottom:1rem;font-size:0.9rem;">✨ MAGIC MOMENT #1</div>
         <h2 style="margin-bottom:1.5rem;">Same Tool. Different Scores.</h2>
@@ -1178,7 +1191,7 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
 <!-- ═════════════════════════════════════════
      SLIDE 18: PHASE DIVIDER — INSTRUCT
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="18" id="slide18" data-duration="1">
+<div class="slide" data-slide="19" id="slide19" data-duration="1">
     <div class="section-divider animate-in">
         <div class="phase-num">Phase 2 — Hands-On</div>
         <h2>📝 <span class="text-primary">INSTRUCT</span></h2>
@@ -1188,14 +1201,14 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
         </div>
     </div>
     <aside class="speaker-notes">
-        Section divider. We're switching from teacher mode to hands-on mode. From here through the next phase you'll be in your terminal more than looking at me. Twenty-five minutes on INSTRUCT — we'll scan your repo, see the score, build a CLAUDE.md from the template, and re-scan to see the jump. Have your repo open. If you don't have one, use repos/demo-bad as your sandbox.
+        Section divider. We're switching from teacher mode to hands-on mode. From here you'll be in your terminal more than looking at me. INSTRUCT — we'll scan the guinea pig, see the score, ask Claude to draft an AGENTS.md, bridge CLAUDE.md with a symlink, and re-scan to see the jump. Have the quicknote-demo repo open, and your own project too if you brought one.
     </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 19: SCAN YOUR REPO — AXIS 1
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="19" id="slide19" data-duration="9">
+<div class="slide" data-slide="20" id="slide20" data-duration="9">
     <div class="full-width animate-in" style="text-align:center;">
         <h2 style="margin-bottom:1rem;">Your Turn 🔍</h2>
         <p style="margin-bottom:2rem;">Scan YOUR repository — Axis 1 only</p>
@@ -1232,12 +1245,12 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
 <!-- ═════════════════════════════════════════
      SLIDE 20: THE QUICKEST WIN
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="20" id="slide20" data-duration="7">
+<div class="slide" data-slide="21" id="slide21" data-duration="7">
     <div class="full-width animate-in" style="text-align:center;">
         <div class="badge badge-green" style="margin-bottom:1rem;">QUICKEST WIN</div>
-        <h2 style="margin-bottom:1rem;">One File = <span class="text-success">+20 Points</span></h2>
-        <p style="margin-bottom:2rem;">Create a <code style="background:var(--primary-dim);color:var(--primary);padding:2px 8px;border-radius:4px;font-family:var(--mono);">CLAUDE.md</code> (or <code style="background:var(--primary-dim);color:var(--primary);padding:2px 8px;border-radius:4px;font-family:var(--mono);">AGENTS.md</code>)</p>
-        
+        <h2 style="margin-bottom:1rem;">One File = <span class="text-success">biggest INSTRUCT jump</span></h2>
+        <p style="margin-bottom:2rem;">Ask Claude to write your <code style="background:var(--primary-dim);color:var(--primary);padding:2px 8px;border-radius:4px;font-family:var(--mono);">AGENTS.md</code> → bridge <code style="background:var(--primary-dim);color:var(--primary);padding:2px 8px;border-radius:4px;font-family:var(--mono);">CLAUDE.md</code> with a symlink</p>
+
         <div class="terminal" style="max-width:680px;text-align:left;margin:0 auto 1.5rem;">
             <div class="terminal-header">
                 <div class="terminal-dot dot-red"></div>
@@ -1245,45 +1258,34 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
                 <div class="terminal-dot dot-green"></div>
             </div>
             <div class="terminal-body" style="font-size:0.78rem;">
-<span class="comment"># Project Context — Agent Instructions</span>
+<span class="prompt">&gt;</span> <span class="cmd">Read this project and write a concise AGENTS.md</span>
+<span class="prompt">&gt;</span> <span class="cmd">(&lt; 200 lines): overview, build/test/lint, structure,</span>
+<span class="prompt">&gt;</span> <span class="cmd">conventions, a short safe-to-run note.</span>
 
-<span class="output">## Overview
-<span class="dim">One paragraph about what this project does</span>
+<span class="output"># AGENTS.md — quicknote
+<span class="dim">## What this project is</span>  …one paragraph
+## Build · test · lint   pip install -e ".[dev]" · pytest · ruff
+## Conventions           double quotes, type hints, snake_case
+## Pitfalls              all persistence via storage.py
+## Safe to run           pytest, ruff check, git status</span>
 
-## Architecture
-- Framework: FastAPI / Django / Flask
-- Main entry point: src/main.py
-- Key directories: src/, tests/, config/
-
-## Conventions
-- Style: ruff (with black compat)
-- Type hints: strict (pyright)
-- String quotes: double
-
-## Commands
-- Run tests: pytest
-- Run linter: ruff check .
-- Format: ruff format .
-
-## Pitfalls
-- Don't use import *
-- Don't add deps without updating pyproject.toml</span>
+<span class="prompt">$</span> <span class="cmd">ln -s AGENTS.md CLAUDE.md</span>   <span class="comment"># bridge, no drift</span></span>
             </div>
         </div>
-        
+
         <p style="font-size:0.92rem;color:var(--text-dim);">
-            Template provided → Fill in for <strong>YOUR</strong> project → Save to root
+            Let the agent draft it → review → save. <strong>Concise beats bloated</strong> (v2 penalizes walls of text).
         </p>
     </div>
     <aside class="speaker-notes">
-        Open templates/claude-md-template.md. Copy it to your repo root as CLAUDE.md. Now fill it in — one paragraph on what the project does, framework, entry point, key directories, your code style, your test runner, two or three pitfalls. Don't perfect it. Eighty percent good in seven minutes beats a hundred percent in two weeks. The point is to give the agent a real anchor, not the prettiest doc. Set a timer — five minutes typing.
+        The biggest single lever on INSTRUCT is the primary instruction file — and in v2 that's AGENTS.md, not CLAUDE.md. Don't hand-write it: ask Claude to read the project and draft a concise AGENTS.md, under 200 lines, with build/test/lint, structure, conventions, and a safe-to-run note. Then one symlink — ln -s AGENTS.md CLAUDE.md — bridges it for Claude Code with zero drift; Codex, opencode, and pi read AGENTS.md natively. Review what the agent drafted, save it, re-scan. Remember: v2 rewards focused instructions and penalizes bloat — tighter is better.
     </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 21: MAGIC MOMENT #2 — DELTA
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="21" id="slide21" data-duration="8">
+<div class="slide" data-slide="22" id="slide22" data-duration="8">
     <div class="full-width animate-in" style="text-align:center;">
         <div class="badge badge-amber" style="margin-bottom:1rem;font-size:0.9rem;">✨ MAGIC MOMENT #2</div>
         <h2 style="margin-bottom:1.5rem;">Before → After</h2>
@@ -1328,7 +1330,7 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
 <!-- ═════════════════════════════════════════
      SLIDE 22: PHASE DIVIDER — NAVIGATE
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="22" id="slide22" data-duration="1">
+<div class="slide" data-slide="23" id="slide23" data-duration="1">
     <div class="section-divider animate-in">
         <div class="phase-num">Phase 3 — Hands-On</div>
         <h2>🧭 <span style="color:var(--secondary);">NAVIGATE</span></h2>
@@ -1345,7 +1347,7 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
 <!-- ═════════════════════════════════════════
      SLIDE 23: SCAN YOUR REPO — AXIS 2 (NEW)
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="23" id="slide23" data-duration="8">
+<div class="slide" data-slide="24" id="slide24" data-duration="8">
     <div class="full-width animate-in" style="text-align:center;">
         <h2 style="margin-bottom:1rem;">Scan Your Repo — Axis 2 🔍</h2>
         <p style="margin-bottom:1.5rem;color:var(--text-dim);">Same tool. New flag. Different lens.</p>
@@ -1403,7 +1405,7 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
 <!-- ═════════════════════════════════════════
      SLIDE 24: PICK YOUR FIX (NAVIGATE)
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="24" id="slide24" data-duration="10">
+<div class="slide" data-slide="25" id="slide25" data-duration="10">
     <div class="full-width animate-in" style="text-align:center;">
         <h2 style="margin-bottom:0.5rem;">Pick ONE Fix</h2>
         <p style="margin-bottom:2rem;color:var(--text-dim);">Based on your scan results — choose what helps most</p>
@@ -1452,7 +1454,7 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
 <!-- ═════════════════════════════════════════
      SLIDE 25: PHASE DIVIDER — VALIDATE
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="25" id="slide25" data-duration="1">
+<div class="slide" data-slide="26" id="slide26" data-duration="1">
     <div class="section-divider animate-in">
         <div class="phase-num">Phase 4 — Hands-On</div>
         <h2>✅ <span class="text-success">VALIDATE</span></h2>
@@ -1462,14 +1464,14 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
         </div>
     </div>
     <aside class="speaker-notes">
-        Phase 4 — thirty minutes. This is the longest phase because VALIDATE is where most repos fail, and where the magic moment of the day lives. We'll scan Axis 3, talk about the testing paradox, drop in a CI template, and then run the full hybrid scan that closes the loop. Don't tune out — this is the most consequential phase of the workshop.
+        Phase 4 — VALIDATE, then SECURE. VALIDATE is where most repos fail. We'll add tests and CI with Claude's help, talk about the testing paradox, then turn to the fourth axis — SECURE — and add a sandbox/execution policy, secret hygiene, and a lockfile. Then the full four-axis scan that closes the loop. Don't tune out — this is the most consequential stretch of the workshop.
     </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 26: SCAN YOUR REPO — AXIS 3 (NEW)
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="26" id="slide26" data-duration="5">
+<div class="slide" data-slide="27" id="slide27" data-duration="5">
     <div class="full-width animate-in" style="text-align:center;">
         <h2 style="margin-bottom:1rem;">Scan Your Repo — Axis 3 🔍</h2>
         <p style="margin-bottom:1.5rem;color:var(--text-dim);">Where most repos bleed points</p>
@@ -1517,7 +1519,7 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
 <!-- ═════════════════════════════════════════
      SLIDE 27: TESTING PARADOX
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="27" id="slide27" data-duration="3">
+<div class="slide" data-slide="28" id="slide28" data-duration="3">
     <div class="full-width animate-in" style="text-align:center;">
         <div class="badge badge-amber" style="margin-bottom:1rem;">CONTROVERSIAL TAKE</div>
         <h2 style="margin-bottom:1.5rem;">The Testing Paradox</h2>
@@ -1562,7 +1564,7 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
 <!-- ═════════════════════════════════════════
      SLIDE 28: CI TEMPLATE
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="28" id="slide28" data-duration="9">
+<div class="slide" data-slide="29" id="slide29" data-duration="9">
     <div class="full-width animate-in" style="text-align:center;">
         <h2 style="margin-bottom:1rem;">The CI File 🔄</h2>
         <p style="margin-bottom:1.5rem;color:var(--text-dim);">Copy. Adapt. Commit. Done.</p>
@@ -1612,15 +1614,15 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
 </div>
 
 <!-- ═════════════════════════════════════════
-     SLIDE 29: HYBRID MOMENT — FULL REPORT
+     SLIDE 30: FULL 4-AXIS SCAN
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="29" id="slide29" data-duration="7">
+<div class="slide" data-slide="30" id="slide30" data-duration="7">
     <div class="full-width animate-in" style="text-align:center;">
         <div class="badge badge-amber" style="margin-bottom:1rem;font-size:0.9rem;">
             ✨✨✨ MAGIC MOMENT #3 — THE PEAK ✨✨✨
         </div>
-        <h2 style="margin-bottom:1rem;">Full Scan — The Complete Picture</h2>
-        <p style="margin-bottom:1.5rem;color:var(--text-dim);">The agent assesses all 8 dimensions and scores your project</p>
+        <h2 style="margin-bottom:1rem;">Full Scan — All Four Axes</h2>
+        <p style="margin-bottom:1.5rem;color:var(--text-dim);">7 dimensions · 4 axes · Portable + Target layers · explained findings</p>
         
         <div class="terminal" style="max-width:720px;text-align:left;margin:0 auto 1.5rem;">
             <div class="terminal-header">
@@ -1632,51 +1634,45 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
 <span class="prompt">$</span> <span class="cmd">/agent-ready scan .</span>
 
 <span class="output">╭─────────────────────────────────────────────╮
-│  AGENT READINESS ASSESSMENT              │
-│  Repo: my-awesome-project                 │
-│  ═══════════════════════════════════════  │
+│  AGENT READINESS ASSESSMENT               │
+│  Repo: quicknote  ·  Agents: claude         │
+│  ═══════════════════════════════════════   │
 │                                             │
-│  Overall: 56%  │  Level 2: GUIDED          │
-│              ▲▸ Level 3 (+14pts needed)    │
+│  Overall: 84%  │  🏆 Optimized              │
 │                                             │
-│  ┌──────────┬────────┬──────┬────────┐    │
-│  │ Axis     │ Static │ LLM  │ Final  │    │
-│  ├──────────┼────────┼──────┼────────┤    │
-│  │ 📝Instr  │   65%  │ 50%  │  59%   │    │
-│  │ 🧭Navi   │   72%  │ 60%  │  67%   │    │
-│  │ ✅Valid  │   38%  │ 45%  │  41%   │    │
-│  ├──────────┼────────┼──────┼────────┤    │
-│  │ COMBINED │   58%  │ 52%  │  56%   │    │
-│  └──────────┴────────┴──────┴────────┘    │
+│  📝 INSTRUCT   ██████████████░░  88%       │
+│  🧭 NAVIGATE   █████████████░░░  82%       │
+│  ✅ VALIDATE   ██████████████░░  86%       │
+│  🛡️ SECURE     ████████████░░░░  79%       │
 │                                             │
-│  🏆 Top 3 Quick Wins:                       │
-│  1. +12% Add SECURITY.md (low effort)      │
-│  2. +10% Enable coverage (med effort)      │
-│  3. +8%  Add pre-commit hooks (med)         │
+│  Layers:  Portable 76/88                    │
+│           Target   8/12  (claude)           │
+│                                             │
+│  Top gap: nav MCP server not wired (manual) │
 ╰─────────────────────────────────────────────╯</span>
             </div>
         </div>
-        
-        <div style="max-width:600px;margin:0 auto;text-align:left;">
+
+        <div style="max-width:620px;margin:0 auto;text-align:left;">
             <div class="card" style="border-color:rgba(168,85,247,0.25);">
-                <strong style="color:var(--secondary);">Why agent-powered scoring?</strong>
+                <strong style="color:var(--secondary);">All four axes, two layers</strong>
                 <ul style="font-size:0.86rem;margin-top:0.5rem;padding-left:1.2rem;color:var(--text-dim);">
-                    <li><strong>Structure</strong>: "Does the FILE exist?" (presence)</li>
-                    <li><strong>Quality</strong>: "Is the CONTENT useful?" (judgment)</li>
-                    <li>Static tools can only check the first — agents check <strong>both</strong></li>
+                    <li><strong>Portable</strong> counts for any agent · <strong>Target</strong> only with <code>--agents</code></li>
+                    <li>SECURE now scored alongside INSTRUCT / NAVIGATE / VALIDATE</li>
+                    <li>Every gap below 100 ships a <em>why / consequence / how-to-fix / effort</em></li>
                 </ul>
             </div>
         </div>
     </div>
     <aside class="speaker-notes">
-        Magic Moment number three — the peak. We run the full scan and see all 8 dimensions scored. This is what makes agent-powered scoring different from static tools. Static tools can tell you whether a file exists. The agent tells you whether the content is actually useful. You might have a CI file that doesn't test anything meaningful. Or a README that says nothing actionable. The agent catches both — presence AND quality. That's why this approach matters.
+        The peak: a full v2 scan. All four axes scored — including SECURE — and the two-layer breakdown. Here I passed --agents claude, so the target layer is active: the CLAUDE.md bridge and the restrictive permission policy count. Drop --agents and those become n/a, not penalties. Notice the report doesn't just give a number — every sub-criterion below 100 comes with why it matters, the consequence, how to fix it, and whether a skill can do it or it's manual. That last part — explained, fixable findings — is new in v2 and it's what turns a scorecard into a roadmap.
     </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 30: RADAR CHART REVEAL
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="30" id="slide30" data-duration="5">
+<div class="slide" data-slide="31" id="slide31" data-duration="5">
     <div class="full-width animate-in" style="text-align:center;">
         <div class="badge badge-amber" style="margin-bottom:1rem;font-size:0.9rem;">VISUALIZE YOUR PROGRESS</div>
         <h2 style="margin-bottom:1.5rem;">Your Agent Readiness Radar</h2>
@@ -1690,28 +1686,37 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
                     <div>
                         <div style="display:flex;justify-content:space-between;">
                             <span>📝 Instruct</span>
-                            <strong class="text-primary">59%</strong>
+                            <strong class="text-primary">88%</strong>
                         </div>
                         <div class="progress-bar" style="margin-top:4px;">
-                            <div class="progress-fill blue" style="width:59%;"></div>
+                            <div class="progress-fill blue" style="width:88%;"></div>
                         </div>
                     </div>
                     <div>
                         <div style="display:flex;justify-content:space-between;">
                             <span>🧭 Navigate</span>
-                            <strong style="color:var(--secondary);">67%</strong>
+                            <strong style="color:var(--secondary);">82%</strong>
                         </div>
                         <div class="progress-bar" style="margin-top:4px;">
-                            <div class="progress-fill purple" style="width:67%;"></div>
+                            <div class="progress-fill purple" style="width:82%;"></div>
                         </div>
                     </div>
                     <div>
                         <div style="display:flex;justify-content:space-between;">
                             <span>✅ Validate</span>
-                            <strong class="text-success">41%</strong>
+                            <strong class="text-success">86%</strong>
                         </div>
                         <div class="progress-bar" style="margin-top:4px;">
-                            <div class="progress-fill green" style="width:41%;"></div>
+                            <div class="progress-fill green" style="width:86%;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="display:flex;justify-content:space-between;">
+                            <span>🛡️ Secure</span>
+                            <strong class="text-warning">79%</strong>
+                        </div>
+                        <div class="progress-bar" style="margin-top:4px;">
+                            <div class="progress-fill" style="width:79%;background:var(--warning);"></div>
                         </div>
                     </div>
                 </div>
@@ -1726,14 +1731,14 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
         </div>
     </div>
     <aside class="speaker-notes">
-        Visualize your progress. The radar chart is rendered live by --visualize. Three axes — INSTRUCT, NAVIGATE, VALIDATE — your shape tells the story. A balanced triangle means well-rounded. A spike on one axis means you over-invested there. A flat shape means you're early. Take a screenshot — drop it in your engineering blog, share it in your team Slack, use it to justify the next sprint of cleanup work. This is the artifact you came here for.
+        Visualize your progress. Open the playground, or generate the HTML report with --format html. Four axes now — INSTRUCT, NAVIGATE, VALIDATE, SECURE — your shape tells the story. A balanced shape means well-rounded. A spike means you over-invested on one axis. A dent on SECURE — very common — means you've got sandbox and secret work to do. Take a screenshot, drop it in your engineering blog, use it to justify the next cleanup sprint. This is the artifact you came here for.
     </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 31: AUTO-FIX DEMO
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="31" id="slide31" data-duration="4">
+<div class="slide" data-slide="32" id="slide32" data-duration="4">
     <div class="full-width animate-in" style="text-align:center;">
         <h2 style="margin-bottom:1rem;">The Agent Fixes What The Agent Needs 🤖</h2>
         <p style="margin-bottom:2rem;color:var(--text-dim);">The same agent that scans can also generate fixes — contextualized to YOUR project</p>
@@ -1750,23 +1755,24 @@ Overall: 56%  │  Level 2: GUIDED ▲▸ Level 3</span>
 <span class="output">🔍 Loading previous scores...
 📊 Gaps identified (sorted by impact):
 
-  1. CLAUDE.md missing           [instruct] +20pt
-  2. No CI pipeline              [validate] +12pt
-  3. .editorconfig missing       [navigate]  +4pt
-  4. No .env.example             [navigate]  +4pt
+  1. AGENTS.md missing           [instruct] +18pt
+  2. No CI (tests+lint)          [validate] +14pt
+  3. No exec/sandbox policy      [secure]   +12pt
+  4. No .env.example / lockfile  [secure]    +5pt
 
 ## Files to Generate
 
-  ✨ CLAUDE.md — project-specific instructions
-  ✨ .editorconfig — consistent formatting
-  ✨ .env.example — environment template
+  ✨ AGENTS.md (+ CLAUDE.md symlink bridge)
+  ✨ docs/agent-execution.md — sandbox policy
+  ✨ .github/workflows/ci.yml — test + lint
+  ✨ .env.example + .gitignore secret patterns
 
 Proceed? (y/n)</span>
 <span class="prompt">></span> <span class="cmd">y</span>
 
-<span class="ok">✅ Created: CLAUDE.md (tailored to your FastAPI project)
-✅ Created: .editorconfig
-✅ Created: .env.example (detected 3 env vars in source)</span>
+<span class="ok">✅ Created: AGENTS.md (tailored to your project)
+🔗 Created: CLAUDE.md → AGENTS.md (bridge, no drift)
+✅ Created: docs/agent-execution.md, ci.yml, .env.example</span>
             </div>
         </div>
 
@@ -1782,7 +1788,7 @@ Proceed? (y/n)</span>
 <!-- ═════════════════════════════════════════
      SLIDE 32: FINAL REPORT
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="32" id="slide32" data-duration="7">
+<div class="slide" data-slide="33" id="slide33" data-duration="7">
     <div class="full-width animate-in" style="text-align:center;">
         <div class="badge badge-green" style="margin-bottom:1rem;">TAKEAWAY TIME</div>
         <h2 style="margin-bottom:1.5rem;">Generate Your Report Package 📦</h2>
@@ -1803,30 +1809,29 @@ Proceed? (y/n)</span>
 
 <span class="output">Comparing current state vs initial scan...</span>
 
-<span class="ok">✅ report.txt          (terminal summary)
-✅ recommendations.md  (prioritized todo list)
-✅ badge.svg           (maturity level badge)
+<span class="ok">✅ Wrote .agent-ready/ artifacts
 
-$ ls ./report/
-report.txt  recommendations.md  badge.svg  report.json</span>
+$ ls .agent-ready/
+agent-ready-report.md   agent-ready-scores.json
+agent-ready-scores.prev.json   badge.svg</span>
                 </div>
             </div>
             <div style="text-align:left;display:flex;flex-direction:column;gap:0.75rem;">
                 <div class="card">
-                    <strong>📄 report.txt</strong>
-                    <p style="font-size:0.82rem;color:var(--text-dim);">Shareable summary, print-friendly</p>
+                    <strong>📄 agent-ready-report.md</strong>
+                    <p style="font-size:0.82rem;color:var(--text-dim);">Layered report + explained findings &amp; roadmap</p>
                 </div>
                 <div class="card">
-                    <strong>📋 recommendations.md</strong>
-                    <p style="font-size:0.82rem;color:var(--text-dim);">Prioritized improvement plan</p>
+                    <strong>🔢 agent-ready-scores.json</strong>
+                    <p style="font-size:0.82rem;color:var(--text-dim);">schema v2 — the contract for fix/diff</p>
                 </div>
                 <div class="card">
                     <strong>🏷️ badge.svg</strong>
                     <p style="font-size:0.82rem;color:var(--text-dim);">Put in your README!</p>
                 </div>
                 <div class="card" style="border-color:rgba(79,140,255,0.2);">
-                    <strong>📊 radar.html</strong>
-                    <p style="font-size:0.82rem;color:var(--text-dim);">Interactive visualization</p>
+                    <strong>📊 --format html</strong>
+                    <p style="font-size:0.82rem;color:var(--text-dim);">Self-contained HTML report, works offline</p>
                 </div>
             </div>
         </div>
@@ -1839,7 +1844,7 @@ report.txt  recommendations.md  badge.svg  report.json</span>
 <!-- ═════════════════════════════════════════
      SLIDE 33: WHAT YOU TAKE HOME
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="33" id="slide33" data-duration="3">
+<div class="slide" data-slide="34" id="slide34" data-duration="3">
     <div class="full-width animate-in" style="text-align:center;">
         <h2 style="margin-bottom:2rem;">What You Take Home 🎁</h2>
         
@@ -1847,7 +1852,7 @@ report.txt  recommendations.md  badge.svg  report.json</span>
             <div class="card card-highlight" style="text-align:center;">
                 <div style="font-size:2.8rem;margin-bottom:0.75rem;">🧠</div>
                 <h3 style="font-size:1.05rem;">Mental Model</h3>
-                <p style="font-size:0.85rem;color:var(--text-dim);">The 3-axis framework to think about ANY codebase's agent-readiness</p>
+                <p style="font-size:0.85rem;color:var(--text-dim);">4 axes — INSTRUCT · NAVIGATE · VALIDATE · SECURE — to size up ANY codebase</p>
             </div>
             <div class="card card-highlight" style="text-align:center;">
                 <div style="font-size:2.8rem;margin-bottom:0.75rem;">🔢</div>
@@ -1857,7 +1862,7 @@ report.txt  recommendations.md  badge.svg  report.json</span>
             <div class="card card-highlight" style="text-align:center;">
                 <div style="font-size:2.8rem;margin-bottom:0.75rem;">🛠️</div>
                 <h3 style="font-size:1.05rem;">A Toolkit</h3>
-                <p style="font-size:0.85rem;color:var(--text-dim);">5 Agent Skills — scan, fix, report, diff — install once, use everywhere</p>
+                <p style="font-size:0.85rem;color:var(--text-dim);">6 Agent Skills — scan, fix, report, diff, init — AGENTS.md-first, any agent</p>
             </div>
         </div>
         
@@ -1876,7 +1881,7 @@ report.txt  recommendations.md  badge.svg  report.json</span>
 <!-- ═════════════════════════════════════════
      SLIDE 34: ROAD AHEAD (POST-WORKSHOP)
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="34" id="slide34" data-duration="3">
+<div class="slide" data-slide="35" id="slide35" data-duration="3">
     <div class="full-width animate-in" style="text-align:center;">
         <h2 style="margin-bottom:1.5rem;">What's Next 🚀</h2>
         <p style="margin-bottom:2rem;color:var(--text-dim);">Post-workshop roadmap</p>
@@ -1920,14 +1925,14 @@ report.txt  recommendations.md  badge.svg  report.json</span>
         </div>
     </div>
     <aside class="speaker-notes">
-        What's next — public roadmap. The full 39-check engine, porting Kodus checks to Python. CI gate integration so a PR fails if score drops below your team's minimum level. History and trend charts so you can show improvement over time. Team dashboards. Eventually a GitHub App that comments on PRs automatically. Star the repo, file issues, send PRs. This is v0. Your feedback shapes v1.
+        What's next — public roadmap. Broader multi-agent coverage beyond claude/codex/opencode/pi. CI gate integration so a PR fails if the score drops below your team's minimum. History and trend charts. Team dashboards. Eventually a GitHub App that comments on PRs automatically. Star the repo, file issues, send PRs. This is v2. Your feedback shapes what's next.
     </aside>
 </div>
 
 <!-- ═════════════════════════════════════════
      SLIDE 35: THANK YOU + RESOURCES
      ═════════════════════════════════════════ -->
-<div class="slide" data-slide="35" id="slide35" data-duration="3">
+<div class="slide" data-slide="36" id="slide36" data-duration="3">
     <div class="full-width animate-in" style="text-align:center;">
         <div style="font-size:4rem;margin-bottom:1rem;">🙏</div>
         <h2 style="margin-bottom:1rem;">Thank You!</h2>
@@ -1961,7 +1966,7 @@ report.txt  recommendations.md  badge.svg  report.json</span>
         </div>
     </div>
     <aside class="speaker-notes">
-        That's a wrap. Two hours, three axes, your score moved — show of hands, who improved by at least fifteen points today? Good. That's fifteen points closer to agents that help you instead of hurting you. Star the repo, file issues, try the toolkit on another project this week. I'll be in the hallway for questions. Thank you, PyCon Italia 2026 — let's go build agent-ready codebases.
+        That's a wrap. Two hours, four axes, your score moved — show of hands, who improved by at least fifteen points today? Good. That's fifteen points closer to agents that help you instead of hurting you. Star the repo, file issues, try the toolkit on another project this week — and remember AGENTS.md is the cross-vendor standard, so it pays off no matter which agent you use. I'll be in the hallway for questions. Thank you, PyCon Italia 2026 — let's go build agent-ready codebases.
     </aside>
 </div>
 
@@ -1973,7 +1978,7 @@ report.txt  recommendations.md  badge.svg  report.json</span>
 <script>
 // ─── State ───
 let currentSlide = 1;
-const totalSlides = 35;
+const totalSlides = 36;
 
 // ─── Navigation ───
 function goToSlide(n) {
@@ -2088,13 +2093,14 @@ function drawSlideRadar() {
 
     ctx.clearRect(0, 0, w, h);
 
-    // Data
+    // Data — 4 axes (top, right, bottom, left)
     const axes = [
-        { label: 'INSTRUCT', value: 0.59, angle: -Math.PI/2 },
-        { label: 'NAVIGATE', value: 0.67, angle: Math.PI/6 },
-        { label: 'VALIDATE', value: 0.41, angle: 5*Math.PI/6 },
+        { label: 'INSTRUCT', value: 0.88, angle: -Math.PI/2 },
+        { label: 'NAVIGATE', value: 0.82, angle: 0 },
+        { label: 'SECURE',   value: 0.79, angle: Math.PI/2 },
+        { label: 'VALIDATE', value: 0.86, angle: Math.PI },
     ];
-    const colors = ['#4f8cff', '#a855f7', '#22c55e'];
+    const colors = ['#4f8cff', '#a855f7', '#f59e0b', '#22c55e'];
 
     // Draw grid (pentagon-ish, 5 rings)
     for (let ring = 5; ring >= 1; ring--) {

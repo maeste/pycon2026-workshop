@@ -2,25 +2,34 @@
 
 **PyCon Italia 2026 — Venerdì 29 Maggio, 11:00-13:00**
 
-A Three-Axis Maturity Model for Agent-Optimized Codebases.
+A maturity model for agent-optimized codebases. We started with **three axes**
+— and building v2, security forced a **fourth**.
+
+| Axis | Weight | Question | Dimensions (v2) |
+|------|--------|----------|-----------------|
+| 📝 **INSTRUCT** | 28% | Does the agent understand WHAT we want? | Agent Instructions & Context (18) + Spec-Driven Workflow & Docs (10) |
+| 🧭 **NAVIGATE** | 30% | Can the agent find its way & reach for tools? | Navigability & Code Intelligence (18) + Agent Tooling & Capabilities (12) |
+| ✅ **VALIDATE** | 30% | Can the agent verify it did it right? | Testing & Feedback (16) + CI/CD, Automation & Governance (14) |
+| 🛡️ **SECURE** | 12% | Can the agent run safely? | Security & Sandbox (12) |
+
+Every check is **portable** (counts for any agent) or **target-specific**
+(only scored when you declare an agent with `--agents`).
 
 ---
 
 ## Prerequisites
 
-Before the workshop, make sure you have:
-
-- [ ] **Python 3.11+** installed
-- [ ] **Claude Code** installed and working (with an active API key or subscription)
-- [ ] **Git** installed
-- [ ] A GitHub account (for cloning)
+- [ ] **Python 3.11+**
+- [ ] **Claude Code** installed and working
+- [ ] **Git**
+- [ ] A GitHub account
 - [ ] Optionally: a Python project of your own to test on
 
 ## Setup (do this at the start)
 
-### 1. Install the Agent-Ready skills
+### 1. Install the Agent-Ready skills (6 skills)
 
-The skills are what power `/agent-ready scan`, `/agent-ready fix`, `/agent-ready report` and `/agent-ready diff`. Choose one method:
+The skills power `/agent-ready scan | fix | report | diff | init`. Choose one:
 
 **Method A — Quick copy (fastest)**
 
@@ -36,14 +45,14 @@ rm -rf /tmp/agent-ready-skill
 ```bash
 git clone https://github.com/RisorseArtificiali/agent-ready-skill.git ~/agent-ready-skill
 cd ~/agent-ready-skill
-for skill in skills/*/; do
-  ln -sf "$(pwd)/$skill" "$HOME/.claude/skills/$(basename $skill)"
+for skill in agent-ready agent-ready-scan agent-ready-fix agent-ready-report agent-ready-diff agent-ready-init; do
+  ln -sf "$(pwd)/skills/$skill" "$HOME/.claude/skills/$skill"
 done
 ```
 
-With method B, a future `git pull` inside `~/agent-ready-skill` updates all skills automatically.
+With method B, a future `git pull` in `~/agent-ready-skill` updates all skills.
 
-> **Verify:** restart Claude Code, then type `/agent-ready` — you should see the skill listed.
+> **Verify:** restart Claude Code and type `/agent-ready` — you should see it listed.
 
 ### 2. Clone the workshop project
 
@@ -53,162 +62,180 @@ cd quicknote-demo
 git checkout step-0-bare
 ```
 
-> **Catch-up tip:** If you need to switch to a later branch and git complains
-> about local changes, run `git stash` first (or `git checkout -- .` to discard
-> your changes). Your work isn't lost — `git stash pop` brings it back.
+> **Catch-up tip:** to jump to a later branch, run `git stash` first if git
+> complains about local changes (`git stash pop` brings your work back).
 
 ### 3. Verify everything works
 
-Open Claude Code in the `quicknote-demo` directory and run:
-
 ```
 /agent-ready scan .
 ```
 
-If you see an 8-dimension assessment with a score, you're ready.
+If you see a 4-axis assessment with a score, you're ready.
 
 ---
 
-## Phase 1: The First Scan (15 min)
+## Phase 1: The First Scan + Layers (15 min)
 
 ### Scan the guinea pig
-
-In Claude Code:
 
 ```
 /agent-ready scan .
 ```
 
-Watch the agent analyze your project across 8 dimensions. You'll see a score
-around **10-15/100** — don't worry, that's the point!
+The agent analyzes 7 dimensions across the 4 axes. Expect **~10-15/100** — that's the point.
+
+### Portable vs Target — declare your agent
+
+By default the scan is **portable** (counts for any AI agent). To also score
+vendor-specific signals, declare a target:
+
+```
+/agent-ready scan . --agents claude
+```
+
+Now target sub-criteria activate (e.g. a `CLAUDE.md` bridge, restrictive
+permission rules). Without `--agents`, those are marked `n/a` and excluded —
+a portable repo is never penalized for vendor files it doesn't need.
 
 ### Try on YOUR repo
-
-If you brought a real project:
 
 ```
 /agent-ready scan /path/to/your/project
 ```
 
-Compare your real project's score with the guinea pig. Who scored higher?
+Who scored higher than the guinea pig?
 
 ---
 
-## Phase 2: INSTRUCT — Tell the Agent What You Want (25 min)
+## Phase 2: INSTRUCT — Tell the Agent What You Want (20 min)
 
-The **INSTRUCT** axis measures: *"Does the agent understand WHAT we want?"*
+**INSTRUCT (28%)** = Agent Instructions & Context (18) + Spec-Driven Workflow & Docs (10).
 
-It covers:
-- Agent Instructions (CLAUDE.md) — weight: 20
-- Spec-Driven Workflow — weight: 10
-- Claude-Specific config — weight: 8
+### The quickest win: AGENTS.md
 
-### The quickest win: CLAUDE.md
-
-Ask Claude to help you create it. In Claude Code, type:
+`AGENTS.md` is the cross-vendor standard — one file every agent reads. Don't
+hand-write it; ask Claude:
 
 ```
-Read this project and write me a CLAUDE.md that describes what the project is,
-where things are, how to run/test/lint, and what conventions to follow.
+Read this project and write a concise AGENTS.md (under 200 lines): overview,
+build/test/lint commands, structure, conventions, and a short safe-to-run note.
 ```
 
-Claude will read your code and generate a contextualized CLAUDE.md. Review it,
-adjust if needed, and save.
+Review it, then bridge it for Claude Code with a symlink (no duplicate, no drift):
+
+```bash
+ln -s AGENTS.md CLAUDE.md
+```
+
+Codex, opencode, and pi read `AGENTS.md` natively.
+
+> **v2 penalizes bloat.** A focused 150-line AGENTS.md beats a 600-line wall of
+> text. Concise wins.
 
 ### Re-scan
 
 ```
-/agent-ready scan .
+/agent-ready scan . --agents claude
 ```
 
-Your INSTRUCT score should jump significantly. **One file. That's it.**
+INSTRUCT should jump. **One file (plus a symlink). That's it.**
 
-### Try on your repo
-
-Ask Claude to write a CLAUDE.md for your real project too. The effort is
-minimal and the impact is enormous.
-
-### Falling behind?
+### Try on your repo, then catch up if needed
 
 ```bash
 git checkout step-1-instruct
 ```
 
-This gives you a pre-made CLAUDE.md and improved README.
-
 ---
 
-## Phase 3: NAVIGATE — Show the Agent Where Things Are (20 min)
+## Phase 3: NAVIGATE — Orient + Tooling (18 min)
 
-The **NAVIGATE** axis measures: *"Can the agent find its way around?"*
-
-It covers:
-- Project Navigability — weight: 18
-- Documentation & Comprehension — weight: 8
-- Skills & Tooling — weight: 8
+**NAVIGATE (30%)** = Navigability & Code Intelligence (18) + Agent Tooling & Capabilities (12).
 
 ### Let the agent fix the gaps
-
-In Claude Code:
 
 ```
 /agent-ready fix
 ```
 
-The agent will:
-1. Load the previous scan results
-2. Identify missing files (`.editorconfig`, `.env.example`, `ARCHITECTURE.md`, etc.)
-3. Ask for your confirmation
-4. Generate contextualized files — not boilerplate!
+The agent loads your scores, finds gaps, and **generates contextualized files** —
+an `ARCHITECTURE.md` / repo map, an `.mcp.json` declaring a nav server (Serena),
+a `scripts/` helper. Not boilerplate — tailored to YOUR project.
 
-**This is the magic moment.** The agent reads YOUR project and creates files
-tailored to it. This is what static analysis tools cannot do.
+> **Disambiguation:** Navigability is whether your code *supports* semantic
+> navigation (typed, analyzable). Agent Tooling is whether a nav MCP server is
+> *actually wired up*. You want both.
 
-### Re-scan and compare
+### Re-scan, then catch up if needed
 
 ```
 /agent-ready scan .
-```
-
-NAVIGATE should improve noticeably.
-
-### Try on your repo
-
-Run `/agent-ready fix` on your real project and see what it suggests.
-
-### Falling behind?
-
-```bash
 git checkout step-2-navigate
 ```
 
 ---
 
-## Phase 4: VALIDATE — Let the Agent Check Its Work (25 min)
+## Phase 4: VALIDATE — Let the Agent Check Its Work (18 min)
 
-The **VALIDATE** axis measures: *"Can the agent verify its work is correct?"*
+**VALIDATE (30%)** = Testing & Feedback (16) + CI/CD, Automation & Governance (14).
 
-It covers:
-- Testing & Validation — weight: 16
-- CI/CD & Automation — weight: 12
-
-### Add tests and CI with Claude's help
-
-Ask Claude:
+### Add tests + CI with Claude's help
 
 ```
-Create a basic GitHub Actions CI workflow for this project that runs
-ruff check and pytest.
+Create a GitHub Actions CI workflow that runs ruff check, mypy, and pytest.
+```
+```
+Write pytest tests for the storage module, with descriptive assertion messages.
 ```
 
-And:
+> The key word is **feedback**: tests are the agent's only signal. v2 scores
+> feedback *quality* — descriptive assertions (not bare `assert`) and a type
+> checker the agent can run.
+
+### Re-scan, then catch up if needed
 
 ```
-Write pytest tests for the storage module. Cover add, delete, search,
-and update operations.
+/agent-ready scan .
+git checkout step-3-validate
 ```
 
-The agent writes the files. You review. Done.
+---
+
+## Phase 5: SECURE — The Fourth Axis (18 min)
+
+**SECURE (12%)** = Security & Sandbox. The axis v2 added — because an agent that
+understands, navigates, and validates perfectly can still leak secrets or get
+prompt-injected.
+
+### Fix the security baseline
+
+```
+/agent-ready fix security_sandbox
+```
+
+The agent generates a vendor-neutral **`docs/agent-execution.md`** (sandbox /
+execution policy — devcontainer, OS-sandbox, hosted, or [LINCE](https://lince.sh)),
+a redacted **`.env.example`**, secret patterns in **`.gitignore`**, and flags
+lockfiles to commit.
+
+What it scores:
+- **Committed isolation** (devcontainer with default-deny egress)
+- **Documented execution policy** (where non-detectable host sandboxes earn credit)
+- **Secret hygiene** + **supply-chain pinning** (committed lockfiles, Dependabot)
+- **Injection hygiene** (instructions only in trusted files)
+- **Permission policy** *(target — with `--agents`)*: restrictive deny rules
+
+### Re-scan, then catch up if needed
+
+```
+/agent-ready scan . --agents claude
+git checkout step-4-secure
+```
+
+---
+
+## Phase 6: The Complete Picture (15 min)
 
 ### See your journey
 
@@ -216,53 +243,34 @@ The agent writes the files. You review. Done.
 /agent-ready diff
 ```
 
-This compares your current state with the initial assessment and shows
-exactly what improved and by how much.
+Shows before/after across all dimensions — overall ~10 → ~65+.
 
 ```
-/agent-ready report
+/agent-ready report --format html
 ```
 
-This generates a full assessment report you can share with your team.
-
-### Falling behind?
-
-```bash
-git checkout step-3-validate
-```
-
----
-
-## Phase 5: The Complete Picture (15 min)
+A layered report in `.agent-ready/` with **explained findings** (every gap ships
+*why it matters · consequence · how to fix · effort*) and a `badge.svg`.
 
 ### See what "Optimized" looks like
 
 ```bash
-git checkout step-4-complete
-/agent-ready scan .
+git checkout step-5-complete
+/agent-ready scan . --agents claude
 ```
 
-This is a fully agent-ready project scoring ~85/100.
+A fully agent-ready project scoring ~85/100.
 
-### What you take home
+### Take-home
 
-The skills are already installed globally. From now on, `/agent-ready scan`,
-`/agent-ready fix`, `/agent-ready report`, and `/agent-ready diff` work on
-**every project** you open with Claude Code.
+- The 6 skills are installed globally — `/agent-ready` works on **every** project.
+- Starting a **new** project? `/agent-ready init . --agents claude` scaffolds an
+  agent-ready baseline (AGENTS.md, secret hygiene, execution policy, CI) from day one.
+- `AGENTS.md` is the cross-vendor standard — it pays off whatever agent you use.
 
 ---
 
-## The Three-Axis Model
-
-The 8 scoring dimensions map to 3 axes:
-
-| Axis | Weight | Question | Dimensions |
-|------|--------|----------|------------|
-| **INSTRUCT** | 38% | Does the agent understand WHAT we want? | Agent Instructions (20) + Spec-Driven (10) + Claude-Specific (8) |
-| **NAVIGATE** | 34% | Can the agent find its way around? | Navigability (18) + Documentation (8) + Skills & Tooling (8) |
-| **VALIDATE** | 28% | Can the agent verify its work? | Testing (16) + CI/CD (12) |
-
-### Maturity Levels
+## Maturity Levels
 
 | Level | Name | Threshold |
 |-------|------|-----------|
@@ -272,14 +280,12 @@ The 8 scoring dimensions map to 3 axes:
 | L4 | Optimized | ≥ 85% |
 | L5 | Autonomous | ≥ 95% |
 
----
-
 ## Resources
 
 - **Skills repo**: https://github.com/RisorseArtificiali/agent-ready-skill
 - **Guinea pig repo**: https://github.com/maeste/quicknote-demo
-- **Interactive playground**: Open `playground.html` in your browser
-- **Slides**: Open `slides.html` in your browser
+- **Interactive playground**: open `playground.html`
+- **Slides**: open `slides.html`
 
 ---
 
