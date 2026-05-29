@@ -64,7 +64,7 @@ step-5-complete    project skill, restrictive .claude/settings.json            ~
 - 🔍 Do it on your repo. Catch-up: `git checkout step-1-instruct`.
 
 ### PHASE 3 — NAVIGATE (18 min) · slides 22–24
-- 💻 `/agent-ready fix` → agent generates ARCHITECTURE / repo map, `.mcp.json` (Serena), `scripts/`.
+- 💻 `/agent-ready fix navigability_code_intelligence` (then `agent_tooling_capabilities`) → agent generates ARCHITECTURE / repo map, `.mcp.json` (Serena), `scripts/`. **Scoped on purpose** — bare `fix` would close VALIDATE+SECURE too.
 - Disambiguation: code *supports* semantic nav (D2) vs tooling *wired up* (D5).
 - ⚡ Re-scan. Catch-up: `git checkout step-2-navigate`.
 

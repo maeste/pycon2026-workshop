@@ -57,7 +57,8 @@ Re-scan, watch INSTRUCT jump. Hammer **concise beats bloated**. Do it on their r
 Catch-up: `git checkout step-1-instruct`.
 
 **P3 · NAVIGATE (18m, slides 22–24)**
-`/agent-ready fix` → agent writes ARCHITECTURE/repo map, `.mcp.json` (Serena), `scripts/`.
+`/agent-ready fix navigability_code_intelligence` (+ `agent_tooling_capabilities`) → agent writes
+ARCHITECTURE/repo map, `.mcp.json` (Serena), `scripts/`. **Scope it** — bare `fix` closes every axis at once.
 Disambiguation: code *supports* nav (D2) vs tooling *wired up* (D5). Re-scan.
 Catch-up: `git checkout step-2-navigate`.
 
@@ -84,7 +85,7 @@ for greenfield, AGENTS.md is cross-vendor. Roadmap. Closing poll: "≥15 points 
 - [ ] 6 skills resolve: type `/agent-ready` in Claude Code and see it listed
 - [ ] `git checkout step-1-instruct` then `/agent-ready scan . --agents claude` runs clean
 - [ ] `git checkout step-3-fix-ready` is GONE (v1 name) — branches are instruct/navigate/validate/secure
-- [ ] `/agent-ready fix` on `step-2-navigate` offers to generate files
+- [ ] `/agent-ready fix navigability_code_intelligence` on `step-2-navigate` offers to generate files (scoped)
 - [ ] `/agent-ready fix security_sandbox` works
 - [ ] `git checkout step-5-complete` + scan shows ~85
 - [ ] `playground.html` opens, shows 4 axes + radar

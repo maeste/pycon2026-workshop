@@ -244,11 +244,14 @@ build/test/lint commands, structure, conventions, and a short safe-to-run note.<
 
 <p><strong>NAVIGATE (30%)</strong> = Navigability &amp; Code Intelligence (18) + Agent Tooling &amp; Capabilities (12).</p>
 
-<h3>Let the agent fix the gaps</h3>
-<pre><code><span class="cmd">/agent-ready fix</span></code></pre>
+<h3>Let the agent fix the gaps — scoped to this axis</h3>
+<pre><code><span class="cmd">/agent-ready fix navigability_code_intelligence</span>
+<span class="cmd">/agent-ready fix agent_tooling_capabilities</span></code></pre>
 <p>The agent loads your scores, finds gaps, and <strong>generates contextualized files</strong> — an <code>ARCHITECTURE.md</code> / repo map, an <code>.mcp.json</code> declaring a nav server (Serena), a <code>scripts/</code> helper. Not boilerplate — tailored to YOUR project.</p>
 
 <div class="callout magic"><strong>Magic moment.</strong> This is what static tools can't do: the agent reads your code and writes files specific to it.</div>
+
+<div class="callout tip"><strong>Why scoped?</strong> Bare <code>/agent-ready fix</code> (no argument) fixes <strong>every</strong> impactful gap across all axes at once. We pass a dimension id to keep this phase on NAVIGATE — so VALIDATE and SECURE stay for their own phases. On a real project, running it unscoped to fix everything in one pass is perfectly fine.</div>
 
 <div class="callout tip"><strong>Disambiguation:</strong> Navigability is whether your code <em>supports</em> semantic navigation (typed, analyzable). Agent Tooling is whether a nav MCP server is <em>actually wired up</em>. You want both.</div>
 

@@ -153,15 +153,21 @@ git checkout step-1-instruct
 
 **NAVIGATE (30%)** = Navigability & Code Intelligence (18) + Agent Tooling & Capabilities (12).
 
-### Let the agent fix the gaps
+### Let the agent fix the gaps — scoped to this axis
 
 ```
-/agent-ready fix
+/agent-ready fix navigability_code_intelligence
+/agent-ready fix agent_tooling_capabilities
 ```
 
 The agent loads your scores, finds gaps, and **generates contextualized files** —
 an `ARCHITECTURE.md` / repo map, an `.mcp.json` declaring a nav server (Serena),
 a `scripts/` helper. Not boilerplate — tailored to YOUR project.
+
+> **Why scoped?** Bare `/agent-ready fix` (no argument) fixes **every** impactful
+> gap across all axes at once. We pass a dimension id to keep this phase focused on
+> NAVIGATE — so VALIDATE and SECURE stay for their own phases. On a real project,
+> running it unscoped to fix everything in one pass is perfectly fine.
 
 > **Disambiguation:** Navigability is whether your code *supports* semantic
 > navigation (typed, analyzable). Agent Tooling is whether a nav MCP server is
