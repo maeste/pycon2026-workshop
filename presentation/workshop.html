@@ -189,7 +189,7 @@ footer {
 <span class="cmd">cd quicknote-demo</span>
 <span class="cmd">git checkout step-0-bare</span></code></pre>
 
-<div class="callout tip"><strong>Catch-up tip:</strong> to jump to a later branch, run <code>git stash</code> first if git complains about local changes (<code>git stash pop</code> brings your work back).</div>
+<div class="callout tip"><strong>Catch-up tip:</strong> to jump to a later branch, clear local changes first. The files you (or the agent) create are <em>untracked</em>, so plain <code>git stash</code> / <code>git checkout -- .</code> won't move them — use <code>git stash -u</code> (keeps your work; <code>git stash pop</code> restores it) or <code>git checkout -f step-N</code> (discards it).</div>
 
 <h3>3. Verify</h3>
 <pre><code><span class="cmd">/agent-ready scan .</span></code></pre>
@@ -200,14 +200,17 @@ footer {
 <!-- ═══ PHASE 1 ═══ -->
 <h2><span class="phase-num p1">Phase 1</span> The First Scan + Layers <small style="color:var(--text-dim);font-weight:400;">(15 min)</small></h2>
 
-<h3>Scan the guinea pig</h3>
-<pre><code><span class="cmd">/agent-ready scan .</span></code></pre>
-<p>The agent analyzes 7 dimensions across the 4 axes. Expect <strong>~10-15/100</strong> — that's the point.</p>
+<h3>Scan the guinea pig, and save the baseline</h3>
+<pre><code><span class="cmd">/agent-ready scan .</span>
+<span class="cmd">cp .agent-ready/agent-ready-scores.json .agent-ready/baseline.json</span></code></pre>
+<p>The agent analyzes 7 dimensions across the 4 axes. Expect <strong>~10-15/100</strong> — that's the point. The <code>cp</code> saves your starting point so Phase 6 can show the full journey.</p>
 
-<h3>Portable vs Target — declare your agent</h3>
-<p>By default the scan is <strong>portable</strong> (any AI agent). To also score vendor signals, declare a target:</p>
+<div class="callout tip"><strong>Keep later scans portable.</strong> Every re-scan in this workshop uses bare <code>/agent-ready scan .</code> (no <code>--agents</code>). That keeps the Phase 6 <code>diff</code> apples-to-apples, since <code>diff</code> always re-scans in portable mode.</div>
+
+<h3>Portable vs Target — declare your agent (teaching reveal)</h3>
+<p>Run this <strong>once</strong> to see the other layer:</p>
 <pre><code><span class="cmd">/agent-ready scan . --agents claude</span></code></pre>
-<p>Now target sub-criteria activate (a <code>CLAUDE.md</code> bridge, permission rules). Without <code>--agents</code>, those are <code>n/a</code> and excluded — a portable repo is never penalized for vendor files it doesn't need.</p>
+<p>Target sub-criteria now activate (a <code>CLAUDE.md</code> bridge, permission rules). Without <code>--agents</code>, those are <code>n/a</code> and excluded — a portable repo is never penalized for vendor files it doesn't need. We revisit <code>--agents</code> in the take-home; the rest of the hands-on stays portable.</p>
 
 <h3>Try on YOUR repo</h3>
 <pre><code><span class="cmd">/agent-ready scan /path/to/your/project</span></code></pre>
@@ -231,11 +234,13 @@ build/test/lint commands, structure, conventions, and a short safe-to-run note.<
 <div class="callout magic"><strong>v2 penalizes bloat.</strong> A focused 150-line AGENTS.md beats a 600-line wall of text. Concise wins — that's the big change from v1.</div>
 
 <h3>Re-scan</h3>
-<pre><code><span class="cmd">/agent-ready scan . --agents claude</span></code></pre>
+<pre><code><span class="cmd">/agent-ready scan .</span></code></pre>
 <p>INSTRUCT should jump. <strong>One file (plus a symlink). That's it.</strong></p>
 
 <h3>Try on your repo, then catch up if needed</h3>
 <pre><code><span class="cmd">git checkout step-1-instruct</span></code></pre>
+
+<div class="callout tip"><strong>The branch does more than this phase.</strong> <code>step-1-instruct</code> also adds <code>specs/</code>, an ADR, issue/PR templates and a CHANGELOG (the D7 half of INSTRUCT). The live step focuses on the single biggest lever (AGENTS.md, D1=18); the branch is the fully-done INSTRUCT state, so its score is a bit higher.</div>
 
 <hr>
 
@@ -276,6 +281,8 @@ build/test/lint commands, structure, conventions, and a short safe-to-run note.<
 <pre><code><span class="cmd">/agent-ready scan .</span>
 <span class="cmd">git checkout step-3-validate</span></code></pre>
 
+<div class="callout tip"><strong>The branch does more than this phase.</strong> The two prompts cover tests and CI; <code>step-3-validate</code> also adds pre-commit, Dependabot, CODEOWNERS and coverage config — the <strong>governance</strong> half of D4. To close that live too: <code>/agent-ready fix cicd_automation_governance</code>.</div>
+
 <hr>
 
 <!-- ═══ PHASE 5 ═══ -->
@@ -284,8 +291,10 @@ build/test/lint commands, structure, conventions, and a short safe-to-run note.<
 <p><strong>SECURE (12%)</strong> = Security &amp; Sandbox. The axis v2 added — because an agent that understands, navigates, and validates perfectly can still leak secrets or get prompt-injected.</p>
 
 <h3>Fix the security baseline</h3>
-<pre><code><span class="cmd">/agent-ready fix security_sandbox</span></code></pre>
+<pre><code><span class="cmd">/agent-ready fix security_sandbox --agents claude</span></code></pre>
 <p>The agent generates a vendor-neutral <code>docs/agent-execution.md</code> (sandbox / execution policy — devcontainer, OS-sandbox, hosted, or <a href="https://lince.sh" target="_blank">LINCE</a>), a redacted <code>.env.example</code>, secret patterns in <code>.gitignore</code>, and flags lockfiles to commit.</p>
+
+<div class="callout tip"><strong>Why <code>--agents</code> here?</strong> The permission-policy sub-criterion is <em>target</em>, so only <code>--agents claude</code> surfaces it (it's a <code>manual</code> item — the agent flags it with steps rather than generating restrictive deny rules for you).</div>
 
 <p>What it scores:</p>
 <ul>
@@ -297,8 +306,9 @@ build/test/lint commands, structure, conventions, and a short safe-to-run note.<
 </ul>
 
 <h3>Re-scan, then catch up if needed</h3>
-<pre><code><span class="cmd">/agent-ready scan . --agents claude</span>
+<pre><code><span class="cmd">/agent-ready scan .</span>
 <span class="cmd">git checkout step-4-secure</span></code></pre>
+<p style="font-size:0.85rem;color:var(--text-dim);">Five of the six SECURE sub-criteria are portable, so a bare scan shows the jump. The sixth — permission policy — is the target/manual item surfaced by the fix above.</p>
 
 <hr>
 
@@ -306,20 +316,20 @@ build/test/lint commands, structure, conventions, and a short safe-to-run note.<
 <h2><span class="phase-num wrap">Phase 6</span> The Complete Picture <small style="color:var(--text-dim);font-weight:400;">(15 min)</small></h2>
 
 <h3>See your journey</h3>
-<pre><code><span class="cmd">/agent-ready diff</span></code></pre>
-<p>Shows before/after across all dimensions — overall ~10 → ~65+.</p>
+<pre><code><span class="cmd">/agent-ready diff .agent-ready/baseline.json</span></code></pre>
+<p>Compares your saved Phase-1 baseline against a fresh scan — the full journey, overall <strong>~10 → ~75</strong> (portable layer). Passing the baseline path matters: bare <code>/agent-ready diff</code> would only compare against your <em>last</em> scan, showing almost no change.</p>
 <pre><code><span class="cmd">/agent-ready report --format html</span></code></pre>
 <p>A layered report in <code>.agent-ready/</code> with <strong>explained findings</strong> (every gap ships <em>why it matters · consequence · how to fix · effort</em>) and a <code>badge.svg</code>.</p>
 
 <h3>See what "Optimized" looks like</h3>
 <pre><code><span class="cmd">git checkout step-5-complete</span>
 <span class="cmd">/agent-ready scan . --agents claude</span></code></pre>
-<p>A fully agent-ready project scoring ~85/100.</p>
+<p>A fully agent-ready project scoring ~85/100. Here we <em>do</em> pass <code>--agents claude</code> — <code>step-5-complete</code> ships the vendor permission policy and a project Skill, so the target layer is worth showing in the finale.</p>
 
 <h3>Take-home</h3>
 <ul>
     <li>The 6 skills are installed globally — <code>/agent-ready</code> works on <strong>every</strong> project.</li>
-    <li>Starting a <strong>new</strong> project? <code>/agent-ready init . --agents claude</code> scaffolds an agent-ready baseline (AGENTS.md, secret hygiene, execution policy, CI) from day one.</li>
+    <li>Starting a <strong>new</strong> project? In an <strong>empty directory</strong>, <code>/agent-ready init . --agents claude</code> scaffolds an agent-ready baseline (AGENTS.md, secret hygiene, execution policy, CI) from day one. On a populated repo <code>init</code> defers to <code>scan</code>/<code>fix</code> — it won't overwrite.</li>
     <li><code>AGENTS.md</code> is the cross-vendor standard — it pays off whatever agent you use.</li>
 </ul>
 

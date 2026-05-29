@@ -38,44 +38,63 @@ and still leak a secret or follow a prompt injection. So the model grew a fourth
 
 ---
 
+## Scan-posture rule (read once, repeat to yourself)
+
+All hands-on scans are **portable (bare `/agent-ready scan .`)** so the Phase-6
+`diff` is apples-to-apples — `diff` always re-scans portable and takes no `--agents`.
+`--agents claude` appears in exactly three places: the **P1 reveal**, the **P5 fix**
+(to surface the target permission policy), and the **P6 finale** scan of `step-5-complete`.
+**Save the baseline in P1.** Catch-up needs `git stash -u` / `git checkout -f` (untracked files).
+
 ## Phase cue cards
 
 **P0 · Setup & Install (10m, slides 1–5)**
 Poll (Python in prod / used an agent / been burned). Install 6 skills → `~/.claude/skills/`
 (Method A copy is the safe fallback). `git clone quicknote-demo && git checkout step-0-bare`.
-Verify `/agent-ready scan .`.
+Verify `/agent-ready scan .`. Catch-up later: **`git stash -u`** or **`git checkout -f step-N`**
+(plain `stash`/`checkout -- .` won't move the untracked files people create).
 
 **P1 · Model + First Scan + Layers (15m, slides 6–17)**
 Failure stories → three axes (footnote teases the 4th). Deep-dives 11/12/13.
 ⚡ **Slide 14 SECURE reveal** — slow down, let it land. Maturity (15). Scoring + **Portable vs Target** (16).
-Two test subjects (17). Live scan guinea pig (~10), then `--agents claude` to light the target layer.
-Then "scan your own repo."
+Two test subjects (17). Live scan guinea pig (~10) → **save baseline**:
+`cp .agent-ready/agent-ready-scores.json .agent-ready/baseline.json`. Then once
+`--agents claude` to light the target layer (then back to portable). Then "scan your own repo."
 
 **P2 · INSTRUCT (20m, slides 18–21)**
 Ask Claude to draft a concise AGENTS.md (<200 lines) → review → save → `ln -s AGENTS.md CLAUDE.md`.
-Re-scan, watch INSTRUCT jump. Hammer **concise beats bloated**. Do it on their repo.
+Re-scan **bare**, watch INSTRUCT jump. Hammer **concise beats bloated**. Do it on their repo.
 Catch-up: `git checkout step-1-instruct`.
+→ *Branch adds AGENTS.md + CLAUDE.md symlink (D1), README/CONTRIBUTING (D2 readme), specs/ + ADR + issue&PR templates + CHANGELOG (D7). Live = D1 headline only; branch = full INSTRUCT. **Mindset:** the agent now knows WHAT & HOW before touching code.*
 
 **P3 · NAVIGATE (18m, slides 22–24)**
 `/agent-ready fix navigability_code_intelligence` (+ `agent_tooling_capabilities`) → agent writes
 ARCHITECTURE/repo map, `.mcp.json` (Serena), `scripts/`. **Scope it** — bare `fix` closes every axis at once.
-Disambiguation: code *supports* nav (D2) vs tooling *wired up* (D5). Re-scan.
+Disambiguation: code *supports* nav (D2) vs tooling *wired up* (D5). Re-scan **bare**.
 Catch-up: `git checkout step-2-navigate`.
+→ *Branch adds ARCHITECTURE.md + type hints + .editorconfig (D2), .mcp.json/Serena + scripts/ (D5). **Mindset:** the agent can now FIND its way — map + typed code + MCP wired, no more grepping.*
 
 **P4 · VALIDATE (18m, slides 25–28)**
 Ask Claude for CI (ruff+mypy+pytest) and tests with descriptive assertions.
-"Feedback quality is the lever — tests are the agent's only signal." Re-scan.
+"Feedback quality is the lever — tests are the agent's only signal." Re-scan **bare**.
+Governance not covered by the two prompts → mention `/agent-ready fix cicd_automation_governance`.
 Catch-up: `git checkout step-3-validate`.
+→ *Branch adds tests/ + pyproject tooling (D3), ci.yml + pre-commit + Dependabot + CODEOWNERS (D4). **Mindset:** the agent can now VERIFY — tests are its feedback loop, CI gates regressions.*
 
 **P5 · SECURE (18m, slides 29–30)**
-`/agent-ready fix security_sandbox` → `docs/agent-execution.md` (LINCE among options),
-`.env.example`, `.gitignore` secrets, lockfile. ⚡⚡⚡ **Slide 30 full 4-axis scan** with `--agents claude`:
-all four bars + Portable/Target maxes + explained findings. Catch-up: `git checkout step-4-secure`.
+`/agent-ready fix security_sandbox --agents claude` → `docs/agent-execution.md` (LINCE among options),
+`.env.example`, `.gitignore` secrets, lockfile (+ `--agents` *surfaces* the target permission policy, manual).
+Re-scan **bare** (5/6 SECURE sub-criteria are portable). ⚡⚡⚡ **Slide 30** narrates the full 4-axis +
+Portable/Target view. Catch-up: `git checkout step-4-secure`.
+→ *Branch adds docs/agent-execution.md + devcontainer (isolation), .env.example + .gitignore secrets, requirements.txt lockfile, SECURITY.md (D6). **Mindset:** the agent can now run SAFELY — sandbox contains it, no secrets to leak, deps pinned. Credit is earned by DOCUMENTING posture (runtime sandbox is invisible to a scan).*
 
 **P6 · Wrap (20m, slides 31–36)**
-Radar/playground (4 axes). `report --format html` + `diff` → `.agent-ready/`.
-`git checkout step-5-complete` → ~85, "Optimized". Take-home: skills global, `/agent-ready init`
-for greenfield, AGENTS.md is cross-vendor. Roadmap. Closing poll: "≥15 points gained?"
+Radar/playground (4 axes). 🎯 **Journey diff vs baseline**: `/agent-ready diff .agent-ready/baseline.json`
+(bare `diff` compares only against the last scan → ~0, so pass the path!). `report --format html` → `.agent-ready/`.
+`git checkout step-5-complete` → `/agent-ready scan . --agents claude` → ~85, "Optimized" (finale uses `--agents`).
+Take-home: skills global, `/agent-ready init` (empty dir) for greenfield, AGENTS.md is cross-vendor.
+Greenfield slide (35). Closing poll: "≥15 points gained?"
+→ *step-5-complete adds .claude/skills/changelog-entry (D5 standard_skills) + .claude/settings.json deny rules (D6 permission policy, target) + AGENTS.md fast-feedback note (D3). **Mindset:** last mile — the project ships agent tooling AND constrains the agent. L4 Optimized.*
 
 ---
 
@@ -83,11 +102,13 @@ for greenfield, AGENTS.md is cross-vendor. Roadmap. Closing poll: "≥15 points 
 
 - [ ] Guinea pig cloned; `git branch -r` shows step-0-bare … step-5-complete
 - [ ] 6 skills resolve: type `/agent-ready` in Claude Code and see it listed
-- [ ] `git checkout step-1-instruct` then `/agent-ready scan . --agents claude` runs clean
-- [ ] `git checkout step-3-fix-ready` is GONE (v1 name) — branches are instruct/navigate/validate/secure
+- [ ] `git checkout step-0-bare` → `/agent-ready scan .` runs clean; `cp …/agent-ready-scores.json …/baseline.json` works
+- [ ] `git checkout step-1-instruct` then bare `/agent-ready scan .` runs clean
 - [ ] `/agent-ready fix navigability_code_intelligence` on `step-2-navigate` offers to generate files (scoped)
-- [ ] `/agent-ready fix security_sandbox` works
-- [ ] `git checkout step-5-complete` + scan shows ~85
+- [ ] `/agent-ready fix security_sandbox --agents claude` works (surfaces the permission policy)
+- [ ] `/agent-ready diff .agent-ready/baseline.json` shows the baseline→current delta (not ~0)
+- [ ] `git checkout step-5-complete` + `/agent-ready scan . --agents claude` shows ~85
+- [ ] Catch-up tested: with untracked files present, `git stash -u` / `git checkout -f step-N` unblocks checkout
 - [ ] `playground.html` opens, shows 4 axes + radar
 - [ ] Deck opens, `N` toggles notes, `←/→` works; slide 14 is the SECURE reveal
 - [ ] Tested a scan on a SECOND real repo (skills work on external paths)

@@ -62,8 +62,10 @@ cd quicknote-demo
 git checkout step-0-bare
 ```
 
-> **Catch-up tip:** to jump to a later branch, run `git stash` first if git
-> complains about local changes (`git stash pop` brings your work back).
+> **Catch-up tip:** to jump to a later branch, clear local changes first.
+> The files you (or the agent) create are *untracked*, so `git stash` and
+> `git checkout -- .` won't move them — use **`git stash -u`** (keeps your work,
+> `git stash pop` restores it) or **`git checkout -f step-N`** (discards it).
 
 ### 3. Verify everything works
 
@@ -77,26 +79,32 @@ If you see a 4-axis assessment with a score, you're ready.
 
 ## Phase 1: The First Scan + Layers (15 min)
 
-### Scan the guinea pig
+### Scan the guinea pig, and save the baseline
 
 ```
 /agent-ready scan .
+cp .agent-ready/agent-ready-scores.json .agent-ready/baseline.json
 ```
 
 The agent analyzes 7 dimensions across the 4 axes. Expect **~10-15/100** — that's the point.
+The `cp` saves your starting point so Phase 6 can show the full journey.
 
-### Portable vs Target — declare your agent
+> **Keep later scans portable.** Every re-scan in this workshop uses bare
+> `/agent-ready scan .` (no `--agents`). That keeps the Phase 6 `diff`
+> apples-to-apples, since `diff` always re-scans in portable mode.
 
-By default the scan is **portable** (counts for any AI agent). To also score
-vendor-specific signals, declare a target:
+### Portable vs Target — declare your agent (teaching reveal)
+
+Run this **once** to see the other layer:
 
 ```
 /agent-ready scan . --agents claude
 ```
 
-Now target sub-criteria activate (e.g. a `CLAUDE.md` bridge, restrictive
-permission rules). Without `--agents`, those are marked `n/a` and excluded —
-a portable repo is never penalized for vendor files it doesn't need.
+Target sub-criteria now activate (e.g. a `CLAUDE.md` bridge, restrictive
+permission rules). Without `--agents`, those are `n/a` and excluded — a portable
+repo is never penalized for vendor files it doesn't need. We revisit `--agents`
+in the take-home; the rest of the hands-on stays portable.
 
 ### Try on YOUR repo
 
@@ -136,7 +144,7 @@ Codex, opencode, and pi read `AGENTS.md` natively.
 ### Re-scan
 
 ```
-/agent-ready scan . --agents claude
+/agent-ready scan .
 ```
 
 INSTRUCT should jump. **One file (plus a symlink). That's it.**
@@ -146,6 +154,11 @@ INSTRUCT should jump. **One file (plus a symlink). That's it.**
 ```bash
 git checkout step-1-instruct
 ```
+
+> **Note — the branch does more than this phase.** `step-1-instruct` also adds
+> `specs/`, an ADR, issue/PR templates and a CHANGELOG (the D7 half of INSTRUCT).
+> The live step focuses on the single biggest lever (AGENTS.md, D1=18); the
+> branch is the fully-done INSTRUCT state, so its score is a bit higher.
 
 ---
 
@@ -206,6 +219,11 @@ Write pytest tests for the storage module, with descriptive assertion messages.
 git checkout step-3-validate
 ```
 
+> **Note — the branch does more than this phase.** The two prompts cover tests
+> and CI; `step-3-validate` also adds pre-commit, Dependabot, CODEOWNERS and
+> coverage config — the **governance** half of D4. To close that live too:
+> `/agent-ready fix cicd_automation_governance`.
+
 ---
 
 ## Phase 5: SECURE — The Fourth Axis (18 min)
@@ -217,13 +235,17 @@ prompt-injected.
 ### Fix the security baseline
 
 ```
-/agent-ready fix security_sandbox
+/agent-ready fix security_sandbox --agents claude
 ```
 
 The agent generates a vendor-neutral **`docs/agent-execution.md`** (sandbox /
 execution policy — devcontainer, OS-sandbox, hosted, or [LINCE](https://lince.sh)),
 a redacted **`.env.example`**, secret patterns in **`.gitignore`**, and flags
 lockfiles to commit.
+
+> **Why `--agents` here?** The permission-policy sub-criterion is *target*, so
+> only `--agents claude` surfaces it (it's a `manual` item — the agent flags it
+> with steps rather than generating restrictive deny rules for you).
 
 What it scores:
 - **Committed isolation** (devcontainer with default-deny egress)
@@ -235,9 +257,12 @@ What it scores:
 ### Re-scan, then catch up if needed
 
 ```
-/agent-ready scan . --agents claude
+/agent-ready scan .
 git checkout step-4-secure
 ```
+
+(Five of the six SECURE sub-criteria are portable, so a bare scan shows the jump.
+The sixth — permission policy — is the target/manual item surfaced by the fix above.)
 
 ---
 
@@ -246,10 +271,13 @@ git checkout step-4-secure
 ### See your journey
 
 ```
-/agent-ready diff
+/agent-ready diff .agent-ready/baseline.json
 ```
 
-Shows before/after across all dimensions — overall ~10 → ~65+.
+Compares your saved Phase-1 baseline against a fresh scan — the full journey,
+overall **~10 → ~75** (portable layer). Passing the baseline path matters: bare
+`/agent-ready diff` would only compare against your *last* scan, showing almost
+no change.
 
 ```
 /agent-ready report --format html
@@ -265,13 +293,16 @@ git checkout step-5-complete
 /agent-ready scan . --agents claude
 ```
 
-A fully agent-ready project scoring ~85/100.
+A fully agent-ready project scoring ~85/100. (Here we *do* pass `--agents claude`
+— `step-5-complete` ships the vendor permission policy and a project Skill, so the
+target layer is worth showing in the finale.)
 
 ### Take-home
 
 - The 6 skills are installed globally — `/agent-ready` works on **every** project.
-- Starting a **new** project? `/agent-ready init . --agents claude` scaffolds an
-  agent-ready baseline (AGENTS.md, secret hygiene, execution policy, CI) from day one.
+- Starting a **new** project? In an **empty directory**, `/agent-ready init . --agents claude`
+  scaffolds an agent-ready baseline (AGENTS.md, secret hygiene, execution policy, CI) from
+  day one. (On a populated repo `init` defers to `scan`/`fix` — it won't overwrite.)
 - `AGENTS.md` is the cross-vendor standard — it pays off whatever agent you use.
 
 ---
